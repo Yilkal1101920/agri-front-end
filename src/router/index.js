@@ -11,7 +11,7 @@ import About from '../pages/About.vue'
 import Cart from '../products/cart.vue'
 import Order from '../products/order.vue'
 import ProductByPrice from '../products/productByPrice.vue'
-import CompleteTransaction from '../products/completeTransaction.vue'
+// import CompleteTransaction from '../products/completeTransaction.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,14 +85,14 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: ProductByPrice
     },
-    {
-      path: '/product/completeTransaction',
-      name: 'completeTransaction',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: CompleteTransaction
-    },
+    // {
+    //   path: '/product/completeTransaction',
+    //   name: 'completeTransaction',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: CompleteTransaction
+    // },
     {
       path: '/addOrders',
       name: 'addOrder',

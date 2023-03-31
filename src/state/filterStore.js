@@ -6,6 +6,7 @@ export const useFilterStore = defineStore('filter_store', {
     return {
       // all these properties will have their type inferred automatically
       filterStore: 0,
+      filterByName: "",
     }
   }
 })

@@ -1,9 +1,9 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 w-full h-full">
     <!-- <div class="grid sm:grid-cols-1 md:grid-cols-2"> -->
-    <div class="text-black dark:text-white px-14 py-8 w-full">
-      <div class="block border-b-8 items-center justify-center">
-        <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 userProfile">
+    <div class="text-black dark:text-white px-14 py-8 ">
+      <div class="block border border-gray-300 p-8">
+        <div class="flex gap-5 justify-between flex-wrap px-5 ">
           <div class="block items-center">
             <div v-for="member in mahiberatMember">
               <div v-if="userID == member.username">
@@ -24,34 +24,40 @@
                   class="text-white bg-green-300 hover:bg-green-700 p-2 px-4 my-2 rounded-lg font-bold font-mono text-lg"
                   @click.prevent="updateUserPhotobyUserName(userID)"
                 >
-                  ፎቶ ቀይር
+                  <h4 v-if="languageStore.language == 'En'">change photo</h4>
+                  <h4 v-if="languageStore.language == 'Am'">ፎቶ ቀይር</h4>
                 </button>
                 <!-- </div> -->
               </div>
             </div>
           </div>
-          <div class="flex">
+          <div class="flex justify-center">
             <p class="text-gray-700 dark:text-white font-mono font-bold text-lg">
               {{ userName }} {{ userFatherName }}
             </p>
+           
+          </div>
+          <div>
             <button
               type="submit"
-              class="pl-80 text-gray-700 dark:text-white font-mono font-bold text-lg"
+              class="pl-8 text-gray-700 dark:text-white font-mono font-bold text-lg hover:text-orange-500"
               @click.prevent="getDashBoard"
             >
-              Dashboard
+              <h4 v-if="languageStore.language == 'En'" class="border border-blue-600 px-6 py-2 hover:bg-green-700">Dashboard</h4>
+              <h4 v-if="languageStore.language == 'Am'" class="border border-blue-600 px-6 py-2 hover:bg-green-700">ዳሽቦርድ</h4>
             </button>
           </div>
         </div>
 
-        <div class="border-b-8">
+        <div class="">
           <form>
             <div class="form-group mb-1 grid sm:grid-cols-1 md:grid-cols-3 gap-4">
               <div class="form-group mb-1">
                 <label
                   for="fname"
                   class="form-label inline-block mb-2 text-gray-700 dark:text-white"
-                  >የመጀመሪያ ስም</label
+                  ><h4 v-if="languageStore.language == 'En'">First Name</h4>
+                  <h4 v-if="languageStore.language == 'Am'">የመጀመሪያ ስም</h4></label
                 >
                 <input
                   type="text"
@@ -62,8 +68,12 @@
                   v-model="userName"
                 />
                 <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="userName == '' && tryCount == 1">
-                    የመጀመሪያ ስም ቦታ ባዶ ነው
+                  <p
+                    class="text-red-600"
+                    v-if="userName == '' && tryCount == 1"
+                  >
+                    <p v-if="languageStore.language == 'En'">please write your name</p>
+                    <p v-if="languageStore.language == 'Am'">የመጀመሪያ ስም ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
@@ -71,7 +81,8 @@
                 <label
                   for="lname"
                   class="dark:text-white form-label inline-block mb-2 text-gray-700"
-                  >የአባት ስም</label
+                  ><h4 v-if="languageStore.language == 'En'">Father Name</h4>
+                  <h4 v-if="languageStore.language == 'Am'">የአባት ስም</h4></label
                 >
                 <input
                   type="text"
@@ -83,7 +94,8 @@
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userFatherName == '' && tryCount == 1">
-                    የአባት ስም ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill your father name field</p>
+                    <p v-if="languageStore.language == 'Am'">የአባት ስም ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
@@ -91,7 +103,8 @@
                 <label
                   for="phone"
                   class="dark:text-white form-label inline-block mb-2 text-gray-700"
-                  >ስልክ ቁጥር</label
+                  ><h4 v-if="languageStore.language == 'En'">Phone number</h4>
+                  <h4 v-if="languageStore.language == 'Am'">ስልክ ቁጥር</h4></label
                 >
                 <input
                   type="phone"
@@ -102,13 +115,16 @@
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userPhone == '' && tryCount == 1">
-                    ስልክ ቁጥር ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please enter your phone number</p>
+                    <p v-if="languageStore.language == 'Am'">ስልክ ቁጥር ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
               <div class="form-group mb-1">
                 <label class="dark:text-white form-label inline-block mb-2 text-gray-700"
-                  >ቀበሌ</label
+                  >
+                  <h4 v-if="languageStore.language == 'En'">Kebele</h4>
+                  <h4 v-if="languageStore.language == 'Am'">ቀበሌ</h4></label
                 >
                 <input
                   type="text"
@@ -119,13 +135,16 @@
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userKebele == '' && tryCount == 1">
-                    ቀበሌ አላስገቡም
+                    <p v-if="languageStore.language == 'En'">please enter your kebele</p>
+                    <p v-if="languageStore.language == 'Am'">ቀበሌ አላስገቡም</p>
                   </p>
                 </div>
               </div>
               <div class="form-group mb-1">
                 <label class="dark:text-white form-label inline-block mb-2 text-gray-700"
-                  >ንኡስ ቀበሌ</label
+                  ><h4 v-if="languageStore.language == 'En'">Sub Kebele</h4>
+                  <h4 v-if="languageStore.language == 'Am'">ንኡስ ቀበሌ</h4>
+                  </label
                 >
                 <input
                   type="text"
@@ -135,13 +154,17 @@
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userSubKebele == '' && tryCount == 1">
-                    ንኡስ ቀበሌ አላስገቡም
+                    <p v-if="languageStore.language == 'En'">please enter your sub kebele</p>
+                    <p v-if="languageStore.language == 'Am'">ንኡስ ቀበሌ አላስገቡም</p>
                   </p>
                 </div>
               </div>
               <div class="form-group mb-1">
                 <label class="dark:text-white form-label inline-block mb-2 text-gray-700"
-                  >ጎጥ</label
+                  >
+                  <h4 v-if="languageStore.language == 'En'">Village</h4>
+                  <h4 v-if="languageStore.language == 'Am'">ጎጥ</h4>
+                  </label
                 >
                 <input
                   type="text"
@@ -151,7 +174,8 @@
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userVillage == '' && tryCount == 1">
-                    ጎጥ አላስገቡም
+                    <p v-if="languageStore.language == 'En'">please enter your village address</p>
+                    <p v-if="languageStore.language == 'Am'">ጎጥ አላስገቡም</p>
                   </p>
                 </div>
               </div>
@@ -161,41 +185,47 @@
               class="text-lg hover:scale-x-110 font-mono font-bold px-8 py-2 my-2 bg-green-300 text-white hover:text-white rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
               @click.prevent="updateProfile(user_email)"
             >
-              መረጃህን አስተካክል
+              <h4 v-if="languageStore.language == 'En'">Edit Profile</h4>
+              <h4 v-if="languageStore.language == 'Am'">መረጃህን አስተካክል</h4>
             </button>
           </form>
         </div>
-        <div class="pt-3">
+      </div>
+        <div class="pt-3 border border-gray-300 p-8">
           <p
             class="text-lg font-mono font-bold text-center text-gray-700 dark:text-white"
           >
-            ኢሜል እና የይለፍ ቃል ይቀይሩ
+            <p v-if="languageStore.language == 'En'">change email and password</p>
+            <p v-if="languageStore.language == 'Am'">ኢሜል እና የይለፍ ቃል ይቀይሩ</p>
           </p>
           <changeEmailAndPassword />
         </div>
-      </div>
     </div>
-    <div class="border-b-8 pt-3">
+    <div class="border border-gray-300 p-8 pt-3 mx-10">
       <p class="text-lg font-mono font-bold text-center text-gray-700 dark:text-white">
-        አሁን ያዘዝሀቸው
+        <p v-if="languageStore.language == 'En'">Your recent ordered</p>
+        <p v-if="languageStore.language == 'Am'">አሁን ያዘዝሀቸው</p>
       </p>
       <cart />
     </div>
-    <div class="border-b-8 pt-3">
+    <div class="border border-gray-300 p-8 pt-3 mx-10">
       <p class="text-lg font-mono font-bold text-center text-gray-700 dark:text-white">
-        የቀደም ግብይቶች
+        <p v-if="languageStore.language == 'En'">የቀደም ግብይቶች</p>
+        <p v-if="languageStore.language == 'Am'">Previous Transaction</p>
       </p>
       <TransactionHistory />
     </div>
-    <div class="pt-3">
+    <div class="pt-3 border border-gray-300 p-8 mx-10 ">
       <p class="text-lg font-mono font-bold text-center text-gray-700 dark:text-white">
-        ያደረካቸው ግንኙነቶች/መጠይቆች
+        <p v-if="languageStore.language == 'En'">Conversation</p>
+        <p v-if="languageStore.language == 'Am'">ያደረካቸው ግንኙነቶች/መጠይቆች</p>
       </p>
       <button
         class="text-white bg-green-300 hover:bg-green-700 p-2 px-4 my-2 rounded-lg font-bold font-mono text-lg"
         @click="chat_display = !chat_display"
       >
-        ጥያቄ እና መልሶች
+        <p v-if="languageStore.language == 'En'">Conversation</p>
+        <p v-if="languageStore.language == 'Am'">ጥያቄ እና መልሶች</p>
       </button>
       <userChat v-if="chat_display" />
     </div>
@@ -212,6 +242,9 @@ import TransactionHistory from "../pages/payedProductOrders.vue";
 import userChat from "../pages/Chat.vue";
 import changeEmailAndPassword from "../pages/changeEmailAndPassword.vue";
 import Swal from "sweetalert2";
+import { useLanguageStore } from "../state/languageStore";
+
+const languageStore = useLanguageStore();
 
 const router = useRouter();
 
@@ -250,7 +283,30 @@ onMounted(async () => {
     localStorage.getItem("role") != "user" ||
     localStorage.getItem("user_state") != 1
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
 

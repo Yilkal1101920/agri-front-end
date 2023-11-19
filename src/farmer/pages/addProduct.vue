@@ -27,48 +27,23 @@
           Register Product
         </p>
       </div>
-      <div class="flex flex-row pl-10 flex-wrap justify-center">
+      <div class="flex flex-col pl-10 flex-wrap justify-center">
         <div
-          class="p-2 px-8 py-6 mb-4 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          class="px-16 pt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-center"
         >
           <div class="field">
             <label class="text-gray-700 font-bold">Category</label>
             <div class="control">
               <select
                 v-model="category"
-                class="border border-green-300 bg-white text-gray-700 dark:text-white"
+                class="border border-green-300 py-2 w-full bg-white text-gray-700 dark:text-white"
               >
+                <option value="">Select Category</option>
                 <option value="AGRICULTURAL PRODUCT">AGRICULTURAL PRODUCT</option>
-                <option value="AGRICULTURAL MATERIAL">AGRICULTURAL MATERIAL</option>
-                <option value="SELECTED SEED">SELECTED SEED</option>
-                <option value="FERTILIZER">FERTILIZER</option>
-                <option value="SUGAR AND OIL">SUGAR AND OIL</option>
-                <option value="OTHER">OTHER</option>
               </select>
             </div>
             <div class="mb-0 ml-5">
               <p class="text-red-600" v-if="category == '' && tryCount == 1">
-                የግብርና አቅርቦት መደብ አልመረጡም
-              </p>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="block text-gray-700 text-sm font-bold">Product Type</label>
-            <div
-              class="control border border-green-300 bg-white text-gray-700 dark:text-white"
-            >
-              <select v-model="productType" class="w-full py-2">
-                <option value="AGRICULTURAL PRODUCT">AGRICULTURAL PRODUCT</option>
-                <option value="AGRICULTURAL MATERIAL">AGRICULTURAL MATERIAL</option>
-                <option value="SELECTED SEED">SELECTED SEED</option>
-                <option value="FERTILIZER">FERTILIZER</option>
-                <option value="SUGAR AND OIL">SUGAR AND OIL</option>
-                <option value="OTHER">OTHER</option>
-              </select>
-            </div>
-            <div class="mb-0 ml-5">
-              <p class="text-red-600" v-if="productType == '' && tryCount == 1">
                 የግብርና አቅርቦት መደብ አልመረጡም
               </p>
             </div>
@@ -79,42 +54,25 @@
               <div v-if="category == ''">
                 <select
                   v-model="title"
-                  class="border border-green-300 bg-white text-gray-700 dark:text-white"
+                  class="border border-green-300 py-2 w-full bg-white text-gray-700 dark:text-white"
                 >
-                  <option value="DAP">DAP</option>
-                  <option value="UREA">UREA</option>
-                  <option value="Wheate Seed">Wheate Seed</option>
-                  <option value="Maize Seed">Maize Seed</option>
+                  <option value="">Name of product</option>
                   <option value="Teff">Teff</option>
                   <option value="Wheate">Wheate</option>
                   <option value="Maize">Maize</option>
                   <option value="Nuggets">Nuggets</option>
-                </select>
-              </div>
-              <div v-if="category == 'FERTILIZER'">
-                <select v-model="title">
-                  <option value="DAP">DAP</option>
-                  <option value="UREA">UREA</option>
                 </select>
               </div>
               <div v-if="category == 'AGRICULTURAL PRODUCT'">
-                <select v-model="title">
+                <select
+                  v-model="title"
+                  class="border border-green-300 py-2 w-full bg-white text-gray-700 dark:text-white"
+                >
+                  <option value="">Name of product</option>
                   <option value="Teff">Teff</option>
                   <option value="Wheate">Wheate</option>
                   <option value="Maize">Maize</option>
                   <option value="Nuggets">Nuggets</option>
-                </select>
-              </div>
-              <div v-if="category == 'SELECTED SEED'">
-                <select v-model="title">
-                  <option value="Wheate Seed">Wheate Seed</option>
-                  <option value="Maize Seed">Maize Seed</option>
-                </select>
-              </div>
-              <div v-if="category == 'SUGAR AND OIL'">
-                <select v-model="title">
-                  <option value="Sugar">Sugar</option>
-                  <option value="Oil">Oil</option>
                 </select>
               </div>
             </div>
@@ -130,7 +88,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700 dark:text-white"
-                type="text"
+                type="number"
                 placeholder="Price of one product"
                 v-model="price"
                 required
@@ -160,7 +118,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="text"
+                type="number"
                 placeholder="Original Cost, without discount"
                 v-model="orginalCost"
                 required
@@ -190,7 +148,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="text"
+                type="number"
                 placeholder="Amount"
                 v-model="amount"
                 required
@@ -215,6 +173,40 @@
             </div>
           </div>
           <div class="field">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Measurement Unit</label
+            >
+            <div class="control">
+              <select
+                v-model="measurementUnit"
+                class="border border-green-300 bg-white text-gray-700 dark:text-white w-full py-2"
+              >
+                <option value="">Measurement</option>
+                <option value="50kg">50Kg</option>
+                <option value="50kg">100Kg</option>
+                <option value="kg">1Kg</option>
+                <option value="litter">Litter</option>
+              </select>
+              <div class="mb-0 ml-5">
+                <p class="text-red-600" v-if="measurementUnit == '' && tryCount == 1">
+                  መለኪያ አሃድ አላስገባህም
+                </p>
+              </div>
+              <div class="mb-0 ml-5">
+                <p
+                  class="text-red-600"
+                  v-if="
+                    (orginalCost <= 0 || orginalCost == null || costNumberCheck) &&
+                    orginalCost != '' &&
+                    tryCount == 1
+                  "
+                >
+                  ትክክለኛ ዋጋ አላስገቡም
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="field">
             <label class="block text-gray-700 text-sm font-bold mb-2">Address</label>
             <div class="control">
               <input
@@ -229,6 +221,16 @@
                   አድራሻ አላስገቡም
                 </p>
               </div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Image</label>
+            <div class="control">
+              <input
+                class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
+                type="file"
+                @change="onFileChange"
+              />
             </div>
           </div>
 
@@ -252,26 +254,14 @@
               </p>
             </div>
           </div>
-
-          <div class="field">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Image</label>
-            <div class="control">
-              <input
-                class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="file"
-                @change="onFileChange"
-              />
-            </div>
-          </div>
-
-          <div class="control flex justify-center pl-8 pt-2">
-            <button
-              class="bg-green-300 hover:bg-green-700 text-white font-bold py-2 rounded-lg px-8"
-              @click="insertProduct"
-            >
-              Post now
-            </button>
-          </div>
+        </div>
+        <div class="control flex justify-center pl-8 pb-11">
+          <button
+            class="bg-green-300 hover:bg-green-700 text-white font-bold py-2 rounded-lg px-8"
+            @click="insertProduct"
+          >
+            Post now
+          </button>
         </div>
       </div>
     </div>
@@ -297,6 +287,7 @@ const orginalCost = ref("");
 var amount = ref("");
 const address = ref("");
 const description = ref("");
+const measurementUnit = ref("");
 const costNumberCheck = ref(false);
 const priceNumberCheck = ref(false);
 const amountNumberCheck = ref(false);
@@ -374,7 +365,6 @@ const insertProduct = async () => {
     await uploadImage();
     if (
       category.value != "" &&
-      productType.value != "" &&
       title.value != "" &&
       price.value != "" &&
       orginalCost != "" &&
@@ -442,7 +432,6 @@ const insertProduct = async () => {
 const checkInputForProductUpdate = async () => {
   if (
     category.value != "" &&
-    productType.value != "" &&
     title.value != "" &&
     price.value != "" &&
     orginalCost != "" &&
@@ -561,11 +550,13 @@ const saveProduct = async () => {
       price: price.value,
       original_cost: orginalCost.value,
       amount: amount.value,
+      measurement: measurementUnit.value,
       address: address.value,
       description: description.value,
+      seller: "farmer",
       image: url.value,
       kebele: kebele,
-      marketState: 1,
+      marketState: 0,
     });
     await insertReport();
     router.push("/farmer/productList");
@@ -640,10 +631,10 @@ const insertReport = async () => {
       monthName.value = "December";
     }
     await axios.post("http://localhost:5000/report", {
-      reporter_email: store_email,
+      reporter_email: user_email,
       product_name: title.value,
       quantity: amount.value,
-      report_owner: kebele,
+      report_owner: localStorage.getItem("ID"),
       report_status: "buy",
       transaction: "cash out",
       transaction_in_birr: orginalCost.value,

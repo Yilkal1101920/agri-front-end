@@ -6,6 +6,7 @@ export const useChatStore = defineStore('chat_store', {
     return {
       
         chatEmail: "",
+        chatSelector: 0,
     }
   }
 })

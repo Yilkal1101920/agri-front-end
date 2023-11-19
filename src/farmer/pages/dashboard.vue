@@ -17,82 +17,86 @@
           </div>
         </div>
       </nav>
-      <div class="flex gap-4 mt-4 mb-11 justify-center items-center">
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-11 gap-5 px-8">
         <div
           @click="addProduct"
-          class="cursor-pointer shadow-md hover:scale-110 bg-blue-200 py-6 w-[38%] rounded-lg"
+          title="Click to add product"
+          class="cursor-pointer shadow-md border-l-4 border-blue-700 bg-white py-6 rounded-lg"
         >
-          <p class="font-mono font-bold text-lg text-center">Add Product</p>
-          <h2 class="font-mono font-bold text-lg text-center"></h2>
+          <p class="font-mono font-bold text-lg pl-8">Add Product</p>
+          <h2 class="font-mono font-bold text-lg pl-8"></h2>
         </div>
         <div
           @click="productList"
-          class="cursor-pointer shadow-md hover:scale-110 bg-blue-200 py-6 w-[38%] rounded-lg"
+          title="Click to see product detail"
+          class="cursor-pointer bg-white shadow-md py-6 rounded-lg border-l-4 border-orange-700"
         >
-          <p class="font-mono font-bold text-lg text-center">Total Products</p>
-          <h2 class="font-mono font-bold text-lg text-center">
+          <p class="font-mono font-bold text-lg pl-8">Total Products</p>
+          <h2 class="font-mono font-bold text-2xl pl-8 text-orange-700">
             {{ countProducts }}
           </h2>
         </div>
-        <div @click="transactionHistory" class="bg-red-200 py-6 w-[38%] rounded-lg">
-          <p class="font-mono font-bold text-lg text-center">Orders</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalExpenseInBirr }} Birr
+        <div
+          @click="orderList"
+          title="Click to see detail"
+          class="bg-white border-l-4 border-yellow-700 cursor-pointer py-6 rounded-lg"
+        >
+          <p class="font-mono font-bold text-lg pl-8">Orders</p>
+          <h2 class="font-mono font-bold text-2xl text-yellow-700 pl-8">
+            {{ countOrders }}
           </h2>
         </div>
       </div>
-      <div class="flex gap-4 mt-4 mb-11 justify-center items-center">
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-6 pb-3 gap-5 px-8">
+        <div
+          @click="postEvents"
+          title="Click to aad Events"
+          class="bg-white border-l-4 border-green-700 cursor-pointer shadow-md py-6 rounded-lg"
+        >
+          <p class="font-mono font-bold text-lg pl-8">Add News</p>
+        </div>
+        <div
+          @click="postedEvents"
+          title="Click to see Detail"
+          class="bg-white border-l-4 border-gray-700 cursor-pointer shadow-md py-6 rounded-lg"
+        >
+          <p class="font-mono font-bold text-lg pl-8">Posted News</p>
+        </div>
         <div
           @click="transactionHistory"
-          class="cursor-pointer shadow-md hover:scale-110 bg-blue-200 py-6 w-[38%] rounded-lg"
+          title="Click to see Detail"
+          class="bg-white border-l-4 border-blue-400 cursor-pointer shadow-md py-6 rounded-lg"
         >
-          <p class="font-mono font-bold text-lg text-center">Revenue</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalSoledInBirr }} Birr
-          </h2>
-        </div>
-        <div @click="transactionHistory" class="bg-red-200 py-6 w-[38%] rounded-lg">
-          <p class="font-mono font-bold text-lg text-center">Expense</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalExpenseInBirr }} Birr
-          </h2>
-        </div>
-        <div @click="transactionHistory" class="bg-green-200 py-6 w-[38%] rounded-lg">
-          <p class="font-mono font-bold text-lg text-center">Profit</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalSoledInBirr - totalExpenseInBirr }} Birr
-          </h2>
-        </div>
-      </div>
-      <div class="flex gap-4 mt-4 mb-11 justify-center items-center">
-        <div
-          @click="transactionHistory"
-          class="cursor-pointer shadow-md hover:scale-110 bg-blue-200 py-6 w-[38%] rounded-lg"
-        >
-          <p class="font-mono font-bold text-lg text-center">Report</p>
+          <p class="font-mono font-bold text-lg pl-8">Report</p>
         </div>
       </div>
     </div>
+    <div
+      class="flex flex-col gap-2 md:flex md:flex-row md:justify-around md:items-center"
+    >
+      <h2 class="py-2 text-3xl text-center">Your Transaction Analysis</h2>
+      <select name="" id="">
+        <option value="">Year</option>
+        <option value="">2015 E.C</option>
+      </select>
+    </div>
+    <userTransactionAnalysis class="px-8 pb-11 flex justify-center" />
   </div>
 </template>
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-const members = ref("");
+import Swal from "sweetalert2";
+import userTransactionAnalysis from "./reportChart.vue";
 const Orders = ref("");
 const Products = ref("");
 const router = useRouter();
 const kebele = localStorage.getItem("kebele");
-const countMembers = ref(0);
-const countActiveSystemUsers = ref(0);
 const countOrders = ref(0);
 const countProducts = ref(0);
 const activeUsers = ref([]);
-const totalExpenseAndRevenue = ref([]);
 const totalExpenseInBirr = ref(0);
-const totalSoledInBirr = ref(0);
-const totalSellData = ref([]);
 const user_email = localStorage.getItem("user_email");
 
 onMounted(async () => {
@@ -101,50 +105,52 @@ onMounted(async () => {
     localStorage.getItem("user_email") == null ||
     localStorage.getItem("role") != "user"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
-  getTotalMahiberatMembers();
-  getTotalOrders();
-  getTotalProducts();
-  getUsers();
-  getTotalExpenseRevenue();
-  await getTotalSoled();
+  await getTotalOrders();
+  await getTotalProducts();
 });
-const getTotalMahiberatMembers = async () => {
-  try {
-    const users = await axios.get("http://localhost:5000/mahiberat/totalMembers");
-    members.value = users.data;
-    for (let x in members.value) {
-      if (kebele == members.value[x].kebele) {
-        countMembers.value++;
-      }
-    }
-  } catch (err) {}
-};
-
-const getUsers = async () => {
-  try {
-    const users = await axios.get("http://localhost:5000/users");
-    activeUsers.value = users.data;
-    for (let x in activeUsers.value) {
-      if (kebele == activeUsers.value[x].kebele) {
-        countActiveSystemUsers.value++;
-      }
-    }
-  } catch (err) {}
-};
-
-const membersPage = async () => {
-  router.replace("/mahiberat/totalMembers");
-};
-
-const activeSystemUsers = async () => {
-  router.replace("/mahiberat/activeUsers");
-};
 
 const transactionHistory = async () => {
-  router.replace("/mahiberat/transactionHistory");
+  router.replace("/farmer/transactionHistory");
+};
+const orderList = async () => {
+  router.replace("/farmer/orderList");
+};
+
+const reportChart = async () => {
+  router.replace("/farmer/reportChart");
+};
+
+const postEvents = async () => {
+  router.replace("/farmer/addNews");
+};
+const postedEvents = async () => {
+  router.replace("/farmer/postedNews");
 };
 
 const addProduct = async () => {
@@ -160,15 +166,11 @@ const getTotalOrders = async () => {
     const orders = await axios.get("http://localhost:5000/joinOrder");
     Orders.value = orders.data;
     for (let x in Orders.value) {
-      if (kebele == Orders.value[x].kebele && Orders.value[x].payStatus == 0) {
+      if (user_email == Orders.value[x].patent_email && Orders.value[x].payStatus == 0) {
         countOrders.value++;
       }
     }
   } catch (err) {}
-};
-
-const ordersPage = async () => {
-  router.replace("/mahiberat/orderList");
 };
 
 const getTotalProducts = async () => {
@@ -178,55 +180,10 @@ const getTotalProducts = async () => {
     for (let x in Products.value) {
       if (
         kebele == Products.value[x].kebele &&
-        user_email == Products.value[x].email &&
+        user_email == Products.value[x].post_email &&
         Products.value[x].marketState == 1
       ) {
         countProducts.value++;
-      }
-    }
-  } catch (err) {}
-};
-
-const productsPage = async () => {
-  router.replace("/mahiberat/productsList");
-};
-const getTotalExpenseRevenue = async () => {
-  try {
-    const response = await axios.get("http://localhost:5000/joinOrder");
-    totalExpenseAndRevenue.value = response.data;
-
-    for (let x in totalExpenseAndRevenue.value) {
-      if (
-        totalExpenseAndRevenue.value[x].kebele == kebele &&
-        totalExpenseAndRevenue.value[x].payStatus == 1
-      ) {
-        totalExpenseInBirr.value =
-          totalExpenseInBirr.value +
-          totalExpenseAndRevenue.value[x].nOrders *
-            totalExpenseAndRevenue.value[x].original_cost;
-      }
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const getTotalSoled = async () => {
-  try {
-    const response = await axios.get("http://localhost:5000/joinOrder");
-    totalSellData.value = response.data;
-    console.log(totalSellData.value);
-    for (let x in totalSellData.value) {
-      console.log(x);
-      if (
-        totalSellData.value[x].payStatus == 1 &&
-        totalSellData.value[x].kebele == kebele
-      ) {
-        totalSoledInBirr.value =
-          totalSoledInBirr.value +
-          totalSellData.value[x].nOrders * totalSellData.value[x].price;
-        console.log(totalSellData.value[x].nOrders);
-        console.log(totalSellData.value[x].price);
       }
     }
   } catch (err) {}

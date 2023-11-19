@@ -1,35 +1,34 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 h-full w-full">
-    <div class="flex flex-col m lg:mx-8">
+    <div class="flex flex-col lg:mx-8">
       <div class="inset-x-20 inset-y-0">
         <div class="">
-          <div class="overflow-x-auto text-justify flex justify-center mt-6">
+          <div
+            class="overflow-x-auto text-justify flex justify-center mt-6 shadow-md shadow-gray-500"
+          >
             <table class="tableClass table-auto w-full">
               <thead class="text-gray-700 bg-slate-400">
                 <tr class="">
                   <th class="py-2 pl-12">
+                    <p v-if="languageStore.language == 'Am'">የሻጭ ስም</p>
+                    <p v-if="languageStore.language == 'En'">Seller Name</p>
+                  </th>
+                  <th class="py-2 pl-12">
                     <p v-if="languageStore.language == 'Am'">የእቃው መለያ</p>
                     <p v-if="languageStore.language == 'En'">Product Id</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">መደብ</p>
-                    <p v-if="languageStore.language == 'En'">Category</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">የእቃው አይነት</p>
-                    <p v-if="languageStore.language == 'En'">Type</p>
                   </th>
                   <th class="py-2 pl-2">
                     <p v-if="languageStore.language == 'Am'">ስም</p>
                     <p v-if="languageStore.language == 'En'">Name</p>
                   </th>
                   <th class="py-2 pl-2">
+                    <p v-if="languageStore.language == 'Am'">መደብ</p>
+                    <p v-if="languageStore.language == 'En'">Category</p>
+                  </th>
+
+                  <th class="py-2 pl-2">
                     <p v-if="languageStore.language == 'Am'">ዋጋ</p>
                     <p v-if="languageStore.language == 'En'">Price</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">የመጀመሪያ ዋጋ</p>
-                    <p v-if="languageStore.language == 'En'">Cost</p>
                   </th>
                   <th class="py-2 pl-2">
                     <p v-if="languageStore.language == 'Am'">የእቃ ድምር</p>
@@ -47,19 +46,35 @@
                     <p v-if="languageStore.language == 'Am'">ምርመራ</p>
                     <p v-if="languageStore.language == 'En'">Confirm</p>
                   </th>
+                  <th class="py-2 pl-2">
+                    <select v-model="selectedFarmer">
+                      <option value="">Pay</option>
+                      <option
+                        v-for="farmer in selectedFarmers"
+                        :value="farmer.patent_email"
+                      >
+                        {{ farmer.fName }}
+                      </option>
+                    </select>
+                  </th>
                 </tr>
               </thead>
+              <tbody
+                class="text-lg font-bold text-gray-800 dark:text-white text-center"
+                v-if="loading"
+              >
+                <!-- <Circle4></Circle4> -->
+                <vue-spinner
+                  :color="'#007aff'"
+                  :size="'50px'"
+                  :margin="'5px'"
+                  :radius="'100%'"
+                />
+                Loading...
+              </tbody>
               <tbody v-for="farmer in getFarmers" class="text-gray-700">
-                <tr v-if="farmer.user_role == 'user'">
-                  {{
-                    farmer.fName
-                  }}
-                  {{
-                    farmer.faName
-                  }}
-                </tr>
                 <tr
-                  v-if="farmer.user_role == 'user'"
+                  v-if="farmer.user_role == 'user' && farmer.user_state == 1"
                   v-for="item in Ordereddatas"
                   :key="item.order_id"
                   class="hover:bg-slate-200"
@@ -73,29 +88,19 @@
                     "
                     class="pl-12"
                   >
+                    {{ farmer.fName }}
+                    {{ farmer.faName }}
+                  </td>
+                  <td
+                    v-if="
+                      farmer.email == item.patent_email &&
+                      item.user_email == cart_email &&
+                      item.cancel != 1 &&
+                      item.payStatus == 0
+                    "
+                    class="pl-12"
+                  >
                     {{ item.product_id }}
-                  </td>
-                  <td
-                    v-if="
-                      farmer.email == item.patent_email &&
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.category }}
-                  </td>
-                  <td
-                    v-if="
-                      farmer.email == item.patent_email &&
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.type_product }}
                   </td>
                   <td
                     v-if="
@@ -117,7 +122,7 @@
                     "
                     class="pl-2"
                   >
-                    {{ item.price }}
+                    {{ item.category }}
                   </td>
                   <td
                     v-if="
@@ -128,7 +133,7 @@
                     "
                     class="pl-2"
                   >
-                    {{ item.original_cost }}
+                    {{ item.price }}
                   </td>
                   <td
                     v-if="
@@ -257,12 +262,6 @@
                     </div>
                   </td>
                 </tr>
-                <tr
-                  v-if="farmer.user_role == 'user'"
-                  class="text-lg font-bold float-right py-2 w-16 mr-6 mb-6 bg-green-300 hover:text-white font-mono rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
-                >
-                  ክፈል
-                </tr>
               </tbody>
             </table>
           </div>
@@ -281,15 +280,46 @@
           >
             Total Price = {{ totalCostInBirr }} Birr
           </p>
-
-          <button
-            type="submit"
-            class="text-lg font-bold float-right py-2 w-[15%] mr-6 mb-6 bg-green-300 hover:text-white font-mono rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
-            @click.prevent="gotoInfoPage()"
-          >
-            <p v-if="languageStore.language == 'Am'">ክፈል</p>
-            <p v-if="languageStore.language == 'En'">pay</p>
-          </button>
+          <div class="flex justify-center py-5">
+            <button
+              type="submit"
+              class="text-lg font-bold py-2 px-11 flex justify-center shadow-gray-700 bg-green-300 text-white font-mono rounded-full shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
+              @click.prevent="gotoInfoPage(selectedFarmer)"
+            >
+              <p v-if="languageStore.language == 'Am'" class="text-lg font-bold">
+                አሁን ይክፈሉ
+              </p>
+              <p v-if="languageStore.language == 'En'" class="text-lg font-bold">
+                pay now
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="pl-11 pt-4 flex flex-row gap-2 items-center border-2 p-4 my-3">
+        <div class="">
+          <p class="text-2xl font-bold font-mono">Your cart from mahiberat or farmer</p>
+          <p>
+            This is your cart from mahiberat or or farmers. The cart count which is shown
+            on top navigation bar is the cart you add from mahiberat or customer. To
+            navigate click the cart shown here.
+          </p>
+        </div>
+        <div class="rounded-full h-11 w-11 pl-2 pb-2 flex flex-col justify-center">
+          <div class="flex flex-col text-gray-800 dark:text-text-gray-800">
+            <button
+              class="absolute ml-3 bg-orange-500 w-6 h-6 rounded-[100%] flex justify-center text-lg font-bold font-mono text-white"
+              @click.prevent="changeCart()"
+            >
+              {{ numberOfCarts }}
+            </button>
+          </div>
+          <RouterLink to="/product/cart"
+            ><svg class="pt-3 fill-current text-blue-900 w-8 h-8">
+              <path
+                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+              ></path></svg
+          ></RouterLink>
         </div>
       </div>
     </div>
@@ -300,8 +330,6 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
-import { useCartConfirmStore } from "../state/cartConfirm"; //for seleced cart confirmation
 // sweetalert start
 
 import Swal from "sweetalert2";
@@ -309,19 +337,29 @@ import Swal from "sweetalert2";
 
 import { useLanguageStore } from "../state/languageStore";
 
-const useCartConfirm = useCartConfirmStore();
 const languageStore = useLanguageStore();
+
+//loading
+
+import VueSpinner from "vue-spinner/src/PulseLoader.vue";
+
+//end loading
+
+import { useReportsData } from "../state/reportStore";
+
+const ReportsData = useReportsData();
 
 const router = useRouter();
 const datas = ref([]);
 const Ordereddatas = ref([]);
 const nOrderCart = ref(0);
 const productId = ref(0);
-const cart_email = localStorage.getItem("customer_email");
+var cart_email = localStorage.getItem("customer_email");
 const amountRollback = ref(0);
 
 const orderArray = ref([]);
 const getFarmers = ref([]);
+const getSellerFarmer = ref([]);
 const orderDifference = ref(0);
 
 const confirmDisplay = ref([]);
@@ -330,6 +368,15 @@ const totalCost = ref("");
 var totalCostInBirr = ref(0);
 const productName = ref("");
 const postedProductForMarket = ref(0);
+var orderRecord = ref("");
+const selectedProductsToSell = ref([]);
+const sellerId = ref("");
+const loading = ref(true);
+const selectedFarmer = ref("");
+const selectedFarmers = ref("");
+
+var reportDatas = ref([]);
+var reportData = ref({});
 
 const getProducts = async () => {
   try {
@@ -340,12 +387,26 @@ const getProducts = async () => {
   } catch (err) {}
 };
 
+const getSellerFarmers = async (email) => {
+  try {
+    const response = await axios.get("http://localhost:5000/farmers");
+    getSellerFarmer.value = response.data;
+    selectedFarmers.value = getSellerFarmer.value.filter(
+      (seller) => seller.user_email == cart_email
+    );
+  } catch (err) {}
+};
+
 const getOrderedProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/orderedProducts");
     Ordereddatas.value = response.data;
 
     confirmDisplay.value[Ordereddatas.value.order_id] = true;
+    for (let x in Ordereddatas.value) {
+      orderRecord.value = orderRecord.value + Ordereddatas.value[x].patent_email + " ";
+    }
+    loading.value = false;
   } catch (err) {}
 };
 
@@ -415,7 +476,30 @@ const getOrderedProductByIdforConfirm = async (id) => {
       await updateAmountforConfirm(productId.value);
       await updateOrder(id);
     } else {
-      alert("Product in the market is finished");
+      let timerInterval;
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        // title: "ስህተት",
+        html: "Product in the market is finished!",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          // Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // console.log("I was closed by the timer");
+        }
+      });
     }
     window.location.reload();
   } catch (err) {
@@ -427,8 +511,12 @@ const getOrderedProductByIdforConfirm = async (id) => {
 };
 
 onMounted(async () => {
+  if (cart_email == null) {
+    cart_email = localStorage.getItem("user_email");
+  }
   await getOrderedProducts();
   await getProducts();
+  await getSellerFarmers(cart_email);
   await getUsers();
   await getTotalCostPrice();
 });
@@ -521,9 +609,35 @@ const updateOrderByOrderIdCancel = async (id) => {
   } catch (err) {}
 };
 
-const gotoInfoPage = () => {
-  localStorage.setItem("totalCost", totalCostInBirr);
-  router.replace("/product/order");
+const gotoInfoPage = async (seller_email) => {
+  try {
+    await getFarmerID(seller_email);
+    localStorage.setItem("reporterEmail", seller_email);
+    ReportsData.totalPrice = 0;
+    selectedProductsToSell.value = Ordereddatas.value.filter(
+      (product) =>
+        product.user_email == cart_email &&
+        product.cancel != 1 &&
+        product.payStatus == 0 &&
+        product.patent_email == seller_email
+    );
+    for (let x in selectedProductsToSell.value) {
+      reportData.value = {
+        orderId: selectedProductsToSell.value[x].order_id,
+        cost: selectedProductsToSell.value[x].price,
+        quantity: selectedProductsToSell.value[x].nOrders,
+        product: selectedProductsToSell.value[x].title,
+      };
+      ReportsData.totalPrice =
+        ReportsData.totalPrice +
+        selectedProductsToSell.value[x].nOrders * selectedProductsToSell.value[x].price;
+      reportDatas.value.push(reportData.value);
+    }
+    ReportsData.reportDatas = reportDatas.value;
+    router.replace("/product/order");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const deleteOrder = async (id) => {
@@ -570,6 +684,21 @@ const getProductbyproductidConfirm = async (id) => {
     productName.value = product.data.title;
     postedProductForMarket.value = product.data.amount;
   } catch (err) {}
+};
+const getFarmerID = async (email) => {
+  try {
+    const userInfo = await axios.get(`http://localhost:5000/users/${email}`);
+    sellerId.value = userInfo.data.username;
+    localStorage.setItem("sellerID", sellerId.value);
+    localStorage.setItem("productSeller", "farmer");
+    console.log(userInfo.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+const changeCart = async () => {
+  localStorage.setItem("seller", "mahiberat");
+  location.href = "/product/cart";
 };
 </script>
 <style scoped>

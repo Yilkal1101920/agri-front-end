@@ -11,7 +11,6 @@
           marginwidth="0"
           src="https://maps.google.com/maps?width=600&amp;height=400&amp;hl=en&amp;q=Debre Eliyas office of Agriculture&amp;t=h&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
         ></iframe>
-        <!-- <a href="https://embed-googlemap.com">embed-googlemap.com</a> -->
       </div>
     </div>
   </div>

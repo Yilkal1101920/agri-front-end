@@ -1,11 +1,10 @@
 <template>
   <div class="flex flex-row w-full h-full bg-green-50 dark:bg-gray-800">
     <div class="w-full flex flex-row justify-center">
-      <AdminPanel />
       <div class="h-full w-full">
         <div class="flex justify-between flex-wrap py-6 lg:mx-8">
           <div class="flex gap-5 items-center">
-            <div class="flex gap-1 items-center hover:border-b-2 hover:border-t-2">
+            <div class="flex gap-1 items-center hover:border-b-2">
               <span
                 ><svg
                   class="fill-current h-6 w-6 text-gray-800 dark:text-white"
@@ -28,30 +27,8 @@
                 Print
               </button>
             </div>
-            <div class="flex gap-1 items-center hover:border-b-2 hover:border-t-2">
-              <span
-                ><svg
-                  class="fill-current h-6 w-6 text-gray-800 dark:text-white"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="IosShareOutlinedIcon"
-                  tabindex="-1"
-                  title="IosShareOutlined"
-                >
-                  <path
-                    d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"
-                  ></path></svg
-              ></span>
-              <button
-                class="hover:text-green-800 font-mono font-bold hover:scale-110 text-gray-800 dark:text-white py-2 rounded-lg text-lg"
-                @click.prevent="siraAskiyage"
-              >
-                Send to...receiver name
-              </button>
-            </div>
           </div>
-          <div class="flex items-center gap-5">
+          <div class="flex items-center gap-5 flex-wrap">
             <form action="">
               <div>
                 <label for="reportDate">Specific Date: </label>
@@ -92,13 +69,18 @@
             </form>
           </div>
         </div>
-        <div ref="report" id="pdfConvertor" class="flex flex-col lg:mx-8 p-2 inset-y-0">
-          <div class="w-full">
+        <div
+          ref="report"
+          id="pdfConvertor"
+          class="flex flex-col lg:mx-8 p-2 inset-y-0 flex-wrap"
+        >
+          <div class="w-full flex-wrap">
             <div>
               <p
                 class="text-center text-gray-800 dark:text-white font-mono font-bold text-lg pb-6"
               >
-                {{ kebele }} Mahiberat Report for one day or...filtered date here
+                {{ userName }} {{ userFatherName }} Report for one day or...filtered date
+                here
               </p>
             </div>
             <div class="flex justify-between items-center pb-4">
@@ -114,7 +96,7 @@
                 <div>
                   <div class="">
                     <p class="text-gray-800 dark:text-white font-mono font-bold">
-                      {{ kebele }} Mahiberat
+                      {{ userName }} {{ userFatherName }}
                     </p>
                     <p class="text-gray-800 dark:text-white font-mono font-bold">
                       +251{{ userPhone }}
@@ -128,62 +110,85 @@
                   Report: Entire table, customer or... {{ user_email }}
                 </p>
               </div>
-              <div class="text-gray-800 dark:text-white font-mono font-bold">
-                <p class="sub-heading">
-                  Employee Name: {{ userName }} {{ userFatherName }}
-                </p>
+              <div
+                class="text-gray-800 lg:block hidden dark:text-white font-mono font-bold"
+              >
                 <p class="sub-heading">Phone Number: +251{{ userPhone }}</p>
-                <p class="sub-heading">Email: {{ manager_email }}</p>
+                <p class="sub-heading">Email: {{ user_email }}</p>
               </div>
             </div>
 
-            <div class="pb-6 table-auto text-justify flex justify-center">
+            <div v-if="isData == false">
+              <div colspan="11" class="col-span-full">
+                <div class="text-gray-800 dark:text-white block py-11 px-11">
+                  <P
+                    class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                    >No transaction untill now.</P
+                  >
+                  <p
+                    class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+                  >
+                    No thing to show. once farmers or customers performs some transaction,
+                    transaction reports will be displayed.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="isData == true"
+              class="overflow-x-auto table-auto text-justify flex justify-center mt-6"
+            >
               <!-- <div class="flex gap-1 items-center ml-8 py-4"></div> -->
-              <table class="table-auto text-justify">
+              <table class="overflow-x-auto table-auto text-justify w-full">
                 <thead
-                  class="lg:flex lg:flex-row text-gray-700 dark:text-white bg-slate-400 pb-3"
+                  class="text-gray-700 dark:text-white border-b-4 text-lg font-bold pb-3"
                 >
-                  <th class="py-2 lg:w-28 hidden lg:block text-xs lg:p-0">
-                    Product Name
-                  </th>
-                  <th class="py-2 lg:w-24 lg:p-0 hidden lg:block">Price</th>
-                  <th class="py-2 lg:w-24 lg:p-0">Cash Flow</th>
-                  <th class="py-2 lg:w-24 lg:p-0">Amount</th>
-                  <th class="py-2 lg:w-24 lg:p-0">Transaction</th>
-                  <th class="py-2 hidden lg:block lg:w-24 text-xs lg:p-0">Total Price</th>
-                  <th class="py-2 hidden lg:block lg:w-48 text-xs lg:p-0">Date</th>
-                  <th class="py-2 hidden lg:block lg:w-24 text-xs lg:p-0">Time</th>
+                  <th class="">Product Name</th>
+                  <th class="">Price</th>
+                  <th class="">Cash Flow</th>
+                  <th class="">Amount</th>
+                  <th class="">Transaction</th>
+                  <th class="">Total Price</th>
+                  <th class="">Date</th>
+                  <th class="">Time</th>
+                  <th class="">Action</th>
                 </thead>
                 <tbody class="text-gray-700">
                   <tr
                     v-for="report in filteredReport"
                     :key="report.report_id"
-                    class="lg:flex lg:flex-row hover:bg-slate-200"
+                    class="hover:bg-slate-200"
                   >
                     <td
                       v-i
-                      v-if="report.report_owner == kebele"
+                      v-if="report.report_owner == id"
                       f="item.kebele == kebele"
-                      class="lg:w-28 lg:float-left hidden lg:block"
+                      class=""
                     >
                       {{ report.product_name }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
+                    <td v-if="report.report_owner == id" class="">
                       {{ report.transaction_in_birr }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
+                    <td v-if="report.report_owner == id" class="">
                       {{ report.transaction }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
-                      {{ report.quantity }}
+                    <td v-if="report.report_owner == id" class="">
+                      <p v-if="report.transaction == 'cash in'">
+                        {{ report.quantity * 50 }}
+                      </p>
+                      <p v-if="report.transaction == 'cash out'">
+                        {{ report.quantity * 50 }}
+                      </p>
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
+                    <td v-if="report.report_owner == id" class="">
                       {{ report.report_status }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
+                    <td v-if="report.report_owner == id" class="">
                       {{ report.quantity * report.transaction_in_birr }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-48">
+                    <td v-if="report.report_owner == id" class="">
                       {{
                         report.day +
                         ", " +
@@ -194,17 +199,28 @@
                         report.year
                       }}
                     </td>
-                    <td v-if="report.report_owner == kebele" class="lg:w-24">
+                    <td v-if="report.report_owner == id" class="">
                       {{ report.hour + ":" + report.minute + ":" + report.second }}
                     </td>
+                    <td v-if="report.report_owner == id" class="">Detail</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!-- </div> -->
+          </div>
+          <div v-if="isData == true" class="flex justify-center py-6 gap-6 flex-wrap">
+            <p class="bg-green-300 py-2 rounded-lg px-8 text-lg">
+              Total Expense = {{ totalExpense }}
+            </p>
+            <p class="bg-green-300 py-2 rounded-lg px-8 text-lg">
+              Total Revenue = {{ totalRevenue }}
+            </p>
+            <p class="bg-green-300 py-2 rounded-lg px-8 text-lg">
+              Profit = {{ totalRevenue - totalExpense }}
+            </p>
           </div>
         </div>
-        <div class="flex justify-center py-6">
+        <div v-if="isData == true" class="flex justify-center py-6">
           <button
             class="bg-green-300 hover:bg-green-700 py-2 rounded-lg px-8 text-lg"
             @click.prevent="makePdf"
@@ -223,15 +239,13 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import AdminPanel from "../components/AdminPanel.vue";
+import Swal from "sweetalert2";
 
 const report = ref(null);
 
 const router = useRouter();
 
-const manager_email = localStorage.getItem("manager_email");
-
-const kebele = localStorage.getItem("kebele");
+const id = localStorage.getItem("ID");
 
 const reportInfo = ref("");
 const filterForReport = ref("");
@@ -250,6 +264,13 @@ const filteredReport = ref("");
 
 const report_duration = ref("");
 
+const totalExpense = ref(0);
+const totalRevenue = ref(0);
+
+const user_email = localStorage.getItem("user_email");
+
+const isData = ref(false);
+
 const makePdf = () => {
   window.html2canvas = html2canvas;
   var doc = new jsPDF("p", "pt", "a2");
@@ -262,15 +283,39 @@ const makePdf = () => {
 
 onMounted(async () => {
   if (
-    localStorage.getItem("manager_email") == undefined ||
-    localStorage.getItem("manager_email") == null ||
-    localStorage.getItem("role") != "manager"
+    localStorage.getItem("user_email") == undefined ||
+    localStorage.getItem("user_email") == null ||
+    localStorage.getItem("role") != "user"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   await getUsers();
   await getTotalReport();
+  await getTotalExpenseAndRevenue();
 });
 
 const getTotalReport = async () => {
@@ -280,7 +325,14 @@ const getTotalReport = async () => {
     today.value = date.getTime();
     const reportData = await axios.get("http://localhost:5000/report");
     reportInfo.value = reportData.data;
-    filteredReport.value = reportInfo.value;
+    filteredReport.value = reportInfo.value.filter(
+      (report) => report.reporter_email == user_email
+    );
+    for (let x in filteredReport.value) {
+      if (filteredReport.value[x].report_owner == id) {
+        isData.value = true;
+      }
+    }
   } catch (err) {}
 };
 
@@ -289,11 +341,7 @@ const getUsers = async () => {
     const users = await axios.get("http://localhost:5000/users");
     activeUsers.value = users.data;
     for (let x in activeUsers.value) {
-      if (
-        kebele == activeUsers.value[x].kebele &&
-        activeUsers.value[x].user_state == 1 &&
-        activeUsers.value[x].email == manager_email
-      ) {
+      if (id == activeUsers.value[x].username) {
         userPhone.value = activeUsers.value[x].phone;
         userName.value = activeUsers.value[x].fName;
         userFatherName.value = activeUsers.value[x].faName;
@@ -310,10 +358,27 @@ const filterReport = async (selector) => {
       filteredReport.value = reportInfo.value.filter(
         (report) => report.year == date.getFullYear()
       );
+    } else if (selector == "HalfYear") {
+      filteredReport.value = reportInfo.value.filter(
+        (report) =>
+          report.year == date.getFullYear() && date.getMonth() + 1 - report.month <= 5
+      );
+    } else if (selector == "Quarter") {
+      filteredReport.value = reportInfo.value.filter(
+        (report) =>
+          report.year == date.getFullYear() && date.getMonth() + 1 - report.month <= 2
+      );
     } else if (selector == "Month") {
       filteredReport.value = reportInfo.value.filter(
         (report) =>
           report.year == date.getFullYear() && report.month == date.getMonth() + 1
+      );
+    } else if (selector == "Week") {
+      filteredReport.value = reportInfo.value.filter(
+        (report) =>
+          report.year == date.getFullYear() &&
+          report.month == date.getMonth() + 1 &&
+          date.getDate() - report.date <= 6
       );
     } else if (selector == "Today") {
       filteredReport.value = reportInfo.value.filter(
@@ -339,6 +404,26 @@ const filterReportByDate = async (dateSelector) => {
     );
   } catch (err) {}
 };
+const getTotalExpenseAndRevenue = async () => {
+  for (let x in filteredReport.value) {
+    if (
+      filteredReport.value[x].transaction == "cash out" &&
+      filteredReport.value[x].report_owner == localStorage.getItem("ID")
+    ) {
+      totalExpense.value =
+        totalExpense.value +
+        filteredReport.value[x].quantity * filteredReport.value[x].transaction_in_birr;
+    }
+    if (
+      filteredReport.value[x].transaction == "cash in" &&
+      filteredReport.value[x].report_owner == localStorage.getItem("ID")
+    ) {
+      totalRevenue.value =
+        totalRevenue.value +
+        filteredReport.value[x].quantity * filteredReport.value[x].transaction_in_birr;
+    }
+  }
+};
 </script>
 <style scoped>
 table {
@@ -351,7 +436,7 @@ td {
   text-align: left;
 }
 
-tr:nth-child(even) {
+/* tr:nth-child(even) {
   background-color: #f2f2f2;
-}
+} */
 </style>

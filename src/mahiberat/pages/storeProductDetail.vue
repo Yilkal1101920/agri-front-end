@@ -1,7 +1,7 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 w-full h-full">
     <div
-      v-for="item in datas"
+      v-for="item in filteredProductData"
       :key="item.product_id"
       class="w-full text-gray-700 dark:text-white flex flex-row flex-wrap"
     >
@@ -26,36 +26,44 @@
             </div>
           </div>
           <div class="gap-11">
-            <p class="w-full flex justify-center font-mono font-bold text-lg">
+            <p class="w-full font-mono font-bold text-lg">
               {{ item.title }}
             </p>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <div class="flex">
-                  <p>ችርቻሮ ዋጋ፡</p>
-                  <del
-                    ><p>{{ item.price }} ብር</p></del
-                  >
+                  <p>Product ID፡</p>
+                  <p>{{ item.product_id }}</p>
                 </div>
               </div>
               <div class="pl-1"></div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
-                <p>ዋጋ፡ {{ item.price }} ብር</p>
+                <p>የተገዛበት ዋጋ፡ {{ item.original_cost }} ብር</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
+              <div>
+                <p>መሸጫ ዋጋ፡ {{ item.price }} ብር</p>
+              </div>
+            </div>
+            <div class="flex">
+              <div>
+                <p>ብዛት፡ {{ item.amount }} ኩንታል</p>
+              </div>
+            </div>
+            <div class="flex">
               <div>
                 <p>መደብ፡ {{ item.category }}</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <p>ገለጻ፡ {{ item.description }}</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div class="font-mono font-bold text-lg">
                 <p>ቀበሌ፡ {{ item.kebele }}</p>
               </div>
@@ -75,7 +83,8 @@
             v-if="
               item.amount > 0 &&
               item.kebele == kebele_address &&
-              item.category == categoryDetail
+              item.title == categoryDetail &&
+              item.seller == 'mahiberat'
             "
           >
             <div class="flex flex-col text-gray-700 dark:text-white">
@@ -111,42 +120,20 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
-import { useCounterStore } from "../../state/store"; //counting sellected cart
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
 const router = useRouter();
 
-const count2 = ref([]); //count in v-model
-
-var useCounter = useCounterStore();
 const datas = ref([]);
-const numberOfItems = ref(0); //total amounts of items before updated
-const updatedAmount = ref(0); //total amounts of items after updated
-const idforVmodell = ref(0);
-const productName = ref("");
-
-const transactProduct = ref("");
-const transactionEmail = ref("");
-const totalOrderQuantity = ref("");
 
 const kebele_address = localStorage.getItem("kebele");
-const order_email = localStorage.getItem("store_email"); // the email of user who orders the product to add cart
 
-const pro_id = ref(0); ///the primary key id of the product
-const orderRestrictAmount = ref(0);
-
-const selected_product = localStorage.getItem("product_id");
+var selected_product = localStorage.getItem("product_id");
 const productDetail = ref([]);
 const categoryDetail = ref("");
+const filteredProductData = ref("");
 
-const getProductByIdforVmodel = async (id) => {
-  // get product by id for product_id
-  try {
-    const idforVmodel = await axios.get(`http://localhost:5000/products/vModel/${id}`);
-    idforVmodell.value = idforVmodel.data.product_id;
-  } catch (err) {}
-};
 const getProducts = async () => {
   //show all products
   try {
@@ -159,11 +146,11 @@ const getProductByIdForDetail = async (id) => {
   try {
     const productDetails = await axios.get(`http://localhost:5000/products/${id}`);
     productDetail.value = productDetails.data;
-    categoryDetail.value = productDetails.data.category;
+    categoryDetail.value = productDetails.data.title;
   } catch (err) {}
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (
     localStorage.getItem("store_email") == undefined ||
     localStorage.getItem("store_email") == null ||
@@ -194,17 +181,30 @@ onMounted(() => {
       }
     });
     router.replace("/login");
+  } else {
+    await getProducts();
+    await getProductByIdForDetail(selected_product);
+    await getProductSelectedProduct();
   }
-  getProducts();
-  getProductByIdForDetail(selected_product);
 });
 
 const getProductById = async (id) => {
   // show products by id
   try {
-    await axios.get(`http://localhost:5000/products/${id}`);
-    router.push(`/product/selectedProduct`);
+    selected_product = id;
+    console.log(selected_product);
+    await getProductSelectedProduct();
   } catch (err) {}
+};
+
+const getProductSelectedProduct = async () => {
+  try {
+    filteredProductData.value = datas.value.filter(
+      (product) => product.product_id == selected_product
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 

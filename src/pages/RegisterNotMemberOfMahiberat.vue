@@ -4,6 +4,10 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 // sweetalert import
 import Swal from "sweetalert2";
+import howToRegister from "../components/howToRegister.vue";
+import { useLanguageStore } from "../state/languageStore";
+
+const languageStore = useLanguageStore();
 
 const fname = ref("");
 const lname = ref("");
@@ -15,6 +19,7 @@ const router = useRouter();
 const userData = ref([]);
 const userDataByMahiberatId = ref([]);
 const tryCount = ref(0);
+const registerHelp = ref(false);
 
 const signUpValidation = () => {
   tryCount.value = 1;
@@ -293,187 +298,237 @@ const saveUser = async () => {
 
 <template>
   <div
-    class="bg-green-50 dark:bg-gray-800 dark:text-white w-full h-full justify-center items-center"
+    class="bg-green-50 dark:bg-gray-800 dark:text-white w-full h-full "
   >
-    <div class="flex justify-center flex-wrap items-center sm:gap-2 md:gap-11">
-      <div class=" ">
-        <div class="flex gap-2 justify-center flex-wrap">
-          <img
-            src="../assets/loginLeft.png"
-            class="w-auto h-56 rounded-full p-8 justify-start items-start"
-            alt="signup image"
-          />
-          <div class="block pt-6 justify-center items-center">
-            <p class="text-2xl text-orange-700 dark:text-white">መመዝገቢያ ቅጽ</p>
-            <p class="text-gray-700 dark:text-white text-sm font-mono font-bold">
-              ክፍት ቦታዎችን በትክክል ይሙሉ
-            </p>
-          </div>
+    <div class="flex justify-center ">
+      <div
+        class="block justify-center mb-8 flex-wrap items-center border border-gray-300 rounded-3xl mt-6 mx-4 md:mt-[1%] md:mx-[18%] md:px-[3%] shadow-lg"
+       >
+        <div class="block pt-6 justify-center items-center">
+          <p class="text-2xl text-green-700 font-bold font-mono dark:text-white text-center"           
+          v-if="languageStore.language == 'En'">
+            Registration form for not a user of Agri-service
+          </p>
+          <p class="text-2xl text-orange-700 dark:text-white text-center"           
+          v-if="languageStore.language == 'Am'">
+            የማህበራት ተጠቃሜ ያልሆኑ መመዝገቢያ ገጽ
+          </p>
+          <p
+          class="text-gray-700 dark:text-white text-sm font-mono font-bold text-center"
+          v-if="languageStore.language == 'En'"
+        >
+          Fill Form Correctly
+        </p>
+          <p
+            class="text-gray-700 dark:text-white text-lg font-mono font-bold"
+            v-if="languageStore.language == 'Am'"
+          >
+            ክፍት ቦታዎችን በትክክል ይሙሉ
+          </p>
         </div>
-        <img
-          src="../assets/signupRight.png"
-          class="w-auto pl-[50%] sm:pb-0 md:pb-8 pr-8 rounded-[100%] h-56"
-          alt="signup image"
-        />
-      </div>
-      <div class="sm:pt-0 md:pt-7">
-        <form class="w-[100%]">
-          <div class="formClass block gap-6 justify-center items-center">
-            <div
-              class="name grid justify-center items-center w-full sm:grid-cols-1 md:grid-cols-2 gap-4 mb-1"
-            >
-              <div class="">
-                <label for="fname" class="text-gray-700 dark:text-white"
-                  >የመጀመሪያ ስም
-                </label>
-                <input
-                  type="text"
-                  class="w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="fname"
-                  placeholder="የመጀመሪያ ስም"
-                  v-model="fname"
-                  required
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="fname == '' && tryCount == 1">
-                    የመጀመሪያ ስም ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-              <div class="">
-                <label
-                  for="lname"
-                  class="form-label inline-block text-gray-700 dark:text-white"
-                  >የአባት ስም</label
-                >
-                <input
-                  type="text"
-                  class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="lname"
-                  placeholder="የአባት ስም"
-                  v-model="lname"
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="lname == '' && tryCount == 1">
-                    የአባት ስም ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-              <div class="">
-                <label
-                  for="phone"
-                  class="form-label inline-block text-gray-700 dark:text-white"
-                  >መለያ ስም</label
-                >
-                <input
-                  type="text"
-                  class="w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  placeholder="መለያ ስም"
-                  v-model="userName"
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="userName == '' && tryCount == 1">
-                    መለያ ስም ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-              <div class="">
-                <label
-                  for="email"
-                  class="form-label inline-block text-gray-700 dark:text-white"
-                  >ኢሜል</label
-                >
-                <input
-                  type="email"
-                  class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="email"
-                  aria-describedby="emailHelp"
-                  placeholder="ኢሜል"
-                  v-model="email"
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="email == '' && tryCount == 1">
-                    ኢሜል ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-              <div class="">
-                <label
-                  for="exampleInputPassword1"
-                  class="form-label inline-block text-gray-700 dark:text-white"
-                  >የይለፍ ቃል</label
-                >
-                <input
-                  type="password"
-                  class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="exampleInputPassword1"
-                  placeholder="የይለፍ ቃል"
-                  v-model="password"
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="password == '' && tryCount == 1">
-                    የይለፍ ቃል ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-              <div class="">
-                <label
-                  for="exampleInputPassword1"
-                  class="form-label inline-block text-gray-700 dark:text-white"
-                  >የማረጋገጫ ይለፍ ቃል</label
-                >
-                <input
-                  type="password"
-                  class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="exampleInputPassword1"
-                  placeholder="የማረጋገጫ ይለፍ ቃል"
-                  v-model="confirmPassword"
-                />
-                <div class="mb-0 ml-5">
-                  <p class="text-red-600" v-if="confirmPassword == '' && tryCount == 1">
-                    የማረጋገጫ ይለፍ ቃል ቦታ ባዶ ነው
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="submitButton flex justify-center">
-              <button
-                type="submit"
-                class="px-8 text-lg py-2.5 bg-green-300 text-white font-bold font-mono my-5 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                @click.prevent="signUpValidation"
+
+        <div class="">
+          <form class="">
+            <div class="formClass block gap-6 ">
+              <div
+                class="name text-lg grid  sm:grid-cols-1 md:grid-cols-2 gap-4 mb-1"
               >
-                ተመዝገብ
-              </button>
+                <div class="">
+                  <label for="fname" class="text-gray-700 dark:text-white">
+                    <h1 v-if="languageStore.language == 'En'">First Name</h1>
+                    <h1 v-if="languageStore.language == 'Am'">የመጀመሪያ ስም</h1>
+                  </label>
+                  <input
+                    type="text"
+                    class=" px-3 py-1.5 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="fname"
+                    placeholder="የመጀመሪያ ስም"
+                    v-model="fname"
+                    required
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="fname == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill your name</p>
+                      <p v-if="languageStore.language == 'Am'">የመጀመሪያ ስም ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="lname"
+                    class="form-label inline-block text-gray-700 dark:text-white"
+                  >
+                    <h1 v-if="languageStore.language == 'En'">Last Name</h1>
+                    <h1 v-if="languageStore.language == 'Am'">የአባት ስም</h1>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="lname"
+                    placeholder="የአባት ስም"
+                    v-model="lname"
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="lname == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill last name</p>
+                      <p v-if="languageStore.language == 'Am'">የአባት ስም ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="phone"
+                    class="form-label inline-block text-gray-700 dark:text-white"
+                  >
+                    <h1 v-if="languageStore.language == 'En'">ID</h1>
+                    <h1 v-if="languageStore.language == 'Am'">መለያ ስም</h1>
+                  </label>
+                  <input
+                    type="text"
+                    class="w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    placeholder="መለያ ስም"
+                    v-model="userName"
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="userName == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill id field</p>
+                      <p v-if="languageStore.language == 'Am'">መለያ ስም ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="email"
+                    class="form-label inline-block text-gray-700 dark:text-white"
+                  >
+                    <h1 v-if="languageStore.language == 'En'">Email</h1>
+                    <h1 v-if="languageStore.language == 'Am'">ኢሜል</h1>
+                  </label>
+                  <input
+                    type="email"
+                    class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="email"
+                    aria-describedby="emailHelp"
+                    placeholder="ኢሜል"
+                    v-model="email"
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="email == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill email field</p>
+                      <p v-if="languageStore.language == 'Am'">ኢሜል ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="exampleInputPassword1"
+                    class="form-label inline-block text-gray-700 dark:text-white"
+                  >
+                    <h1 v-if="languageStore.language == 'En'">Password</h1>
+                    <h1 v-if="languageStore.language == 'Am'">የይለፍ ቃል</h1>
+                  </label>
+                  <input
+                    type="password"
+                    class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="exampleInputPassword1"
+                    placeholder="የይለፍ ቃል"
+                    v-model="password"
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="password == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill password field</p>
+                      <p v-if="languageStore.language == 'Am'">የይለፍ ቃል ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="exampleInputPassword1"
+                    class="form-label inline-block text-gray-700 dark:text-white"
+                  >
+                    <h1 v-if="languageStore.language == 'En'">Confirm Password</h1>
+                    <h1 v-if="languageStore.language == 'Am'">የማረጋገጫ ይለፍ ቃል</h1>
+                  </label>
+                  <input
+                    type="password"
+                    class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="exampleInputPassword1"
+                    placeholder="የማረጋገጫ ይለፍ ቃል"
+                    v-model="confirmPassword"
+                  />
+                  <div class="mb-0 ml-5">
+                    <p class="text-red-600" v-if="confirmPassword == '' && tryCount == 1">
+                      <p v-if="languageStore.language == 'En'">please fill confirm password field</p>
+                      <p v-if="languageStore.language == 'Am'">የማረጋገጫ ይለፍ ቃል ቦታ ባዶ ነው</p>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class=" flex justify-center">
+                <button
+                  type="submit"
+                  class="register md:w-[30%] text-2xl py-2 px-4 hover:scale-110 text-white font-bold font-mono my-5 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                  @click.prevent="signUpValidation"
+                >
+                  <h1 v-if="languageStore.language == 'En'">Register</h1>
+                  <h1 v-if="languageStore.language == 'Am'">ተመዝገብ</h1>
+                </button>
+              </div>
+              <p
+                class=" text-lg  flex flex-row gap-1 mb-5 justify-center text-1.5xl text-black dark:text-white"
+              >
+                <h1 v-if="languageStore.language == 'En'">have an account?</h1>
+                <h1 v-if="languageStore.language == 'Am'">ከአሁን በፊት ተመዝግበሃል?</h1>
+                <router-link to="/login">
+                  <span
+                    class="hover:text-green-800 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
+                    >
+                    <h1 v-if="languageStore.language == 'En'">login</h1>
+                    <h1 v-if="languageStore.language == 'Am'">በዚህ ግባ</h1>
+                    </span
+                  >
+                </router-link>
+              </p>
             </div>
-            <p
-              class="loginRedirect mb-5 justify-center text-1.5xl text-black dark:text-white"
-            >
-              ከአሁን በፊት ተመዝግበሃል?
-              <router-link to="/login">
-                <span
-                  class="hover:text-orange-500 hover:cursor-pointer text-green-800 text-lg font-mono font-bold"
-                  >በዚህ ግባ</span
+          </form>
+        </div>
+        <div class="">
+          <p
+            class=" text-lg mb-5 flex flex-row gap-1 justify-center text-1.5xl text-black dark:text-white"
+          >
+            <h1 v-if="languageStore.language == 'En'">Are you Agri-service user?</h1>
+            <h1 v-if="languageStore.language == 'Am'">የማህበራት ተጠቃሚ አባል ነህ?</h1>
+            <router-link to="/register">
+              <span
+                class="hover:text-green-800 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
                 >
-              </router-link>
-            </p>
-            <p
-              class="loginRedirect mb-5 justify-center text-1.5xl text-black dark:text-white"
-            >
-              የማሂበራት ተጠቃሚ አባል ነህ?
-              <router-link to="/register">
-                <span
-                  class="hover:text-orange-500 hover:cursor-pointer text-green-800 text-lg font-mono font-bold"
-                  >በዚህ ግባና ተመዝገብ</span
-                >
-              </router-link>
-            </p>
-          </div>
-        </form>
+                <h1 v-if="languageStore.language == 'En'">register here</h1>
+                <h1 v-if="languageStore.language == 'Am'">በዚህ ተመዝገብ</h1>
+                </span
+              >
+            </router-link>
+          </p>
+          <div class="flex justify-center">
+          <button
+            @click="registerHelp = !registerHelp"
+            class="hover:text-green-800 mb-6 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
+          >
+            <h1 v-if="languageStore.language == 'En'">how to register?</h1>
+            <h1 v-if="languageStore.language == 'Am'">እንዴት ልመዝገብ?</h1>
+          </button>
+        </div>
+        </div>
+        <div v-show="registerHelp">
+          <howToRegister />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
+.register {
+  background: #17cf97;
+}
 @media screen and (max-width: 600px) {
   .formClass {
     align-items: center;
@@ -500,19 +555,11 @@ const saveUser = async () => {
   .Password {
     justify-content: center;
   }
-  .submitButton {
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    padding-left: 100px;
-  }
+
   .role {
     justify-content: center;
     width: 80%;
   }
-  .loginRedirect {
-    justify-content: center;
-    padding-left: 100px;
-  }
+ 
 }
 </style>

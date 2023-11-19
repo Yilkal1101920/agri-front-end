@@ -3,13 +3,16 @@
     <div class="flex flex-row w-full">
       <AdminPanel />
       <div class="ml-6 w-full flex flex-row">
-        <div class="w-full flex flex-row pl-10 flex-wrap">
+        <div class="w-full flex flex-col pl-10 flex-wrap">
+          <div class="flex justify-center pt-4">
+            <p class="dark:text-white text-2xl font-bold font-mono">Request for market</p>
+          </div>
           <div class="w-full p-2 px-8 py-6 mb-4">
             <div class="field">
               <label class="block text-gray-700 text-sm font-bold mb-2">Product Id</label>
               <div class="control">
                 <div>
-                  <select v-model="productId" class="w-full border border-green-300">
+                  <select v-model="productId" class="w-full py-2 border border-green-300">
                     <option value="">product_id</option>
                     <optgroup v-for="product in filteredProduct">
                       <option>
@@ -33,7 +36,7 @@
               <div class="control">
                 <input
                   class="shadow border-green-300 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
+                  type="number"
                   placeholder="Amount"
                   v-model="amount"
                 />
@@ -61,7 +64,7 @@
                 class="bg-green-300 py-2 px-8 hover:bg-green-500 text-white font-bold my-4 hover:scale-x-110 rounded focus:outline-none focus:shadow-outline"
                 @click="postProductForMarket(productId)"
               >
-                Add to Market
+                Send request
               </button>
             </div>
           </div>
@@ -70,7 +73,7 @@
           <table class="table-auto w-full text-gray-700">
             <thead>
               <tr>
-                <th>code</th>
+                <th>Product ID</th>
                 <th>Title</th>
                 <th>price</th>
                 <th>amount</th>
@@ -107,15 +110,6 @@ const kebele = localStorage.getItem("kebele");
 const tryCount = ref("");
 const amountNumberCheck = ref(false);
 
-const manager_email = localStorage.getItem("manager_email");
-
-const order_date = ref("");
-
-const day = ref("");
-const dayName = ref("");
-const month = ref("");
-const monthName = ref("");
-
 const totalUsers = ref("");
 const storeEmployee = ref("");
 
@@ -126,6 +120,7 @@ const seller = localStorage.getItem("seller");
 const filteredProduct = ref("");
 
 const productId = ref(0);
+const totalAmount = ref(0);
 
 onMounted(async () => {
   if (
@@ -276,119 +271,79 @@ const postProductForMarket = async (id) => {
     });
   }
 };
-// const getProductByKebeleAndProductName = async (kebele, name) => {
-//   const productByNameAndKebele = await axios.get(
-//     `http://localhost:5000/products/postedForMarket/${kebele}/${name}`
-//   );
-
-//   AmountOfPostedInToMarket.value = productByNameAndKebele.data.postedForMarket;
-// };
 const getProductById = async (id) => {
   try {
     const productByNameAndKebele = await axios.get(
       `http://localhost:5000/products/${id}`
     );
     AmountOfPostedInToMarket.value = productByNameAndKebele.data.postedForMarket;
+    totalAmount.value = productByNameAndKebele.data.amount;
   } catch (err) {}
 };
 const updateProduct = async (id) => {
   try {
-    await axios.put(`http://localhost:5000/products/productsInMarket/${id}`, {
-      postedForMarket: amount.value,
-      marketState: 0,
-    });
-    await insertReport();
-  } catch (err) {}
-  router.push("/mahiberat/productsList");
+    if (totalAmount.value - amount.value >= 0) {
+      await axios.put(`http://localhost:5000/products/addProductToMarket/${id}`, {
+        amount: totalAmount.value - amount.value,
+        postedForMarket: amount.value,
+        marketState: 0,
+      });
+      let timerInterval;
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        // title: "ስህተት",
+        html: "successfull done!",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          // Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // console.log("I was closed by the timer");
+        }
+      });
+      router.push("/mahiberat/productsList");
+    } else {
+      let timerInterval;
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        // title: "ስህተት",
+        html: "your request is greater than total amount!",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          // Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // console.log("I was closed by the timer");
+        }
+      });
+      router.push("/mahiberat/addProduct");
+    }
+  } catch (err) {
+    console.log(err);
+  }
 };
-
-// const insertReport = async () => {
-//   try {
-//     order_date.value = new Date();
-//     const date = new Date(order_date.value);
-//     day.value = date.getDay();
-//     if (day.value == 0) {
-//       dayName.value = "Monday";
-//     }
-//     if (day.value == 1) {
-//       dayName.value = "Tuesday";
-//     }
-//     if (day.value == 2) {
-//       dayName.value = "Wednsday";
-//     }
-//     if (day.value == 3) {
-//       dayName.value = "Tursday";
-//     }
-//     if (day.value == 4) {
-//       dayName.value = "Friday";
-//     }
-//     if (day.value == 5) {
-//       dayName.value = "Saturday";
-//     }
-//     if (day.value == 6) {
-//       dayName.value = "Sunday";
-//     }
-
-//     month.value = date.getMonth();
-
-//     if (month.value == 0) {
-//       monthName.value = "January";
-//     }
-//     if (month.value == 1) {
-//       monthName.value = "February";
-//     }
-//     if (month.value == 2) {
-//       monthName.value = "March";
-//     }
-//     if (month.value == 3) {
-//       monthName.value = "April";
-//     }
-//     if (month.value == 4) {
-//       monthName.value = "May";
-//     }
-//     if (month.value == 5) {
-//       monthName.value = "June";
-//     }
-//     if (month.value == 6) {
-//       monthName.value = "Junly";
-//     }
-//     if (month.value == 7) {
-//       monthName.value = "Ogust";
-//     }
-//     if (month.value == 8) {
-//       monthName.value = "September";
-//     }
-//     if (month.value == 9) {
-//       monthName.value = "October";
-//     }
-//     if (month.value == 10) {
-//       monthName.value = "November";
-//     }
-//     if (month.value == 11) {
-//       monthName.value = "December";
-//     }
-//     await axios.post("http://localhost:5000/report", {
-//       reporter_email: manager_email,
-//       product_name: title.value,
-//       quantity: amount.value,
-//       report_owner: kebele,
-//       report_status: "market",
-//       transaction: "cash less",
-//       transaction_in_birr: 0,
-//       day: dayName.value,
-//       monthName: monthName.value,
-//       year: date.getFullYear(),
-//       month: date.getMonth() + 1,
-//       date: date.getDate(),
-//       hour: date.getHours(),
-//       minute: date.getMinutes(),
-//       second: date.getSeconds(),
-//       millisecond: date.getMilliseconds(),
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
 
 const getStoreEmployee = async () => {
   try {

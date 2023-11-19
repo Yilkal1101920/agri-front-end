@@ -1,136 +1,215 @@
 <template>
-  <div class="flex flex-row h-full w-full bg-green-50 dark:bg-slate-800">
-    <section class="home-section justify-center pl-10 w-full">
-      <nav>
-        <div class="">
-          <span class="text-lg text-gray-700 dark:text-white font-bold font-mono"
-            >Debre Elias Agriculture office</span
-          >
-        </div>
-        <div class="profile-details">
-          <div v-for="user in users" :key="user.user_id">
-            <span class="admin_name" v-if="user.email == woreda_admin_email">{{
-              user.fName
-            }}</span>
-          </div>
-        </div>
-      </nav>
-
-      <div class="home-content">
-        <div class="overview-boxes">
-          <div
-            class="p-3 bg-white rounded-lg shadow-lg cursor-pointer hover:scale-110 hover:shadow-md hover:shadow-green-200"
-            @click="addEmployer"
-          >
-            <div class="right-side">
-              <div class="font-bold font-mono text-lg text-gray-700 dark:text-white">
-                ADD EMPLOYEE
-              </div>
-              <div class="indicator">
-                <span class="text-sm font-mono text-gray-700 dark:text-white"
-                  >Register Kebele employee</span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="box flex flex-col p-3 bg-white rounded-lg shadow-lg cursor-pointer hover:scale-110 hover:shadow-md hover:shadow-green-200"
-            @click="totalEmployer"
-          >
-            <!-- <div class="right-side"> -->
-            <p
-              class="box-topic text-center items-center font-bold font-mono text-lg text-gray-700 dark:text-white"
+  <div class="bg-green-50 dark:bg-slate-800">
+    <div class="flex flex-row h-full w-full">
+      <section class="home-section justify-center pl-10 w-full">
+        <nav>
+          <div class="">
+            <span class="text-lg text-gray-700 font-bold font-mono"
+              >Debre Elias Agriculture office</span
             >
-              TOTAL EMPLOYEE
-            </p>
-            <div class="flex">
-              <div
-                class="text-gray-700 dark:text-white text-2xl font-mono font-bold flex justify-start"
-              >
-                {{ countEmployers }}
-              </div>
-
-              <span class="flex justify-end"
-                ><svg
-                  class="fill-current text-green-700 h-9 w-auto"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="Diversity3OutlinedIcon"
-                  tabindex="-1"
-                  title="Diversity3Outlined"
-                >
-                  <path
-                    d="M6.32 13.01c.96.02 1.85.5 2.45 1.34C9.5 15.38 10.71 16 12 16s2.5-.62 3.23-1.66c.6-.84 1.49-1.32 2.45-1.34-.72-1.22-3.6-2-5.68-2-2.07 0-4.96.78-5.68 2.01zM4 13c1.66 0 3-1.34 3-3S5.66 7 4 7s-3 1.34-3 3 1.34 3 3 3zm16 0c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"
-                  ></path>
-                  <path
-                    d="M21 14h-3.27c-.77 0-1.35.45-1.68.92-.04.06-1.36 2.08-4.05 2.08-1.43 0-3.03-.64-4.05-2.08-.39-.55-1-.92-1.68-.92H3c-1.1 0-2 .9-2 2v4h7v-2.26c1.15.8 2.54 1.26 4 1.26s2.85-.46 4-1.26V20h7v-4c0-1.1-.9-2-2-2z"
-                  ></path></svg
-              ></span>
-            </div>
-            <div class="indicator">
-              <span class="text font-bold font-mono text-sm text-gray-700 dark:text-white"
-                >Number of all employees in Debere Elias woreda's kebele</span
-              >
-            </div>
-            <!-- </div> -->
           </div>
+          <div class="profile-details">
+            <div v-for="user in users" :key="user.user_id">
+              <span class="admin_name" v-if="user.email == woreda_admin_email">{{
+                user.fName
+              }}</span>
+            </div>
+          </div>
+        </nav>
 
+        <div class="flex flex-col gap-2 pt-16 justify-center px-8">
+          <div class="flex justify-center gap-5 border rounded border-gray-300 p-8">
+            <div
+              class="p-3 w-[33.3%] bg-white border-l-4 border-blue-700 rounded-lg shadow-lg cursor-pointer hover:shadow-md hover:shadow-green-200"
+              @click="addEmployer"
+              title="Click to Register employ"
+            >
+              <div class="right-side">
+                <div class="flex gap-1 items-center">
+                  <span>
+                    <svg
+                      class="fill-current h-8 w-auto"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      tabindex="-1"
+                      title="AddOutlined"
+                      data-ga-event-category="material-icons"
+                      data-ga-event-action="click"
+                      data-ga-event-label="AddOutlined"
+                    >
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                    </svg>
+                  </span>
+                  <div class="font-bold font-mono text-lg text-gray-700">
+                    Register Employee
+                  </div>
+                </div>
+                <div class="indicator">
+                  <span class="text-sm font-mono text-gray-700"
+                    >Register Kebele employee</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="box w-[33.3%] border-l-4 border-yellow-700 flex flex-col p-3 bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-md hover:shadow-green-200"
+              @click="totalEmployer"
+              title="Click to see Detail"
+            >
+              <!-- <div class="right-side"> -->
+              <p class="box-topic items-center font-bold font-mono text-lg text-gray-700">
+                Total Employees
+              </p>
+              <div class="flex justify-between">
+                <div
+                  class="text-yellow-700 text-2xl font-mono font-bold flex justify-start"
+                >
+                  {{ countEmployers }}
+                </div>
+
+                <span class="flex justify-end"
+                  ><svg
+                    class="fill-current text-green-700 h-9 w-auto"
+                    focusable="false"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    data-testid="Diversity3OutlinedIcon"
+                    tabindex="-1"
+                    title="Diversity3Outlined"
+                  >
+                    <path
+                      d="M6.32 13.01c.96.02 1.85.5 2.45 1.34C9.5 15.38 10.71 16 12 16s2.5-.62 3.23-1.66c.6-.84 1.49-1.32 2.45-1.34-.72-1.22-3.6-2-5.68-2-2.07 0-4.96.78-5.68 2.01zM4 13c1.66 0 3-1.34 3-3S5.66 7 4 7s-3 1.34-3 3 1.34 3 3 3zm16 0c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"
+                    ></path>
+                    <path
+                      d="M21 14h-3.27c-.77 0-1.35.45-1.68.92-.04.06-1.36 2.08-4.05 2.08-1.43 0-3.03-.64-4.05-2.08-.39-.55-1-.92-1.68-.92H3c-1.1 0-2 .9-2 2v4h7v-2.26c1.15.8 2.54 1.26 4 1.26s2.85-.46 4-1.26V20h7v-4c0-1.1-.9-2-2-2z"
+                    ></path></svg
+                ></span>
+              </div>
+              <div class="indicator">
+                <span class="text font-bold font-mono text-sm text-gray-700"
+                  >Number of all employees in Debere Elias woreda's kebele</span
+                >
+              </div>
+              <!-- </div> -->
+            </div>
+
+            <div
+              @click="activeEmployer"
+              title="Click to See Detail"
+              class="box w-[33.3%] border-l-4 pr-8 shadow-lg border-green-700 rounded-lg bg-white pt-3 cursor-pointer hover:shadow-md hover:shadow-green-200"
+            >
+              <div class="right-side pl-2">
+                <div class="box-topic font-bold font-mono text-lg text-gray-700">
+                  Active Employees
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="number text-green-700 text-2xl font-mono font-bold">
+                    {{ countActiveEmployers }}
+                  </div>
+                  <span>
+                    <svg
+                      class="fill-current text-green-700 h-9 w-auto"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="BadgeOutlinedIcon"
+                      tabindex="-1"
+                      title="BadgeOutlined"
+                    >
+                      <path d="M14 12h4v1.5h-4zm0 3h4v1.5h-4z"></path>
+                      <path
+                        d="M20 7h-5V4c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 0V4h2v5h-2V7zm9 13H4V9h5c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2h5v11z"
+                      ></path>
+                      <circle cx="9" cy="13.5" r="1.5"></circle>
+                      <path
+                        d="M11.08 16.18c-.64-.28-1.34-.43-2.08-.43s-1.44.15-2.08.43c-.56.24-.92.78-.92 1.39V18h6v-.43c0-.61-.36-1.15-.92-1.39z"
+                      ></path>
+                    </svg>
+                  </span>
+                </div>
+                <div class="indicator">
+                  <span class="text font-mono text-sm text-gray-700"
+                    >Approved Employees</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
           <div
-            @click="activeEmployer"
-            class="box pt-3 cursor-pointer hover:scale-110 hover:shadow-md hover:shadow-green-200"
+            class="overview-boxes flex border border-gray-300 mt-4 rounded gap-5 p-8 justify-center"
           >
-            <div class="right-side">
-              <div
-                class="box-topic font-bold font-mono text-lg text-gray-700 dark:text-white"
-              >
-                ACTIVE EMPLOYEE
-              </div>
-              <div class="number text-gray-700 text-lg font-mono font-bold">
-                {{ countActiveEmployers }}
-              </div>
-              <div class="indicator">
-                <span class="text font-mono text-sm text-gray-700 dark:text-white"
-                  >Approved Employees</span
-                >
+            <div
+              @click="getReport"
+              title="Click to see General Report"
+              class="box w-[25%] border-l-4 border-yellow-500 pt-3 cursor-pointer hover:shadow-md hover:shadow-green-200"
+            >
+              <div class="right-side">
+                <div class="box-topic font-bold font-mono text-lg text-gray-700 pr-5">
+                  Report
+                </div>
               </div>
             </div>
-            <span>
-              <svg
-                class="fill-current text-green-700 h-9 w-auto"
-                focusable="false"
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                data-testid="BadgeOutlinedIcon"
-                tabindex="-1"
-                title="BadgeOutlined"
-              >
-                <path d="M14 12h4v1.5h-4zm0 3h4v1.5h-4z"></path>
-                <path
-                  d="M20 7h-5V4c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-9 0V4h2v5h-2V7zm9 13H4V9h5c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2h5v11z"
-                ></path>
-                <circle cx="9" cy="13.5" r="1.5"></circle>
-                <path
-                  d="M11.08 16.18c-.64-.28-1.34-.43-2.08-.43s-1.44.15-2.08.43c-.56.24-.92.78-.92 1.39V18h6v-.43c0-.61-.36-1.15-.92-1.39z"
-                ></path>
-              </svg>
-            </span>
+            <div
+              @click="postNews"
+              title="Click to Add Events"
+              class="box w-[25%] border-l-4 border-blue-700 pt-3 cursor-pointer hover:shadow-md hover:shadow-green-200"
+            >
+              <div class="right-side flex items-center gap-1">
+                <span>
+                  <svg
+                    class="fill-current h-8 w-auto"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    tabindex="-1"
+                    title="AddOutlined"
+                    data-ga-event-category="material-icons"
+                    data-ga-event-action="click"
+                    data-ga-event-label="AddOutlined"
+                  >
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                  </svg>
+                </span>
+                <div class="box-topic font-bold font-mono text-lg text-gray-700">
+                  Add Events
+                </div>
+              </div>
+            </div>
+            <div
+              @click="getNews"
+              title="Click to see Events"
+              class="box w-[25%] border-l-4 border-gray-700 pt-3 cursor-pointer hover:shadow-md hover:shadow-green-200"
+            >
+              <div class="right-side">
+                <div class="box-topic font-bold font-mono text-lg text-gray-700">
+                  Total Events
+                </div>
+              </div>
+            </div>
           </div>
-          <!-- <div @click="activeEmployer" class="box pt-3 cursor-pointer hover:scale-110 hover:shadow-md hover:shadow-green-200">
-            <div class="right-side">
-              <div  class="box-topic font-bold font-mono text-lg  text-gray-700 dark:text-white">Number of all kebele members</div>
-              <div class="number text-gray-700 text-lg font-mono font-bold">{{ countActiveEmployers }}</div>
-              <div class="indicator">
-
-                <span class="text font-mono text-sm  text-gray-700 dark:text-white">All Debre Elias woreda members</span>
+          <div
+            class="overview-boxes flex justify-center gap-5 p-8 border border-gray-300 mt-4 rounded"
+          >
+            <div
+              @click="approveFarmerProduct"
+              title="Click to Detail"
+              class="box w-[50%] border-l-4 border-red-500 pt-3 cursor-pointer hover:shadow-md hover:shadow-green-200"
+            >
+              <div class="right-side">
+                <div class="box-topic font-bold font-mono text-lg text-gray-700">
+                  Approve Farmers Product
+                </div>
               </div>
             </div>
-            <svg class="fill-current text-green-700 h-14 w-auto" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="EmojiPeopleOutlinedIcon" tabindex="-1" title="EmojiPeopleOutlined"><circle cx="12" cy="4" r="2"></circle><path d="M15.89 8.11C15.5 7.72 14.83 7 13.53 7h-2.54C8.24 6.99 6 4.75 6 2H4c0 3.16 2.11 5.84 5 6.71V22h2v-6h2v6h2V10.05L18.95 14l1.41-1.41-4.47-4.48z"></path></svg>
-          </div> -->
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
+    <div class="flex justify-center">
+      <UserReportAnalysis class="border border-gray-300" />
+    </div>
   </div>
 </template>
 
@@ -138,6 +217,8 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import UserReportAnalysis from "./userReportChart.vue";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const woreda_admin_email = localStorage.getItem("woreda_admin_email");
@@ -154,7 +235,30 @@ onMounted(() => {
     localStorage.getItem("woreda_admin_email") == null ||
     localStorage.getItem("role") != "woreda_admin"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   } else {
     getUser();
@@ -215,6 +319,18 @@ const totalEmployer = () => {
 const activeEmployer = () => {
   router.push("activeEmployer");
 };
+const approveFarmerProduct = () => {
+  router.push("product/approve");
+};
+const postNews = () => {
+  router.push("addNews");
+};
+const getNews = () => {
+  router.push("postedNews");
+};
+const getReport = () => {
+  router.push("report");
+};
 </script>
 
 <style scoped>
@@ -228,7 +344,7 @@ const activeEmployer = () => {
 }
 .home-section {
   position: static;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   transition: all 0.5s ease;
 }
 .home-section {
@@ -319,26 +435,14 @@ nav .profile-details i {
   font-size: 25px;
   color: #333;
 }
-.home-section .home-content {
-  position: relative;
-  padding-top: 104px;
-}
-.home-content .overview-boxes {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 0 10px;
-  margin-bottom: 26px;
-}
+
 .overview-boxes .box {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: calc(100% / 4 - 15px);
   background: #fff;
   padding: 15px 14px;
   border-radius: 12px;
+
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 .overview-boxes .box-topic {

@@ -11,8 +11,6 @@ import ContactUs from '../pages/ContactUs.vue'
 import Cart from '../pages/cart.vue'
 import PayedProductOrder from '../pages/payedProductOrders.vue'
 import Order from '../pages/order.vue'
-import ProductByPrice from '../pages/productByPrice.vue'
-import ProductByName from '../pages/productByName.vue'
 import NewEvent from '../pages/newEvent.vue'
 import Chat from '../pages/Chat.vue'
 import Payment from '../pages/payment.vue'
@@ -26,29 +24,31 @@ import FarmersProduct from '../pages/farmerProduct.vue'
 import FarmerDashboard from '../farmer/pages/dashboard.vue'
 import FarmerAddProduct from '../farmer/pages/addProduct.vue'
 import FarmerProductList from '../farmer/pages/productList.vue'
+import FarmerOrderList from '../farmer/pages/order.vue'
+import FarmersAddNews from '../farmer/pages/AddNews.vue'
+import FarmersPostedNews from '../farmer/pages/postedNews.vue'
+import FarmerTransactionHistory from '../farmer/pages/Report.vue'
+import FarmerReportChart from '../farmer/pages/reportChart.vue'
 import CustomerCart from '../pages/customerCart.vue'
+import PaymentSuccess from '../pages/paymentSuccess.vue'
+import SendEmail from '../pages/sendEmail.vue'
+import ForgotPassword from '../pages/forgotPassword.vue'
+import EnterVerificationCode from '../components/enterVerificationCode.vue'
 
 import MahiberatDashboard from '../mahiberat/pages/Dashboard.vue'
 import MahiberatDepartment from '../mahiberat/pages/Department.vue'
-import MahiberatNewUsers from '../mahiberat/pages/newUsers.vue'
 import MahiberatActiveUsers from '../mahiberat/pages/activeUsers.vue'
-import MahiberatActiveUsersByName from '../mahiberat/pages/activeUsersByName.vue'
 import MahiberatOrderList from '../mahiberat/pages/orderedList.vue'
-import MahiberatTransactionHistory from '../mahiberat/pages/TransactionHistory.vue'
-import FilterMahiberatTransactionHistory from '../mahiberat/pages/FilterTransactionHistory.vue'
 
 import MahiberatReport from '../mahiberat/pages/Report.vue'
-import MahiberatReport1 from '../mahiberat/pages/Report1.vue'
 import MahiberatSetting from '../mahiberat/pages/Settings.vue'
 import MahiberatAddNews from '../mahiberat/pages/AddNews.vue'
 import MahiberatPostedNews from '../mahiberat/pages/postedNews.vue'
-import SelectedMahiberatPostedNews from '../mahiberat/pages/selectedPostedEvents.vue'
 import MahiberatAddProduct from '../mahiberat/pages/AddProduct.vue'
 import MahiberatAddProductToStore from '../mahiberat/pages/AddProductToStore.vue'
 import MahiberatProductsList from '../mahiberat/pages/ProductsList.vue'
 import MahiberatChat from '../mahiberat/pages/Chat.vue'
 import MahiberatOrderRestriction from '../mahiberat/pages/orderRestriction.vue'
-import MahiberatOrderRestrictionListByProdctName from '../mahiberat/pages/orderRestrictionListByProductName.vue'
 import MahiberatOrderRestrictionList from '../mahiberat/pages/orderRestrictionList.vue'
 import MahiberatUserControl from '../mahiberat/pages/users_control.vue'
 import MahiberatProductDetail from '../mahiberat/pages/ProductDetail.vue'
@@ -57,20 +57,23 @@ import MahiberatProductEdit from '../mahiberat/pages/ProductEdit.vue'
 import MahiberatTotalMembers from '../mahiberat/pages/totalMembers.vue'
 import FilterMahiberatMember from '../mahiberat/pages/filterMahiberatMember.vue'
 import AddNewMember from '../mahiberat/pages/addMembers.vue'
-import MahiberatProductListByName from '../mahiberat/pages/productListByName.vue'
+import MahiberatAdminProfile from "../mahiberat/pages/AdminProfilelogin.vue";
+import AllAdminProfile from "../mahiberat/pages/AllAdminProfile.vue";
 import StoreDashboard from '../mahiberat/pages/StoreDashboard.vue'
 import MahiberatStoreProductsList from '../mahiberat/pages/storeProductList.vue'
-import MahiberatStoreProductListByName from '../mahiberat/pages/storeProductListByName.vue'
 import MahiberatStoreProductsListThatAreNotActvated from '../mahiberat/pages/StoreProductsListThatAreNotActivated.vue'
-import MahiberatStoreProductsListThatAreNotActvatedByName from '../mahiberat/pages/StoreProductsListThatAreNotActivatedByName.vue'
 import MahiberatStoreProductListInTheMarket from '../mahiberat/pages/storeProductListInTheMarket.vue'
 import MahiberatStoreProductListNotInTheMarket from '../mahiberat/pages/storeProductListNotInTheMarket.vue'
+
 import WoredaDashboard from '../woreda/pages/Dashboard.vue'
 import AddEmployer from '../woreda/pages/AddEmployer.vue'
 import TotalEmployer from '../woreda/pages/TotalEmployer.vue'
 import ActiveEmployer from '../woreda/pages/ActiveEmployer.vue'
 import EditEmployerInformation from '../woreda/pages/EditEmployerInformation.vue'
-
+import WoredaNews from '../woreda/pages/postAboutAgriService.vue'
+import WoredaPostedNews from '../woreda/pages/postedEvents.vue'
+import WoredaReport from '../woreda/pages/report.vue'
+import ApproveFarmerProduct from '../woreda/pages/farmerProductApprove.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -137,16 +140,6 @@ const router = createRouter({
       component: Item
     },
     {
-      path: '/product/byPrice',
-      name: 'productByPrice',
-      component: ProductByPrice
-    },
-    {
-      path: '/product/byName',
-      name: 'productByName',
-      component: ProductByName
-    },
-    {
       path: '/ordersList',
       name: 'ordersList',
       component: OrdersList
@@ -209,6 +202,26 @@ const router = createRouter({
       component: CustomerCart
     },
     {
+      path: '/product/payment/success',
+      name: 'paymentSuccess',
+      component: PaymentSuccess
+    },
+    {
+      path: '/sendEmail',
+      name: 'sendEmail',
+      component: SendEmail
+    },
+    {
+      path: '/forgotPassword',
+      name: 'forgotPassword',
+      component: ForgotPassword
+    },
+    {
+      path: '/enterVerificationCode',
+      name: 'enterVerificationCode',
+      component: EnterVerificationCode
+    },
+    {
       path: '/farmer/dashboard',
       name: 'farmerDashboard',
       component: FarmerDashboard
@@ -222,6 +235,34 @@ const router = createRouter({
       path: '/farmer/productList',
       name: 'farmerProduct',
       component: FarmerProductList
+    },
+
+    {
+      path: '/farmer/orderList',
+      name: 'farmerOrderList',
+      component: FarmerOrderList
+    },
+
+    {
+      path: '/farmer/addNews',
+      name: 'farmersAddNews',
+      component: FarmersAddNews
+    },
+    {
+      path: '/farmer/postedNews',
+      name: 'farmersPostedNews',
+      component: FarmersPostedNews
+    },
+    {
+      path: '/farmer/transactionHistory',
+      name: 'farmerTransactionHistory',
+      component: FarmerTransactionHistory
+    },
+
+    {
+      path: '/farmer/reportChart',
+      name: 'farmerReportChart',
+      component: FarmerReportChart
     },
 
     {
@@ -257,24 +298,24 @@ const router = createRouter({
       component: MahiberatProductsList
     },
     {
+      path: '/mahiberat/adminProfile',
+      name: 'mahiberatAdminProfile',
+      component: MahiberatAdminProfile
+    },
+    {
+      path: '/mahiberat/allAdminProfile',
+      name: 'allAdminProfile',
+      component: AllAdminProfile
+    },
+    {
       path: '/mahiberat/storeProductsList',
       name: 'mahiberatStoresProductList',
       component: MahiberatStoreProductsList
     },
     {
-      path: '/mahiberat/storeProductsListByName',
-      name: 'mahiberatProductsListByName',
-      component: MahiberatStoreProductListByName
-    },
-    {
       path: '/mahiberat/storeProductsListThatAreNotActivated',
       name: 'mahiberatStoreProductsList',
       component: MahiberatStoreProductsListThatAreNotActvated
-    },
-    {
-      path: '/mahiberat/storeProductsListThatAreNotActivated/:pName',
-      name: 'mahiberatStoreProductsListThatAreNotActvatedByName',
-      component: MahiberatStoreProductsListThatAreNotActvatedByName
     },
     {
       path: '/mahiberat/storeProductListInTheMarket',
@@ -292,28 +333,6 @@ const router = createRouter({
       component: MahiberatOrderList
     },
     {
-      path: '/mahiberat/transactionHistory',
-      name: 'mahiberatTransactionHistory',
-      component: MahiberatTransactionHistory
-    },
-    {
-      path: '/mahiberat/transactionHistory/:id',
-      name: 'filterMahiberatTransactionHistory',
-      component: FilterMahiberatTransactionHistory
-    },
-    {
-      path: '/mahiberat/newUsers',
-      name: 'mahiberatNewUsers',
-
-      component: MahiberatNewUsers
-    },
-    {
-      path: '/mahiberat/activeUsers/:name',
-      name: 'mahiberatActiveUsersByName',
-
-      component: MahiberatActiveUsersByName
-    },
-    {
       path: '/mahiberat/activeUsers',
       name: 'mahiberatActiveUsers',
 
@@ -326,14 +345,12 @@ const router = createRouter({
 
       component: AddNewMember
     },
-
     {
       path: '/mahiberat/totalMembers',
       name: 'mahiberatTotalMembers',
 
       component: MahiberatTotalMembers
     },
-
     {
       path: '/mahiberat/totalMembers/:filter',
       name: 'filterMahiberatMember',
@@ -345,12 +362,6 @@ const router = createRouter({
       path: '/mahiberat/report',
       name: 'mahiberatReport',
       component: MahiberatReport
-    },
-
-    {
-      path: '/mahiberat/report1',
-      name: 'mahiberatReport1',
-      component: MahiberatReport1
     },
 
     {
@@ -370,11 +381,6 @@ const router = createRouter({
       component: MahiberatPostedNews
     },
     {
-      path: '/mahiberat/postedNews/:event',
-      name: 'selectedMahiberatPostedNews',
-      component: SelectedMahiberatPostedNews
-    },
-    {
       path: '/mahiberat/orderRestriction',
       name: 'orderRestriction',
       component: MahiberatOrderRestriction
@@ -383,11 +389,6 @@ const router = createRouter({
       path: '/mahiberat/orderRestrictionList',
       name: 'orderRestrictionList',
       component: MahiberatOrderRestrictionList
-    },
-    {
-      path: '/mahiberat/orderRestrictionList/:product_name',
-      name: 'orderRestrictionListByProductName',
-      component: MahiberatOrderRestrictionListByProdctName
     },
     {
       path: '/mahiberat/users',
@@ -408,11 +409,6 @@ const router = createRouter({
       path: '/mahiberat/product/edit/:id',
       name: 'mahiberatProductEdit',
       component: MahiberatProductEdit
-    },
-    {
-      path: '/mahiberat/product/productByName/:name',
-      name: 'mahiberatProductListByName',
-      component: MahiberatProductListByName
     },
     {
       path: '/mahiberat/storeDashboard',
@@ -450,6 +446,26 @@ const router = createRouter({
       name: 'editEmployerInformation',
       component: EditEmployerInformation
     },
+    {
+      path: '/woreda/addNews',
+      name: 'addNews',
+      component: WoredaNews
+    },
+    {
+      path: '/woreda/postedNews',
+      name: 'postedNews',
+      component: WoredaPostedNews
+    } ,
+    {
+      path: '/woreda/report',
+      name: 'woredaReport',
+      component: WoredaReport
+    },
+    {
+      path: '/woreda/product/approve',
+      name: 'approveFarmerProduct',
+      component: ApproveFarmerProduct
+    }
   ],
 // beforeEnter: ((to, from, next) => {
 //   console.log(to.path);

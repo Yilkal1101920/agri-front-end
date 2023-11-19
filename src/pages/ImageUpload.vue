@@ -46,9 +46,6 @@ const onFileChange = (e) => {
     base64Image.value = fileReader.result.split(",")[1];
   };
   fileReader.readAsDataURL(selectedFile);
-  // var storageRef = firebase.storage().ref('images/', selectedFile.name)
-  alert("yyyyyyyyyyyyyyyyyyyyyyyy");
-  //storageRef.put(selectedFile);
 
   console.log(e.target.files[0]);
 };
@@ -56,7 +53,7 @@ const uploadImage = async () => {
   if (base64Image.value != "") {
     const fetchData = await axios.post("http://localhost:5000/uploadImage", {
       base64: base64Image.value,
-      name: "yilkal",
+      name: "image",
     });
     console.log(fetchData.data);
     url.value = fetchData.data.url;

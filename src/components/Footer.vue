@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full">
     <footer
-      class="text-center justify-center items-center w-full bg-green-100 dark:bg-gray-800 text-black bottom-0"
+      class="text-center justify-center items-center w-full bg-gray-200 dark:bg-gray-800 text-black bottom-0"
     >
       <div
         class="socialmedia flex-wrap flex justify-center items-center lg:justify-evenly p-2 border-b border-gray-300"
@@ -45,8 +45,17 @@
                 </svg>
               </span>
               <span
-                ><h6 class="font-bold font-mono flex justify-center md:justify-start">
+                ><h6
+                  v-if="languageStore.language == 'En'"
+                  class="font-bold font-mono flex justify-center md:justify-start"
+                >
                   Important links
+                </h6>
+                <h6
+                  v-if="languageStore.language == 'Am'"
+                  class="font-bold font-mono flex justify-center md:justify-start"
+                >
+                  ጠቃሚ ማስፈንጠሪያዎች
                 </h6>
               </span>
             </span>
@@ -56,6 +65,12 @@
                 ><p v-if="languageStore.language == 'Am'">መነሻ ገጽ</p>
                 <p v-if="languageStore.language == 'En'">Home Page</p></router-link
               >
+              <router-link to="/farmersProduct" class="text-gray-800 dark:text-white"
+                ><div v-if="user_role == 'user'">
+                  <p v-if="languageStore.language == 'Am'">ወደ ገበሬዎች ምርት</p>
+                  <p v-if="languageStore.language == 'En'">Go to farmers product</p>
+                </div>
+              </router-link>
             </p>
           </div>
           <div class="flex justify-center flex-wrap items-center">
@@ -125,27 +140,29 @@
         </div>
       </div>
       <div class="flex items-center justify-center gap-4">
-        <p class="text-gray-800 dark:text-white">payment method:</p>
+        <p v-if="languageStore.language == 'En'" class="text-gray-800 dark:text-white">
+          payment method:
+        </p>
+        <p v-if="languageStore.language == 'Am'" class="text-gray-800 dark:text-white">
+          የክፍያ መንገድ:
+        </p>
         <img
           src="../assets/chapa-logo.png"
           title="Chapa"
           alt="chapa logo"
           class="h-11 rounded-lg w-auto"
         />
-        <img
-          src="../assets/stripe-logo.png"
-          title="Stripe"
-          alt="Stripe logo"
-          class="h-11 rounded-lg w-auto"
-        />
+        <p v-if="languageStore.language == 'En'">CHAPA</p>
+        <p v-if="languageStore.language == 'Am'">ቻፓ</p>
       </div>
       <div class="text-center p-6 dark:text-white text-blue-600">
-        <span>© 2022 Copyright: </span>
+        <span v-if="languageStore.language == 'En'">© 2022 Copyright: </span>
+        <span v-if="languageStore.language == 'Am'">© 2015 የቅጂ መብት : </span>
         <a
           v-if="languageStore.language == 'Am'"
           class="font-semibold dark:text-white text-blue-600"
           href=""
-          >ደብረ ኤልያስ ግብርና ቢሮ, Developed by Yilkal, Wudneh and Desalegn.</a
+          >ደብረ ኤልያስ ግብርና ቢሮ, በይልቃል ፤ በደሳለኝ እና በዉድነህ ተበለጸገ</a
         >
         <a
           v-if="languageStore.language == 'En'"
@@ -164,6 +181,7 @@ import googlemap from "./googlemap.vue";
 
 const languageStore = useLanguageStore();
 const kebele_address = localStorage.getItem("kebele");
+const user_role = localStorage.getItem("role");
 </script>
 <style scoped>
 @media screen and(max-width:600px) {

@@ -2,21 +2,21 @@
   <div class="bg-green-50 dark:bg-gray-800">
     <div class="pb-6 w-full h-full text-white font-bold justify-center items-center flex">
       <div class="inset-y-0 w-full">
-        <div class="flex flex-col justify-center">
-          <img class="h-80 w-full" src="https://i.ibb.co/DrQ8jxn/OIP.jpg" />
-          <h1
-            class="flex dark:text-white justify-center text-3xl lg:text-6xl text-blue-500 pb-10 absolute"
-            v-if="languageStore.language == 'Am'"
-          >
-            የደብረ ኤልያስ ወረዳ ግብርና ቢሮ
-          </h1>
-          <h1
-            class="flex w-[55%] pl-5 font-bold font-mono dark:text-white justify-center text-3xl lg:text-6xl text-blue-500 pb-10 absolute"
-            v-if="languageStore.language == 'En'"
-          >
-            D/Elias Agricultural Office
-          </h1>
-        </div>
+<vueper-slides autoplay
+  class="bg-green-50 text-gray-800 px-16 pt-1"
+  :visible-slides="3"
+  slide-multiple
+  :gap="1"
+  :slide-ratio="1 / 5"
+  :dragging-distance="200"
+  :breakpoints="{ 800: { visibleSlides: 3, slideMultiple: 2 } }">
+  <vueper-slide class=" pb-6"
+    v-for="slide in filteredNews.slice().reverse()"
+    :key="slide.id"
+    :content="slide.description"
+    :image="slide.newsImage">
+  </vueper-slide>
+</vueper-slides>
         <div class="flex justify-center text-blue-600 p-2 m-3">
           <h1
             v-if="languageStore.language == 'Am'"
@@ -31,7 +31,18 @@
             Products in the market
           </h1>
         </div>
-        <div class="flex product">
+        <div>
+        <p class="text-lg font-bold text-gray-800 dark:text-white text-center" v-if="loading">
+          <!-- <Circle4></Circle4> -->
+          <vue-spinner
+           :color="'#007aff'"
+           :size="'30px'"
+           :margin="'5px'"
+           :radius="'100%'"
+         />
+        Loading...</p>
+        </div>
+        <div class="flex border border-gray-300 mx-8 py-5" v-if="!loading" >
           <div class="container flex">
             <div class="text-blue-500 flex flex-row flex-wrap gap-3 justify-center">
               <div class="" v-for="item in datas" :key="item.product_id">
@@ -40,8 +51,7 @@
                     item.amount > 0 &&
                     !(
                       item.email != undefined &&
-                      item.email != order_email &&
-                      CPID == 1
+                      item.email != order_email 
                     ) &&
                     item.marketState == 1 &&
                     item.postedForMarket != 0
@@ -83,297 +93,21 @@
                       <p class="w-full flex justify-center">
                         በ {{ item.kebele }} ቀበሌ ማህበራት ለሽያጭ የቀረበ {{ item.title }}
                       </p>
-
                       <div>
-                        <div class="flex items-center justify-center">
-                          <svg
-                            v-if="
-                              (item.favorite_no == 1 ||
-                                item.favorite_no == 2 ||
-                                item.favorite_no == 3 ||
-                                item.favorite_no == 4 ||
-                                item.favorite_no == 5) &&
-                              item.email == order_email
-                            "
-                            @click.prevent="star1(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>First star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else
-                            @click.prevent="star1(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>First star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-
-                          <svg
-                            v-if="
-                              (item.favorite_no == 2 ||
-                                item.favorite_no == 3 ||
-                                item.favorite_no == 4 ||
-                                item.favorite_no == 5) &&
-                              item.email == order_email
-                            "
-                            @click.prevent="star2(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="item.favorite_no == undefined"
-                            @click.prevent="star2(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="
-                              item.favorite_no != undefined && item.email != order_email
-                            "
-                            @click.prevent="star2(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else
-                            @click.prevent="star2(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-
-                          <svg
-                            v-if="
-                              (item.favorite_no == 3 ||
-                                item.favorite_no == 4 ||
-                                item.favorite_no == 5) &&
-                              item.email == order_email
-                            "
-                            @click.prevent="star3(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Third star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="item.favorite_no == undefined"
-                            @click.prevent="star3(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Third star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="
-                              item.favorite_no != undefined && item.email != order_email
-                            "
-                            @click.prevent="star3(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else
-                            @click.prevent="star3(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Third star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-
-                          <svg
-                            v-if="
-                              (item.favorite_no == 4 || item.favorite_no == 5) &&
-                              item.email == order_email
-                            "
-                            @click.prevent="star4(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fourth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="item.favorite_no == undefined"
-                            @click.prevent="star4(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fourth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="
-                              item.favorite_no != undefined && item.email != order_email
-                            "
-                            @click.prevent="star4(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else
-                            @click.prevent="star4(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fourth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-
-                          <svg
-                            v-if="item.favorite_no == 5 && item.email == order_email"
-                            @click.prevent="star5(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fifth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="item.favorite_no == undefined"
-                            @click.prevent="star5(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fifth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else-if="
-                              item.favorite_no != undefined && item.email != order_email
-                            "
-                            @click.prevent="star5(item.product_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Second star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                          <svg
-                            v-else
-                            @click.prevent="star5(item.favorite_id)"
-                            aria-hidden="true"
-                            class="w-5 h-5 text-gray-300 dark:text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <title>Fifth star</title>
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            ></path>
-                          </svg>
-                        </div>
-                      </div>
-
+                            <star-rating
+                              v-model:rating="rating[item.product_id]"
+                              class="flex justify-center"
+                              v-bind:increment="0.5"
+                              v-bind:max-rating="5"
+                              inactive-color="gray"
+                              active-color="yellow"
+                              v-bind:star-size="18"
+                              @update:rating="
+                                setRating(item.product_id, rating[item.product_id], item.kebele)
+                              "
+                            >
+                            </star-rating>
+                          </div>
                       <div class="flex justify-center">
                         <div>{{ item.price }}</div>
                         <div class="pl-1">
@@ -381,7 +115,7 @@
                           <p v-if="languageStore.language == 'En'">Birr/{{item.measurement}}</p>
                         </div>
                       </div>
-                      <div class="flex gap-3">
+                      <div class="flex gap-0 justify-center">
                         <input
                           v-if="languageStore.language == 'Am'"
                           type="number"
@@ -401,11 +135,11 @@
                           v-model="count2[item.product_id]"
                         />
                         <button
-                          class="bg-green-400 p-1 border rounded-lg hover:bg-green-700 hover:text-white"
+                          class="addToCartButton p-1 border rounded-r-lg shadow-lg hover:bg-green-700 text-gray-800 font-bold font-mono px-2 hover:text-white"
                           @click.prevent="checkInput(item.product_id, item.post_email)"
                         >
                           <p v-if="languageStore.language == 'Am'">ወደ ካርት ጨምር</p>
-                          <p v-if="languageStore.language == 'En'">add to cart</p>
+                          <p v-if="languageStore.language == 'En'">Add to cart</p>
                         </button>
                       </div>
                     </div>
@@ -434,6 +168,25 @@ import Swal from "sweetalert2";
 // sweetalert end here
 
 import { useLanguageStore } from "../state/languageStore";
+import StarRating from "vue-star-rating";
+
+//loading
+
+import VueSpinner from 'vue-spinner/src/PulseLoader.vue';
+
+//end loading
+
+
+// carousle
+import { VueperSlides, VueperSlide } from 'vueperslides';
+import 'vueperslides/dist/vueperslides.css';
+// carousle end
+const loading = ref(true);
+
+
+const rating = ref([]);
+const productRateDatas = ref([]);
+const productRateData = ref("");
 
 const router = useRouter();
 
@@ -443,8 +196,6 @@ var useSelector = useSelectStore();
 const languageStore = useLanguageStore();
 
 const datas = ref([]);
-const cpids = ref([]);
-
 const count2 = ref([]); //count in v-model
 const idforVmodell = ref(0);
 
@@ -452,12 +203,6 @@ const numberOfItems = ref(0); //total amounts of items before updated
 const updatedAmount = ref(0); //total amounts of items after updated
 const productName = ref("");
 const orderRestrictAmount = ref(0);
-
-const rateCounter = ref(0);
-const star = ref(0);
-
-const countProductItemDisplay = ref([]);
-const CPID = ref(0);
 
 const transactProduct = ref("");
 const transactionEmail = ref("");
@@ -468,31 +213,27 @@ const kebele = localStorage.getItem("kebele");
 
 const pro_id = ref(0); ///the primary key id of the product
 const check_kebele = ref("");
-const productData = ref("");
 
 const updateOrderAmount = ref(0);
 const order_date = ref("");
+const news = ref([]);
 
 const patent_email = ref("");
+const user_email = localStorage.getItem("user_email");
+const filteredNews = ref([]);
 
 onMounted(async () => {
   try {
-    // const cpid = await axios.get("http://localhost:5000/orders");
-    // datas.value = response.data;
-
-    const response = await axios.get("http://localhost:5000/productsFavorite");
+    const response = await axios.get("http://localhost:5000/products");
     datas.value = response.data;
-    await getCPID();
+   await getProductRate();
+   await getNews();
+   await filterNews();
   } catch (err) {}
+  finally{
+  loading.value = false;
+  }
 });
-
-const getCPID = async () => {
-  try {
-    const cpidresponse = await axios.get("http://localhost:5000/CPID");
-    cpids.value = cpidresponse.data;
-    console.log(cpids.value);
-  } catch (err) {}
-};
 
 const checkInput = async (id, seller_email) => {
   patent_email.value = seller_email;
@@ -563,166 +304,6 @@ const getProductByIdforVmodel = async (id) => {
     });
     // sweetalert end
   }
-};
-
-const getProductByProductId = async (id) => {
-  const userInfo = await axios.get(`http://localhost:5000/products/${id}`);
-  productData.value = userInfo.data;
-  if (productData.value.kebele == kebele) {
-    await getRateByProductId(id);
-  } else if (productData.value.kebele == undefined) {
-    await getRateByProductId(id);
-  } else {
-    let timerInterval;
-    Swal.fire({
-      position: "top-end",
-      icon: "warning",
-      // title: "ስህተት",
-      html: "Rate ለመስጠት የማሂበራቱ ተጠቃሚ መሆን አለብዎ!",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => {
-        // Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft();
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // console.log("I was closed by the timer");
-      }
-    });
-  }
-};
-
-const getRateByProductId = async (id) => {
-  try {
-    const rate = await axios.get(`http://localhost:5000/favorite/${id}`);
-    rateCounter.value = rate.data.favorite_no;
-    console.log(rate.data);
-    // console.log(rateCounter.value);
-    if (
-      (rateCounter.value == 1 ||
-        rateCounter.value == 2 ||
-        rateCounter.value == 3 ||
-        rateCounter.value == 4 ||
-        rateCounter.value == 5) &&
-      rate.data.email == order_email
-    ) {
-      await updateProductRate(id);
-    } else {
-      await insertProductRate(id);
-    }
-    window.location.reload();
-  } catch (err) {}
-};
-
-const getRateByProductIdToCountnoofDisplay = async (id) => {
-  try {
-    const counter = await axios.get(`http://localhost:5000/rate/${id}`);
-    countProductItemDisplay.value = counter.data;
-    // console.log(counter.data);
-    console.log(countProductItemDisplay.value);
-    if (
-      countProductItemDisplay.value.email != undefined &&
-      countProductItemDisplay.value.email != order_email
-    ) {
-      CPID.value = 1;
-     await insertCPID(id);
-    }
-    console.log(x);
-  } catch (err) {}
-};
-
-const insertCPID = async (id) => {
-  try {
-    await axios.post("http://localhost:5000/CPID", {
-      c_email: order_email,
-      CPID: 1,
-      cproduct_id: id,
-    });
-  } catch (err) {}
-};
-
-const insertProductRate = async (id) => {
- await getRateByProductIdToCountnoofDisplay(id);
-  try {
-    await axios.post("http://localhost:5000/favorite", {
-      email: order_email,
-      favorite_no: star.value,
-      fproduct_id: id,
-    });
-  } catch (err) {}
-};
-
-const updateProductRate = async (id) => {
-  try {
-    await axios.put(`http://localhost:5000/favorite/${id}`, {
-      favorite_no: star.value,
-    });
-  } catch (err) {}
-};
-
-const star1 = async (id) => {
-  star.value = 1;
-  await svgClicked(id);
-};
-const star2 = async (id) => {
-  star.value = 2;
-  await svgClicked(id);
-};
-const star3 = async (id) => {
-  star.value = 3;
-  await svgClicked(id);
-};
-const star4 = async (id) => {
-  star.value = 4;
-  await svgClicked(id);
-};
-const star5 = async (id) => {
-  star.value = 5;
-  await svgClicked(id);
-};
-
-const svgClicked = async (id) => {
-  console.log("rate clicked");
-  console.log("clicked");
-  if (order_email == undefined || order_email == null) {
-    let timerInterval;
-    Swal.fire({
-      position: "top-end",
-      icon: "warning",
-      // title: "ስህተት",
-      html: "Rate ለመስጠት መጀመሪያ መመዝገብ አለብዎ!",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => {
-        // Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft();
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // console.log("I was closed by the timer");
-      }
-    });
-    router.replace("/login");
-  } else {
-    await getProductByProductId(id);
-  }
-
-  // window.location.reload();
 };
 
 const checkAmount = async (id) => {
@@ -1040,10 +621,89 @@ const getProductById = async (id) => {
     router.push(`/product/${id}`);
   } catch (err) {}
 };
+
+const setRating = async (id, star, mahiberat) => {
+  if(kebele == mahiberat){
+  await getProductRateByEmailAndProuctId(user_email, id);
+  if (productRateData.value.star == undefined) {
+    await insertProductRate(id, star);
+  } else {
+    await updateProductRateById(productRateData.value.favorite_id, star);
+  }}
+};
+const getProductRate = async () => {
+  try {
+    const responseRate = await axios.get(
+      "http://localhost:5000/products/ratingAndFavorite"
+    );
+    productRateDatas.value = responseRate.data;
+    for (let x in productRateDatas.value) {
+      if (productRateDatas.value[x].user_email == user_email) {
+        rating.value[productRateDatas.value[x].product_id] =
+          productRateDatas.value[x].star;
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getProductRateByEmailAndProuctId = async (email, id) => {
+  try {
+    const productRate = await axios.get(
+      `http://localhost:5000/products/ratingAndFavorite/${email}/${id}`
+    );
+    productRateData.value = productRate.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const insertProductRate = async (id, star) => {
+  try {
+    await axios.post("http://localhost:5000/products/ratingAndFavorite", {
+      user_email: user_email,
+      product_id: id,
+      star: star,
+      favorite: 0,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+const updateProductRateById = async (id, star) => {
+  try {
+    await axios.put(`http://localhost:5000/products/ratingAndFavorite/${id}`, {
+      star: star,
+    });
+  } catch (err) {}
+};
+
+const getNews = async () => {
+  try {
+    const response = await axios.get("http://localhost:5000/news");
+    news.value = response.data;
+
+    console.log(news.value);
+    loading.value = false;
+  } catch (err) {
+  }
+};
+
+const filterNews = async () => {
+  try {
+      filteredNews.value = news.value.filter(
+        (event) => event.newsSource == "Debre Elias Agricultural Office"
+      );
+  }catch (err) {}
+};
+
 </script>
 
 <style scoped>
-
+.addToCartButton{
+  background-color: #17cf97;
+}
 @keyframes fadeInLeft {
   from{
     transform: translateX(-300px);
@@ -1052,9 +712,9 @@ const getProductById = async (id) => {
     transform: translateX(0);
   }
 }
-.product{
+/* .product{
   animation: fadeInLeft 2s ease-in;
-}
+} */
 .rating {
   position: absolute;
   /* top: 50%;

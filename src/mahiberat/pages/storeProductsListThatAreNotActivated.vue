@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row bg-green-50 dark:bg-gray-800">
     <div class="w-full">
-      <div class="flex justify-evenly items-center mt-6 mb-2 gap-5 w-full">
+      <div class="flex justify-between items-center mt-6 mb-2 pr-5 gap-5 w-full">
         <div class="flex gap-1 items-center ml-8 py-4">
           <router-link to="/mahiberat/storeDashboard">
             <span
@@ -21,8 +21,8 @@
           </router-link>
           <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
         </div>
-
-        <div class="w-[50%]">
+        <div class="font-bold font-mono text-2xl">Requested Product for market</div>
+        <div class="w-[30%]">
           <form action="">
             <div class="flex gap-0">
               <input
@@ -50,17 +50,31 @@
         </button>
       </div>
       <div class="overflow-x-auto text-justify flex justify-center mt-1 mx-6 mb-6">
-        <table class="table-auto text-gray-700 dark:text-white w-full">
+        <div v-if="isData == false" col>
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No Product Requested.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once Kebele maiberat Admin requests to upload the item
+                will be displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <table
+          v-if="isData == true"
+          class="table-auto text-gray-700 dark:text-white w-full"
+        >
           <thead class="bg-slate-400 dark:bg-white">
             <tr>
               <th class="py-2 pl-2">ProductId</th>
-              <th class="py-2 pl-2">Category</th>
-              <th class="py-2 pl-2">ProductType</th>
               <th class="py-2 pl-2">Title</th>
-              <th class="py-2 pl-2">Price</th>
-              <th class="py-2 pl-2">OrginalCost</th>
-              <th class="py-2 pl-2">Amout</th>
-              <th class="py-2 pl-2">Address</th>
+              <th class="py-2 pl-2">Amout(Kuntal)</th>
               <th class="py-2 pl-2">Image</th>
               <th class="py-2 pl-2">Description</th>
               <th class="py-2 pl-2">Actions</th>
@@ -86,26 +100,6 @@
                 "
                 class="pl-2"
               >
-                {{ item.category }}
-              </td>
-              <td
-                v-if="
-                  item.kebele == kebele &&
-                  item.marketState == 0 &&
-                  item.postedForMarket != 0
-                "
-                class="pl-2"
-              >
-                {{ item.type_product }}
-              </td>
-              <td
-                v-if="
-                  item.kebele == kebele &&
-                  item.marketState == 0 &&
-                  item.postedForMarket != 0
-                "
-                class="pl-2"
-              >
                 {{ item.title }}
               </td>
               <td
@@ -116,37 +110,7 @@
                 "
                 class="pl-2"
               >
-                {{ item.price }}
-              </td>
-              <td
-                v-if="
-                  item.kebele == kebele &&
-                  item.marketState == 0 &&
-                  item.postedForMarket != 0
-                "
-                class="pl-2"
-              >
-                {{ item.original_cost }}
-              </td>
-              <td
-                v-if="
-                  item.kebele == kebele &&
-                  item.marketState == 0 &&
-                  item.postedForMarket != 0
-                "
-                class="pl-2"
-              >
                 {{ item.postedForMarket }}
-              </td>
-              <td
-                v-if="
-                  item.kebele == kebele &&
-                  item.marketState == 0 &&
-                  item.postedForMarket != 0
-                "
-                class="pl-2"
-              >
-                {{ item.address }}
               </td>
               <td
                 v-if="
@@ -203,10 +167,12 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 const datas = ref([]);
 const router = useRouter();
 const kebele = localStorage.getItem("kebele");
 const productName = ref("");
+var isData = ref(false);
 
 const productAdd = () => {
   router.replace("/mahiberat/addProductToStore");
@@ -216,6 +182,15 @@ const getProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/products");
     datas.value = response.data;
+    for (let x in datas.value) {
+      if (
+        datas.value[x].kebele == kebele &&
+        datas.value[x].marketState == 0 &&
+        datas.value[x].postedForMarket != 0
+      ) {
+        isData.value = true;
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -226,7 +201,30 @@ onMounted(async () => {
     localStorage.getItem("store_email") == null ||
     localStorage.getItem("role") != "store"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   getProducts();
@@ -245,7 +243,7 @@ const editProductById = async (id) => {
 
 const rejectProductRequestForMarketById = async (id) => {
   try {
-    await axios.put(`http://localhost:5000/products/store/rejectForMarket/${id}`, {
+    await axios.put(`http://localhost:5000/products/store/market/reject/${id}`, {
       postedForMarket: 0,
     });
     self.location.replace("/mahiberat/storeProductsListThatAreNotActivated");

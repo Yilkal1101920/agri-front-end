@@ -41,7 +41,6 @@ onMounted(async () => {
 });
 
 const deleteProduct = async (id) => {
-  alert("Are You sure to delete");
   try {
     await axios.delete(`http://localhost:5000/products/${id}`);
   } catch (err) {

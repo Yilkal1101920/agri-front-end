@@ -77,6 +77,8 @@
         >
           <router-link to="/chat"> Contact us</router-link>
         </button>
+
+        
       </div>
     </div>
   </div>

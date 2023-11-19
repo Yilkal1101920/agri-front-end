@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full h-full bg-green-50">
+  <div class="flex flex-row w-full h-full bg-green-50 dark:bg-gray-800">
     <section class="home-section justify-center pl-10">
       <nav>
         <div class="sidebar-button">
@@ -18,10 +18,16 @@
       </nav>
 
       <div class="home-content">
-        <div class="overview-boxes">
-          <div class="box pt-3 cursor-pointer hover:scale-110" @click="addProduct">
+        <div
+          class="overview-boxes border border-gray-300 flex p-8 mr-8 items-center justify-center gap-5"
+        >
+          <div
+            class="box border-l-4 border-green-700 pt-3 cursor-pointer"
+            @click="addProduct"
+            title="Click to add Product"
+          >
             <div class="right-side">
-              <div class="box-topic text-gray-700 font-mono">ADD PRODUCT</div>
+              <div class="box-topic text-gray-700 font-mono">Add Product</div>
               <div class="indicator">
                 <span>
                   <svg
@@ -41,10 +47,14 @@
             </div>
           </div>
 
-          <div class="box pt-3 cursor-pointer hover:scale-110" @click="productList">
+          <div
+            class="box border-l-4 border-blue-700 pt-3 cursor-pointer"
+            @click="productList"
+            title="Click to see Product detail"
+          >
             <div class="right-side">
-              <div class="box-topic text-gray-700 font-mono">TOTAL PRODUCTS TYPE</div>
-              <div class="number font-mono text-gray-700">{{ countProducts }}</div>
+              <div class="box-topic text-gray-700 font-mono">Total Products Type</div>
+              <div class="number font-mono text-blue-700">{{ countProducts }}</div>
               <div class="indicator">
                 <!-- <span>
                 <svg class="fill-current text-green-800 h-5 w-auto" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CategoryOutlinedIcon" tabindex="-1" title="CategoryOutlined"><path d="m12 2-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"></path></svg>
@@ -56,12 +66,13 @@
           </div>
 
           <div
-            class="box pt-3 cursor-pointer hover:scale-110"
+            class="box border-l-4 border-green-700 pt-3 cursor-pointer"
             @click="productListInTheMarket"
+            title="Click to See Detail"
           >
             <div class="right-side">
               <div class="box-topic text-gray-700 font-mono">Products In Market</div>
-              <div class="number text-gray-700 font-mono">
+              <div class="number text-green-700 font-mono">
                 {{ countProductsInTheMarket }}
               </div>
               <div class="indicator">
@@ -73,12 +84,15 @@
           </div>
 
           <div
-            class="box pt-3 cursor-pointer hover:scale-110 text-gray-700"
+            class="box border-l-4 border-yellow-700 pt-3 cursor-pointer text-gray-700"
             @click="productListNotInTheMarket"
+            title="Click to see detail"
           >
             <div class="right-side">
               <div class="box-topic font-mono">Products on Store</div>
-              <div class="number font-mono">{{ countProductsNotInTheMarket }}</div>
+              <div class="number font-mono text-yellow-700">
+                {{ countProductsNotInTheMarket }}
+              </div>
               <div class="indicator">
                 <span class="text font-mono">Not on market</span>
               </div>
@@ -86,12 +100,13 @@
             <i class="bx bx-cart cart three"></i>
           </div>
           <div
-            class="box pt-3 cursor-pointer hover:scale-110 text-gray-700"
+            class="box border-l-4 border-red-700 pt-3 cursor-pointer text-gray-700"
             @click="productListThatAreNotActivated"
+            title="Click to see Detail"
           >
             <div class="right-side">
               <div class="box-topic">Request Products for Market</div>
-              <div class="number">{{ countProductsNotActivated }}</div>
+              <div class="number text-red-700">{{ countProductsNotActivated }}</div>
               <div class="indicator">
                 <span class="text font-mono"> Mahiberat request for upload </span>
               </div>
@@ -108,6 +123,7 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const store_email = localStorage.getItem("store_email");
@@ -115,10 +131,10 @@ const kebele = localStorage.getItem("kebele");
 const items = ref([]);
 const countProducts = ref(0);
 const Products = ref("");
-const ProductsInTheMarket = ref("");
-const countProductsInTheMarket = ref("");
-const countProductsNotInTheMarket = ref("");
+const countProductsInTheMarket = ref(0);
+const countProductsNotInTheMarket = ref(0);
 const countProductsNotActivated = ref(0);
+const filteredJsonData = ref("");
 
 onMounted(() => {
   if (
@@ -126,12 +142,35 @@ onMounted(() => {
     localStorage.getItem("store_email") == null ||
     localStorage.getItem("role") != "store"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   } else {
     getUser();
     getTotalProducts();
-    getTotalProductsInTheMarket();
+    // getTotalProductsInTheMarket();
   }
 });
 
@@ -139,12 +178,84 @@ const getTotalProducts = async () => {
   try {
     const products = await axios.get("http://localhost:5000/products");
     Products.value = products.data;
-    for (let x in Products.value) {
+    // Create an empty object to store unique names
+    const uniqueNames = {};
+    const sums = {};
+    const sumsPostedForMarket = {};
+
+    const filteredProducts = Products.value.filter(
+      (item) => item.post_email == store_email
+    );
+    // Loop through the array and add each unique name to the object
+    filteredProducts.forEach((obj) => {
+      if (obj.post_email == store_email && obj.kebele == kebele) {
+        if (sums[obj.title]) {
+          sums[obj.title] += obj.amount;
+        } else {
+          sums[obj.title] = obj.amount;
+        }
+        if (sumsPostedForMarket[obj.title]) {
+          sumsPostedForMarket[obj.title] += obj.postedForMarket;
+        } else {
+          sumsPostedForMarket[obj.title] = obj.postedForMarket;
+        }
+        uniqueNames[obj.title] = true;
+      }
+    });
+    console.log(store_email);
+    // Create a new array of objects with unique names
+    const filteredArray = Object.keys(uniqueNames).map((title) => {
+      const obj = filteredProducts.find((item) => item.title == title);
+      return {
+        product_id: obj.product_id,
+        post_email: obj.post_email,
+        category: obj.category,
+        type_product: obj.type_product,
+        title,
+        kebele: obj.kebele,
+        original_cost: obj.original_cost,
+        price: obj.price,
+        amount: sums[title],
+        postedForMarket: obj.postedForMarket,
+        image: obj.image,
+        address: obj.address,
+        description: obj.description,
+        marketState: obj.marketState,
+      };
+    });
+
+    // Convert the filtered array back to JSON
+    filteredJsonData.value = filteredArray;
+    console.log(filteredJsonData.value);
+    for (let x in filteredJsonData.value) {
       if (
-        kebele == Products.value[x].kebele &&
-        store_email == Products.value[x].post_email
+        kebele == filteredJsonData.value[x].kebele &&
+        store_email == filteredJsonData.value[x].post_email
       ) {
         countProducts.value++;
+      }
+      if (
+        kebele == filteredJsonData.value[x].kebele &&
+        store_email == filteredJsonData.value[x].post_email &&
+        filteredJsonData.value[x].postedForMarket != 0 &&
+        filteredJsonData.value[x].marketState == 1
+      ) {
+        countProductsInTheMarket.value++;
+      }
+      if (
+        kebele == filteredJsonData.value[x].kebele &&
+        store_email == filteredJsonData.value[x].post_email &&
+        filteredJsonData.value[x].postedForMarket == 0
+      ) {
+        countProductsNotInTheMarket.value++;
+      }
+      if (
+        kebele == filteredJsonData.value[x].kebele &&
+        store_email == filteredJsonData.value[x].post_email &&
+        filteredJsonData.value[x].postedForMarket != 0 &&
+        filteredJsonData.value[x].marketState == 0
+      ) {
+        countProductsNotActivated.value++;
       }
     }
   } catch (err) {
@@ -311,16 +422,15 @@ nav .profile-details i {
 .home-content .overview-boxes {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   flex-wrap: wrap;
-  padding: 0 20px;
   margin-bottom: 26px;
 }
 .overview-boxes .box {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(100% / 4 - 15px);
+  /* width: calc(100% / 4 - 15px); */
   background: #fff;
   padding: 15px 14px;
   border-radius: 12px;

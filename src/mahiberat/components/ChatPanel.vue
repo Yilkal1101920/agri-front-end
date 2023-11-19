@@ -22,7 +22,12 @@
     <div v-for="user in Users" :key="user.email" class="nav text-blue-600">
       <ul>
         <li
-          v-if="user.user_role == 'user' && user.kebele == kebele_address"
+          class="cursor-pointer hover:text-green-500 p-1 text-lg font-bold font-mono"
+          v-if="
+            user.user_role == 'user' &&
+            user.kebele == kebele_address &&
+            user.user_state == 1
+          "
           @click.prevent="chatsWith(user.email)"
         >
           {{ user.fName }}

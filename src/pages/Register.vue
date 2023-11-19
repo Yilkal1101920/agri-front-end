@@ -4,6 +4,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 // sweetalert import
 import Swal from "sweetalert2";
+import howToRegister from "../components/howToRegister.vue";
+import { useLanguageStore } from "../state/languageStore";
+
+const languageStore = useLanguageStore();
+
+const registerHelp = ref(false);
 
 const fname = ref("");
 const lname = ref("");
@@ -23,6 +29,7 @@ const checkName = ref("");
 const checkLname = ref("");
 const checkUserName = ref("");
 const tryCount = ref(0);
+const name = ref("first name");
 
 const signUpValidation = () => {
   tryCount.value = 1;
@@ -106,7 +113,7 @@ const validatePassword = () => {
       position: "top-end",
       icon: "warning",
       // title: "ስህተት",
-      html: "እባክዎ, ትክክለኛ የይለፍ ቃል ያስገቡ!",
+      html: "እባክዎ, ትክክለኛ የይለፍ ቃል ያስገቡ! ቢያንስ አልፈቤት እና ቁጥር መያዝ አለበት፡፡",
       timer: 2000,
       timerProgressBar: true,
       didOpen: () => {
@@ -292,33 +299,30 @@ const saveUser = async () => {
       password: password.value,
       user_state: 1,
     });
-    // localStorage.setItem("user_id", 1);
-    // localStorage.setItem("user_email", email);
-    // logoutStor.logStore = true; // show log out button
     let timerInterval;
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      // title: "ስህተት",
-      html: "በትክክል ተመዝግበዋል!",
-      timer: 2000,
-      timerProgressBar: true,
-      didOpen: () => {
-        // Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft();
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // console.log("I was closed by the timer");
-      }
-    });
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    // title: "ስህተት",
+    html: "በትክክል ተመዝግበዋል!",
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: () => {
+      // Swal.showLoading();
+      const b = Swal.getHtmlContainer().querySelector("b");
+      timerInterval = setInterval(() => {
+        b.textContent = Swal.getTimerLeft();
+      }, 100);
+    },
+    willClose: () => {
+      clearInterval(timerInterval);
+    },
+  }).then((result) => {
+    /* Read more about handling dismissals below */
+    if (result.dismiss === Swal.DismissReason.timer) {
+      // console.log("I was closed by the timer");
+    }
+  });
     router.push("/login");
   } else {
     // alert("You are not a member of this mahiberat");
@@ -354,36 +358,46 @@ const saveUser = async () => {
   <div
     class="bg-green-50 dark:bg-gray-800 dark:text-white w-full h-full justify-center items-center"
   >
-    <div class="flex justify-center flex-wrap items-center sm:gap-2 md:gap-11">
-      <div class=" ">
-        <div class="flex gap-2 justify-center flex-wrap">
-          <img
-            src="../assets/loginLeft.png"
-            class="w-auto h-56 rounded-full p-8 justify-start items-start"
-            alt="signup image"
-          />
-          <div class="block pt-6 justify-center items-center">
-            <p class="text-2xl text-orange-700 dark:text-white">መመዝገቢያ ቅጽ</p>
-            <p class="text-gray-700 dark:text-white text-sm font-mono font-bold">
-              ክፍት ቦታዎችን በትክክል ይሙሉ
-            </p>
-          </div>
-        </div>
-        <img
-          src="../assets/signupRight.png"
-          class="w-auto pl-[50%] sm:pb-0 md:pb-8 pr-8 rounded-[100%] h-56"
-          alt="signup image"
-        />
+  <div class="px-6 py-12"> 
+    <div
+      class="block justify-center flex-wrap items-center border border-gray-300 rounded-3xl md:mt-[1%] md:mx-[18%] md:px-[3%] shadow-lg "
+     >
+      <div class="block pt-6">
+        <p
+          class="text-2xl font-bold font-mono text-green-700 dark:text-white text-center"
+          v-if="languageStore.language == 'En'"
+         >
+          Agri-service Members Registration Form
+        </p>
+        <p
+          class="text-2xl font-bold font-mono text-green-700 dark:text-white text-center"
+          v-if="languageStore.language == 'Am'"
+        >
+          የገበሬ አገልግሎት አባለ የሆኑ መለያ መመዝገቢያ ቅጽ
+        </p>
+        <p
+          class="text-gray-700 dark:text-white text-sm font-mono font-bold text-center"
+          v-if="languageStore.language == 'En'"
+        >
+          Fill Form Correctly
+        </p>
+        <p
+          class="text-gray-700 dark:text-white text-sm font-mono font-bold text-center"
+          v-if="languageStore.language == 'Am'"
+        >
+          ክፍት ቦታዎችን በትክክል ይሙሉ
+        </p>
       </div>
-      <div class="sm:pt-0 md:pt-7">
+      <div class="sm:pt-0 md:pt-7 flex justify-center">
         <form class="w-[100%]">
-          <div class="formClass block gap-6 justify-center items-center">
+          <div class="formClass block justify-center items-center">
             <div
-              class="name grid justify-center items-center w-full sm:grid-cols-1 md:grid-cols-2 gap-4 mb-1"
-            >
-              <div class="">
-                <label for="fname" class="text-gray-700 dark:text-white"
-                  >የመጀመሪያ ስም
+              class="name text-lg grid justify-center items-center w-full sm:grid-cols-1 md:grid-cols-2 gap-4 mb-1"
+             >
+              <div class="flex flex-col justify-center">
+                <label for="fname" class="text-gray-700 dark:text-white">
+                  <h1 v-if="languageStore.language == 'En'">First Name</h1>
+                  <h1 v-if="languageStore.language == 'Am'">የመጀመሪያ ስም</h1>
                 </label>
                 <input
                   type="text"
@@ -395,15 +409,19 @@ const saveUser = async () => {
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="fname == '' && tryCount == 1">
-                    የመጀመሪያ ስም ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill your name</p>
+                    <p v-if="languageStore.language == 'Am'">የመጀመሪያ ስም ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
-              <div class="">
+              <div class="flex flex-col justify-center">
                 <label
                   for="lname"
                   class="form-label inline-block text-gray-700 dark:text-white"
-                  >የአባት ስም</label
+                  >
+                  <h1 v-if="languageStore.language == 'En'">Last Name</h1>
+                  <h1 v-if="languageStore.language == 'Am'">የአባት ስም</h1>
+                  </label
                 >
                 <input
                   type="text"
@@ -414,15 +432,19 @@ const saveUser = async () => {
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="lname == '' && tryCount == 1">
-                    የአባት ስም ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill last name</p>
+                    <p v-if="languageStore.language == 'Am'">የአባት ስም ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
-              <div class="">
+              <div class="flex flex-col justify-center">
                 <label
                   for="phone"
                   class="form-label inline-block text-gray-700 dark:text-white"
-                  >መለያ ስም</label
+                  >
+                  <h1 v-if="languageStore.language == 'En'">ID</h1>
+                  <h1 v-if="languageStore.language == 'Am'">መለያ ስም</h1>
+                  </label
                 >
                 <input
                   type="text"
@@ -432,15 +454,19 @@ const saveUser = async () => {
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="userName == '' && tryCount == 1">
-                    መለያ ስም ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill id field</p>
+                    <p v-if="languageStore.language == 'Am'">መለያ ስም ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
-              <div class="">
+              <div class="flex flex-col justify-center">
                 <label
                   for="email"
                   class="form-label inline-block text-gray-700 dark:text-white"
-                  >ኢሜል</label
+                  >
+                  <h1 v-if="languageStore.language == 'En'">Email</h1>
+                  <h1 v-if="languageStore.language == 'Am'">ኢሜል</h1>
+                  </label
                 >
                 <input
                   type="email"
@@ -452,15 +478,19 @@ const saveUser = async () => {
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="email == '' && tryCount == 1">
-                    ኢሜል ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill email field</p>
+                    <p v-if="languageStore.language == 'Am'">ኢሜል ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
-              <div class="">
+              <div class="flex flex-col justify-center">
                 <label
                   for="exampleInputPassword1"
                   class="form-label inline-block text-gray-700 dark:text-white"
-                  >የይለፍ ቃል</label
+                  >
+                  <h1 v-if="languageStore.language == 'En'">Password</h1>
+                  <h1 v-if="languageStore.language == 'Am'">የይለፍ ቃል</h1>
+                  </label
                 >
                 <input
                   type="password"
@@ -471,26 +501,31 @@ const saveUser = async () => {
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="password == '' && tryCount == 1">
-                    የይለፍ ቃል ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill password field</p>
+                    <p v-if="languageStore.language == 'Am'">የይለፍ ቃል ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
-              <div class="">
+              <div class="flex flex-col justify-center">
                 <label
                   for="exampleInputPassword1"
                   class="form-label inline-block text-gray-700 dark:text-white"
-                  >የማረጋገጫ ይለፍ ቃል</label
+                  >
+                  <h1 v-if="languageStore.language == 'En'">Confirm Password</h1>
+                  <h1 v-if="languageStore.language == 'Am'">የማረጋገጫ ይለፍ ቃል</h1>
+                  </label
                 >
                 <input
                   type="password"
                   class="form-control w-full px-3 py-1.5 text-base font-normal text-gray-700 dark:text-white bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:text-white focus:bg-white focus:border-blue-600 focus:outline-none"
                   id="exampleInputPassword1"
-                  placeholder="የማረጋገጫ ይለፍ ቃል"
+                  placeholder="ድጋሜ ይለፍ ቃል"
                   v-model="confirmPassword"
                 />
                 <div class="mb-0 ml-5">
                   <p class="text-red-600" v-if="confirmPassword == '' && tryCount == 1">
-                    የማረጋገጫ ይለፍ ቃል ቦታ ባዶ ነው
+                    <p v-if="languageStore.language == 'En'">please fill confirm password field</p>
+                    <p v-if="languageStore.language == 'Am'">የማረጋገጫ ይለፍ ቃል ቦታ ባዶ ነው</p>
                   </p>
                 </div>
               </div>
@@ -498,41 +533,66 @@ const saveUser = async () => {
             <div class="submitButton flex justify-center">
               <button
                 type="submit"
-                class="px-8 text-lg py-2.5 bg-green-300 text-white font-bold font-mono my-5 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                class="register w-[30%] text-2xl py-2 hover:scale-110 text-white font-bold font-mono my-5 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
                 @click.prevent="signUpValidation"
               >
-                ተመዝገብ
+                <h1 v-if="languageStore.language == 'En'">Register</h1>
+                <h1 v-if="languageStore.language == 'Am'">ተመዝገብ</h1>
               </button>
             </div>
             <p
-              class="loginRedirect mb-5 justify-center text-1.5xl text-black dark:text-white"
+              class="loginRedirect flex flex-row gap-1 items-center text-lg font-mono font-bold text-center mb-5 justify-center text-1.5xl text-black dark:text-white"
             >
-              ከአሁን በፊት ተመዝግበሃል?
+              <h1 v-if="languageStore.language == 'En'">have an account?</h1>
+              <h1 v-if="languageStore.language == 'Am'">ከአሁን በፊት ተመዝግበሃል?</h1>
               <router-link to="/login">
                 <span
-                  class="hover:text-orange-500 hover:cursor-pointer text-green-800 text-lg font-mono font-bold"
-                  >በዚህ ግባ</span
-                >
-              </router-link>
-            </p>
-            <p
-              class="loginRedirect mb-5 justify-center text-1.5xl text-black dark:text-white"
-            >
-              የማሂበራት ተጠቃሚ አባል አደለህም?
-              <router-link to="/registerNotMemberOfMahiberat">
-                <span
-                  class="hover:text-orange-500 hover:cursor-pointer text-green-800 text-lg font-mono font-bold"
-                  >በዚህ ግባና ተመዝገብ</span
+                  class="hover:text-green-700 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
+                  >
+                  <h1 v-if="languageStore.language == 'En'">login</h1>
+                  <h1 v-if="languageStore.language == 'Am'">በዚህ ግባ</h1>
+                  </span
                 >
               </router-link>
             </p>
           </div>
         </form>
       </div>
+      <div class="grid sm:grid-cols-1 lg:grid-cols-2">
+        <p
+          class="loginRedirect flex flex-row sm:gap-1 md:gap-1 items-center justify-center text-lg font-mono font-bold mb-5  text-1.5xl text-black dark:text-white"
+        >
+          <h1 v-if="languageStore.language == 'En'">Not a mahiberat user?</h1>
+          <h1 v-if="languageStore.language == 'Am'">የማህበራት ተጠቃሚ አባል አይደለህም?</h1>
+          <router-link to="/registerNotMemberOfMahiberat">
+            <span
+              class="hover:text-green-700 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
+              >
+              <h1 v-if="languageStore.language == 'En'">Register here</h1>
+              <h1 v-if="languageStore.language == 'Am'">በዚህ ተመዝገብ</h1>
+              </span
+            >
+          </router-link>
+        </p>
+        <button
+          @click="registerHelp = !registerHelp"
+          class="hover:text-green-700 pb-5 hover:cursor-pointer text-blue-800 text-lg font-mono font-bold"
+        >
+          <h1 v-if="languageStore.language == 'En'">how to register?</h1>
+          <h1 v-if="languageStore.language == 'Am'">እንዴት ልመዝገብ?</h1>
+        </button>
+      </div>
+      <div v-show="registerHelp">
+        <howToRegister />
+      </div>
     </div>
+  </div>
   </div>
 </template>
 <style scoped>
+.register {
+  background: #17cf97;
+}
 @media screen and (max-width: 600px) {
   .formClass {
     align-items: center;
@@ -563,7 +623,6 @@ const saveUser = async () => {
     justify-content: center;
     align-items: center;
     align-content: center;
-    padding-left: 100px;
   }
   .role {
     justify-content: center;
@@ -571,7 +630,7 @@ const saveUser = async () => {
   }
   .loginRedirect {
     justify-content: center;
-    padding-left: 100px;
+    /* padding-left: 100px; */
   }
 }
 </style>

@@ -22,21 +22,22 @@
           </router-link>
           <p class="text-gray-700 dark:text-white">Back to dashboard</p>
         </div>
+        <div><p class="text-2xl font-mono font-bold">Ordered list</p></div>
         <div class="w-[50%] flex gap-0">
           <form action="">
             <div class="">
               <input
                 type="search"
                 name="search"
-                v-model="userName"
+                v-model="searchValue"
                 id="searchProduct"
                 placeholder=" Search"
-                class="w-[80%] p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
+                class="p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
               />
             </div>
           </form>
           <button
-            @click="searchByNameOfUser(userName)"
+            @click="searchOrder(searchValue)"
             class="text-gray-700 bg-green-300 hover:bg-green-700 p-2 rounded-r-lg hover:text-white hover:cursor-pointer"
           >
             search
@@ -45,7 +46,23 @@
       </div>
 
       <div class="overflow-x-auto text-justify flex justify-center mt-3 mb-6">
-        <table class="table-auto w-full text-gray-700">
+        <div v-if="isData == false">
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No Product ordered.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once farmers order products ordered products will be
+                displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <table v-if="isData == true" class="table-auto w-full text-gray-700">
           <thead class="bg-slate-400">
             <tr class="">
               <th class="py-2 pl-2">Name</th>
@@ -88,6 +105,7 @@
               <td v-if="item.kebele == kebele && item.payStatus == 0" class="pl-2">
                 <div v-if="item.payStatus == 0" class="flex flex-row">
                   <button
+                    class="bg-blue-300 hover:bg-blue-700"
                     @click.prevent="
                       updateOrderByOrderIdforPayment(
                         item.order_id,
@@ -102,7 +120,7 @@
                   </button>
                   <button
                     @click.prevent="getOrderedProductById(item.order_id)"
-                    class="pl-3"
+                    class="pl-3 bg-red-300 hover:bg-red-700"
                   >
                     cancel
                   </button>
@@ -137,6 +155,7 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import AdminPanel from "../components/AdminPanel.vue";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 
@@ -147,7 +166,7 @@ const productId = ref(0);
 const amountRollback = ref(0);
 
 const orderArray = ref([]);
-const userName = ref([]);
+const searchValue = ref([]);
 
 const productName = ref("");
 const orderEmail = ref("");
@@ -159,6 +178,9 @@ const day = ref("");
 const dayName = ref("");
 const month = ref("");
 const monthName = ref("");
+
+var isData = ref("");
+
 const getProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/joinOrder");
@@ -167,6 +189,11 @@ const getProducts = async () => {
     for (orderDatas.value.order_id in orderDatas.value) {
       orderArray[orderDatas.value.order_id] =
         orderDatas.value[orderDatas.value.order_id].nOrders;
+    }
+    for (let x in orderDatas.value) {
+      if (orderDatas.value[x].kebele == kebele && orderDatas.value[x].payStatus == 0) {
+        isData.value = true;
+      }
     }
   } catch (err) {}
 };
@@ -177,7 +204,30 @@ onMounted(async () => {
     localStorage.getItem("manager_email") == null ||
     localStorage.getItem("role") != "manager"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   getProducts();
@@ -241,8 +291,18 @@ const deleteOrder = async (id) => {
   }
 };
 
-const searchByNameOfUser = async (name) => {
-  orderDatas.value = datas.value.filter((order) => order.fName == name);
+const searchOrder = async (searchResult) => {
+  try {
+    orderDatas.value = datas.value.filter(
+      (order) =>
+        order.fName == searchResult ||
+        order.faName == searchResult ||
+        order.user_email == searchResult ||
+        order.title == searchResult
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getProductbyproductid = async (id) => {

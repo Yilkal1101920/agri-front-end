@@ -1,17 +1,63 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 h-full w-full">
-    <div class="flex">
-      <AdminPanel />
-      <div class="px-6 justify-center">
-        <div class="pl-5" v-for="event in news.slice().reverse()" :key="event.id">
-          <div
-            v-if="
-              event.kebele == kebele_address &&
-              (event.title == eventSearchValue ||
-                event.postedDate == eventSearchValue ||
-                event.description == eventSearchValue)
-            "
-          >
+    <div class="flex w-full">
+      <div class="px-6 justify-center w-full">
+        <div class="w-full">
+          <div class="flex justify-between items-center my-6 w-full">
+            <div class="flex gap-1 items-center ml-8 py-4">
+              <router-link to="/woreda/dashboard">
+                <span
+                  ><svg
+                    class="fill-current h-8 w-auto text-green-600 hover:text-green-900 cursor-pointer"
+                    focusable="false"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    data-testid="ArrowCircleLeftOutlinedIcon"
+                    tabindex="-1"
+                    title="ArrowCircleLeftOutlined"
+                  >
+                    <path
+                      d="M2 12c0 5.52 4.48 10 10 10s10-4.48 10-10S17.52 2 12 2 2 6.48 2 12zm18 0c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8 8 3.58 8 8zM8 12l4-4 1.41 1.41L11.83 11H16v2h-4.17l1.59 1.59L12 16l-4-4z"
+                    ></path></svg
+                ></span>
+              </router-link>
+              <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
+            </div>
+            <p class="font-mono font-bold text-2xl text-gray-700 dark:text-white">
+              All events posted
+            </p>
+            <div class="w-[30%]">
+              <form action="">
+                <div class="flex gap-0">
+                  <input
+                    type="search"
+                    v-model="eventSearchValue"
+                    name="search"
+                    id="searchProduct"
+                    placeholder=" Search Event..."
+                    class="w-[80%] shadow-sm p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
+                  />
+                  <input
+                    type="submit"
+                    value="Search"
+                    @click="searchEvents"
+                    class="shadow-sm text-gray-700 dark:text-white bg-green-300 hover:bg-green-700 p-2 rounded-r-lg hover:text-white hover:cursor-pointer"
+                  />
+                </div>
+              </form>
+            </div>
+            <router-link to="/mahiberat/addNews">
+              <button
+                class="text-gray-700 dark:text-white bg-green-300 hover:bg-green-700 p-2 rounded-lg hover:text-white"
+                @click="productAdd"
+              >
+                Post event now
+              </button>
+            </router-link>
+          </div>
+        </div>
+        <div class="pl-5" v-for="event in filteredNews.slice().reverse()" :key="event.id">
+          <div>
             <div v-if="event.title" class="lg:flex lg:flex-row flex flex-col gap-10">
               <div class="flex items-center justify-center pb-10">
                 <img
@@ -91,15 +137,14 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import AdminPanel from "../components/AdminPanel.vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
 const router = useRouter();
 
 const news = ref([]);
-const kebele_address = localStorage.getItem("kebele");
-const eventSearchValue = localStorage.getItem("event_search_value");
+const filteredNews = ref([]);
+const eventSearchValue = ref("");
 
 const getNews = async () => {
   try {
@@ -107,16 +152,40 @@ const getNews = async () => {
     news.value = response.data;
 
     console.log(news.value);
-  } catch (err) {}
+    await filterNews();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
+const filterNews = async () => {
+  try {
+    filteredNews.value = news.value.filter(
+      (event) => event.newsSource == "Debre Elias Agricultural Office"
+    );
+  } catch (err) {}
+};
 onMounted(async () => {
   if (
-    localStorage.getItem("manager_email") == undefined ||
-    localStorage.getItem("manager_email") == null ||
-    localStorage.getItem("role") != "manager"
+    localStorage.getItem("woreda_admin_email") == undefined ||
+    localStorage.getItem("woreda_admin_email") == null ||
+    localStorage.getItem("role") != "woreda_admin"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+      }
+    });
     router.replace("/login");
   }
   await getNews();
@@ -129,6 +198,7 @@ const deleteEvent = async (id) => {
   }
   window.location.reload();
 };
+
 const deleteNews = async (id) => {
   Swal.fire({
     title: "Are you sure to delete?",
@@ -141,6 +211,10 @@ const deleteNews = async (id) => {
       Swal.fire("Deleted Successfully!");
     }
   });
+};
+const searchEvents = async () => {
+  localStorage.setItem("event_search_value", eventSearchValue.value);
+  router.push(`/mahiberat/postedNews/${eventSearchValue.value}`);
 };
 </script>
 <style scoped>

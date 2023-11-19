@@ -23,7 +23,7 @@ onMounted(async () => {
   foo = document.createElement("script");
   foo.setAttribute("src", "//checkout.stripe.com/v2/checkout.js");
   foo.setAttribute("class", "stripe-button");
-  foo.setAttribute("action", "http://localhost:5000/payment");
+  foo.setAttribute("action", "http://localhost:3000/payment");
   foo.setAttribute(
     "data-key",
     "pk_test_51MrgvLGPITKsRzWNNJrPhxOG1MEhKTbZ7EuOpK0cu4CAHQ5aCuY8V6AsLjBJKd5XCmsB655Xdu6IZSr4EhlCP7D4005hohlAIz"

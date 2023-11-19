@@ -1,7 +1,7 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 w-full h-full">
     <div class="mx-8 py-4 flex flex-col">
-      <div class="flex justify-between">
+      <div class="flex justify-between items-center">
         <div class="flex gap-1 items-center justify-center">
           <router-link to="/woreda/dashboard">
             <span
@@ -20,6 +20,9 @@
             ></span>
           </router-link>
           <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold font-mono">Total employeers</p>
         </div>
         <button
           class="mb-3 px-2 rounded-lg font-mono font-bold text-lg bg-green-300 hover:bg-green-700 items-end py-2"
@@ -182,7 +185,21 @@ onMounted(async () => {
     localStorage.getItem("woreda_admin_email") == null ||
     localStorage.getItem("role") != "woreda_admin"
   ) {
-    alert("login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+      }
+    });
     router.replace("/login");
   }
   getTotalEmployers();
@@ -210,6 +227,7 @@ const editEmployerById = async (id) => {
 
 const deleteEmployee = async (id) => {
   Swal.fire({
+    icon: "question",
     title: "Are you sure to delete?",
     showCancelButton: true,
     confirmButtonText: "Ok",
@@ -217,7 +235,7 @@ const deleteEmployee = async (id) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       deleteEmployer(id);
-      Swal.fire("Deleted Successfully!");
+      Swal.fire({ icon: "success", title: "Deleted Successfully!" });
     }
   });
 };

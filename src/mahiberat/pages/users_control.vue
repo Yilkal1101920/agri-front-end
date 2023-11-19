@@ -35,6 +35,7 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const items = ref([]);
@@ -46,20 +47,56 @@ onMounted(async () => {
     localStorage.getItem("manager_email") == null ||
     localStorage.getItem("role") != "manager"
   ) {
-    alert("login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   getUser();
 });
 
-const deleteUser = async (id) => {
-  alert("Are You sure to delete");
+const deleteActiveMember = async (id) => {
   try {
     await axios.delete(`http://localhost:5000/users/${id}`);
     getUser();
   } catch (err) {
     console.log(err);
   }
+};
+
+const deleteUser = async (m_id) => {
+  Swal.fire({
+    title: "Are you sure to delete?",
+    showCancelButton: true,
+    confirmButtonText: "Ok",
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      deleteActiveMember(m_id);
+      Swal.fire("Deleted Successfully!");
+    }
+  });
 };
 
 const getUser = async () => {

@@ -1,6 +1,8 @@
 <template>
   <div class="bg-green-50 dark:bg-slate-800 w-full h-full">
-    <div class="pt-4 mx-6 text-gray-700 dark:text-white justify-center items-center">
+    <div
+      class="pt-4 mx-6 text-gray-700 dark:text-white justify-center items-center w-full"
+    >
       <nav class="flex justify-between px-6 bg-white shadow-md p-3">
         <div class="">
           <span class="text-lg text-gray-700 dark:text-gray-800 font-bold font-mono"
@@ -17,74 +19,66 @@
           </div>
         </div>
       </nav>
-      <div class="flex gap-4 mt-4 mb-11 justify-center items-center">
+      <div
+        class="flex gap-4 border p-8 border-gray-300 mt-4 mb-11 justify-center items-center flex-wrap"
+      >
         <div
           @click="transactionHistory"
-          class="cursor-pointer shadow-md hover:scale-110 bg-blue-200 py-6 w-[38%] rounded-lg"
+          title="Click to see detail"
+          class="cursor-pointer shadow-md hover:shadow-lg bg-blue-200 py-6 border-l-8 border-blue-700 w-[49%] rounded-lg"
         >
           <p class="font-mono font-bold text-lg text-center">Revenu</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalSoledInBirr }} Birr
-          </h2>
+          <h2 class="font-mono font-bold text-lg text-center">{{ totalRevenue }} Birr</h2>
         </div>
-        <div @click="transactionHistory" class="bg-red-200 py-6 w-[38%] rounded-lg">
+        <div
+          @click="transactionHistory"
+          title="Click to see detail"
+          class="cursor-pointer shadow-md hover:shadow-lg bg-red-200 py-6 border-l-8 border-red-700 w-[49%] rounded-lg"
+        >
           <p class="font-mono font-bold text-lg text-center">Expense</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalExpenseInBirr }} Birr
-          </h2>
-        </div>
-        <div @click="transactionHistory" class="bg-green-200 py-6 w-[38%] rounded-lg">
-          <p class="font-mono font-bold text-lg text-center">Profit</p>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalSoledInBirr - totalExpenseInBirr }} Birr
-          </h2>
+          <h2 class="font-mono font-bold text-lg text-center">{{ totalExpense }} Birr</h2>
         </div>
       </div>
       <div
-        class="flex gap-4 my-2 flex-wrap justify-center items-center text-gray-700 dark:text-white"
+        class="flex gap-4 mb-2 border border-gray-300 p-8 flex-wrap justify-center items-center text-gray-700 dark:text-white"
       >
         <div
           @click="membersPage"
-          class="hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 hover:scale-110 cursor-pointer shadow-md h-20 bg-white py-2 w-[25%] rounded-lg"
+          title="Click to see detail"
+          class="border-l-4 border-blue-700 hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 cursor-pointer shadow-md h-20 bg-white py-2 w-[30%] rounded-lg"
         >
-          <h2 class="font-mono font-bold text-lg text-center">Customers</h2>
-          <h2 class="font-mono font-bold text-lg text-center">
+          <h2 class="font-mono font-bold text-lg pl-5">Customers</h2>
+          <h2 class="font-mono font-bold text-2xl pl-5 text-blue-700">
             {{ countMembers }}
           </h2>
         </div>
         <div
           @click="activeSystemUsers"
-          class="hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 hover:scale-110 cursor-pointer shadow-md h-20 bg-white py-2 w-[25%] rounded-lg"
+          title="Click to see detail"
+          class="border-l-4 border-green-700 hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 cursor-pointer shadow-md h-20 bg-white py-2 w-[30%] rounded-lg"
         >
-          <h2 class="font-mono font-bold text-lg text-center">active users</h2>
-          <h2 class="font-mono font-bold text-lg text-center">
+          <h2 class="font-mono font-bold text-lg pl-5">Active users</h2>
+          <h2 class="font-mono font-bold text-2xl pl-5 text-green-700">
             {{ countActiveSystemUsers }}
           </h2>
         </div>
         <div
           @click="ordersPage"
-          class="hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 hover:scale-110 cursor-pointer shadow-md h-20 bg-white py-2 w-[25%] rounded-lg"
+          title="Click to see detail"
+          class="border-l-4 border-yellow-700 hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 cursor-pointer shadow-md h-20 bg-white py-2 w-[30%] rounded-lg"
         >
-          <h2 class="font-mono font-bold text-lg text-center">Order</h2>
-          <h2 class="font-mono font-bold text-lg text-center">
+          <h2 class="font-mono font-bold text-lg pl-5">Order</h2>
+          <h2 class="font-mono font-bold text-2xl text-yellow-700 pl-5">
             {{ countOrders }}
           </h2>
         </div>
         <div
-          @click="transactionHistory"
-          class="hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 hover:scale-110 cursor-pointer shadow-md h-20 bg-white py-2 w-[25%] rounded-lg"
-        >
-          <h2 class="font-mono font-bold text-lg text-center">Total sale in Birr</h2>
-          <h2 class="font-mono font-bold text-lg text-center">
-            {{ totalSoledInBirr }} Birr
-          </h2>
-        </div>
-        <div
           @click="productsPage"
-          class="hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 hover:scale-110 cursor-pointer shadow-md h-20 bg-white py-2 w-[25%] rounded-lg"
+          title="Click to see detail"
+          class="border-l-4 border-red-700 hover:shadow-lg text-gray-800 dark:text-gray-800 hover:shadow-green-200 cursor-pointer shadow-md h-20 bg-white py-2 w-[30%] rounded-lg"
         >
-          <h2 class="font-mono font-bold text-lg text-center">Total products</h2>
-          <h2 class="font-mono font-bold text-lg text-center">
+          <h2 class="font-mono font-bold text-lg pl-5">Total products</h2>
+          <h2 class="font-mono font-bold text-2xl pl-5 text-red-700">
             {{ countProducts }}
           </h2>
         </div>
@@ -96,6 +90,8 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
 const members = ref("");
 const Orders = ref("");
 const Products = ref("");
@@ -106,11 +102,12 @@ const countActiveSystemUsers = ref(0);
 const countOrders = ref(0);
 const countProducts = ref(0);
 const activeUsers = ref([]);
-const totalExpenseAndRevenue = ref([]);
-const totalExpenseInBirr = ref(0);
-const totalSoledInBirr = ref(0);
-const totalSellData = ref([]);
 const manager_email = localStorage.getItem("manager_email");
+const filteredJsonData = ref("");
+const reportInfo = ref([]);
+const filteredReport = ref([]);
+const totalExpense = ref(0);
+const totalRevenue = ref(0);
 
 onMounted(async () => {
   if (
@@ -118,15 +115,39 @@ onMounted(async () => {
     localStorage.getItem("manager_email") == null ||
     localStorage.getItem("role") != "manager"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
+  } else {
+    await getTotalMahiberatMembers();
+    await getTotalOrders();
+    await getTotalProducts();
+    await getUsers();
+    await getTotalReport();
+    await getTotalExpenseAndRevenue();
   }
-  getTotalMahiberatMembers();
-  getTotalOrders();
-  getTotalProducts();
-  getUsers();
-  getTotalExpenseRevenue();
-  await getTotalSoled();
 });
 const getTotalMahiberatMembers = async () => {
   try {
@@ -148,7 +169,8 @@ const getUsers = async () => {
       if (
         kebele == activeUsers.value[x].kebele &&
         activeUsers.value[x].user_state == 1 &&
-        activeUsers.value[x].user_role == "user"
+        activeUsers.value[x].user_role == "user" &&
+        activeUsers.value[x].password != ""
       ) {
         countActiveSystemUsers.value++;
       }
@@ -165,7 +187,7 @@ const activeSystemUsers = async () => {
 };
 
 const transactionHistory = async () => {
-  router.replace("/mahiberat/transactionHistory");
+  router.replace("/mahiberat/report");
 };
 
 const getTotalOrders = async () => {
@@ -188,35 +210,63 @@ const getTotalProducts = async () => {
   try {
     const products = await axios.get("http://localhost:5000/products");
     Products.value = products.data;
-    for (let x in Products.value) {
-      if (
-        kebele == Products.value[x].kebele &&
-        Products.value[x].marketState == 1 &&
-        Products.value[x].postedForMarket != 0
-      ) {
-        countProducts.value++;
+
+    // Create an empty object to store unique names
+    const uniqueNames = {};
+    const sums = {};
+    const sumsPostedForMarket = {};
+    const filteredProducts = Products.value.filter(
+      (item) =>
+        item.seller == "mahiberat" && item.kebele == kebele && item.marketState == 1
+    );
+    // Loop through the array and add each unique name to the object
+    filteredProducts.forEach((obj) => {
+      if (obj.seller == "mahiberat" && obj.kebele == kebele) {
+        if (sums[obj.title]) {
+          sums[obj.title] += obj.amount;
+        } else {
+          sums[obj.title] = obj.amount;
+        }
+        if (sumsPostedForMarket[obj.title]) {
+          sumsPostedForMarket[obj.title] += obj.postedForMarket;
+        } else {
+          sumsPostedForMarket[obj.title] = obj.postedForMarket;
+        }
+        uniqueNames[obj.title] = true;
       }
-    }
-  } catch (err) {}
-};
-
-const productsPage = async () => {
-  router.replace("/mahiberat/productsList");
-};
-const getTotalExpenseRevenue = async () => {
-  try {
-    const response = await axios.get("http://localhost:5000/joinOrder");
-    totalExpenseAndRevenue.value = response.data;
-
-    for (let x in totalExpenseAndRevenue.value) {
+    });
+    // Create a new array of objects with unique names
+    const filteredArray = Object.keys(uniqueNames).map((title) => {
+      const obj = filteredProducts.find((item) => item.title == title);
+      return {
+        product_id: obj.product_id,
+        post_email: obj.post_email,
+        category: obj.category,
+        type_product: obj.type_product,
+        title,
+        kebele: obj.kebele,
+        original_cost: obj.original_cost,
+        price: obj.price,
+        amount: sums[title],
+        postedForMarket: obj.postedForMarket,
+        seller: obj.seller,
+        image: obj.image,
+        address: obj.address,
+        description: obj.description,
+        marketState: obj.marketState,
+      };
+    });
+    // Convert the filtered array back to JSON
+    filteredJsonData.value = filteredArray;
+    console.log(filteredJsonData.value);
+    for (let x in filteredJsonData.value) {
       if (
-        totalExpenseAndRevenue.value[x].kebele == kebele &&
-        totalExpenseAndRevenue.value[x].payStatus == 1
+        filteredJsonData.value[x].kebele === kebele &&
+        filteredJsonData.value[x].seller === "mahiberat" &&
+        filteredJsonData.value[x].postedForMarket != 0 &&
+        filteredJsonData.value[x].marketState === 1
       ) {
-        totalExpenseInBirr.value =
-          totalExpenseInBirr.value +
-          totalExpenseAndRevenue.value[x].nOrders *
-            totalExpenseAndRevenue.value[x].original_cost;
+        countProducts.value = countProducts.value + 1;
       }
     }
   } catch (err) {
@@ -224,24 +274,31 @@ const getTotalExpenseRevenue = async () => {
   }
 };
 
-const getTotalSoled = async () => {
+const productsPage = async () => {
+  router.replace("/mahiberat/productsList");
+};
+const getTotalReport = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/joinOrder");
-    totalSellData.value = response.data;
-    console.log(totalSellData.value);
-    for (let x in totalSellData.value) {
-      console.log(x);
-      if (
-        totalSellData.value[x].payStatus == 1 &&
-        totalSellData.value[x].kebele == kebele
-      ) {
-        totalSoledInBirr.value =
-          totalSoledInBirr.value +
-          totalSellData.value[x].nOrders * totalSellData.value[x].price;
-        console.log(totalSellData.value[x].nOrders);
-        console.log(totalSellData.value[x].price);
+    const reportData = await axios.get("http://localhost:5000/report");
+    reportInfo.value = reportData.data;
+    filteredReport.value = reportInfo.value;
+  } catch (err) {}
+};
+
+const getTotalExpenseAndRevenue = async () => {
+  for (let x in filteredReport.value) {
+    if (filteredReport.value[x].report_owner == kebele) {
+      if (filteredReport.value[x].transaction == "cash out") {
+        totalExpense.value =
+          totalExpense.value +
+          filteredReport.value[x].quantity * filteredReport.value[x].transaction_in_birr;
+      }
+      if (filteredReport.value[x].transaction == "cash in") {
+        totalRevenue.value =
+          totalRevenue.value +
+          filteredReport.value[x].quantity * filteredReport.value[x].transaction_in_birr;
       }
     }
-  } catch (err) {}
+  }
 };
 </script>

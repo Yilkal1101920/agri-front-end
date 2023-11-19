@@ -3,6 +3,8 @@ import { ref } from "vue";
 import axios from "axios";
 import { uselogoutStore } from "../state/logoutStore"; //import for logout display
 import Swal from "sweetalert2";
+import { useLanguageStore } from "../state/languageStore";
+const languageStore = useLanguageStore();
 const logoutSto = uselogoutStore();
 const vEmail = ref("");
 const password = ref("");
@@ -282,7 +284,10 @@ const updateEmailAndPassword = async (email) => {
               v-model="vEmail"
             />
             <div class="mb-6 ml-5">
-              <p class="text-red-600" v-if="vEmail == '' && tryCount == 1">ኢሜል አላስገቡም</p>
+              <p class="text-red-600" v-if="vEmail == '' && tryCount == 1">
+              <p v-if="languageStore.language == 'Am'">ኢሜል አላስገቡም</p>
+              <p v-if="languageStore.language == 'Am'">ኢሜል አላስገቡም</p>
+              </p>
             </div>
           </div>
           <div class="mb-0">
@@ -294,7 +299,8 @@ const updateEmailAndPassword = async (email) => {
             />
             <div class="mb-6 ml-5">
               <p class="text-red-600" v-if="password == '' && tryCount == 1">
-                የይለፍ ቃል አላስገቡም
+                <p v-if="languageStore.language == 'En'">please enter password</p>
+                <p v-if="languageStore.language == 'Am'">የይለፍ ቃል አላስገቡም</p>
               </p>
             </div>
           </div>
@@ -307,7 +313,8 @@ const updateEmailAndPassword = async (email) => {
             />
             <div class="mb-6 ml-5">
               <p class="text-red-600" v-if="confirmPassword == '' && tryCount == 1">
-                ማረጋገጫ ይለፍ ቃል አላስገቡም
+                <p v-if="languageStore.language == 'En'">please enter password</p>
+                <p v-if="languageStore.language == 'Am'">ማረጋገጫ ይለፍ ቃል አላስገቡም</p>
               </p>
             </div>
           </div>
@@ -319,7 +326,8 @@ const updateEmailAndPassword = async (email) => {
               data-mdb-ripple-color="light"
               @click.prevent="changeValidation"
             >
-              ቀይር
+              <h4 v-if="languageStore.language == 'En'">Change</h4>
+              <h4 v-if="languageStore.language == 'Am'">ቀይር</h4>
             </button>
           </div>
         </div>

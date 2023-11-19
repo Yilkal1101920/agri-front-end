@@ -22,21 +22,21 @@
           <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
         </div>
         <p
-          class="text-center pl-[30%] text-lg text-gray-700 dark:text-white font-bold font-mono"
+          class="text-center pl-[30%] text-2xl text-gray-700 dark:text-white font-bold font-mono"
         >
           Register Product
         </p>
       </div>
       <div class="flex flex-row pl-10 flex-wrap justify-center">
         <div
-          class="p-2 px-8 py-6 mb-4 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          class="p-2 px-8 pt-6 mb-4 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <div class="field">
             <label class="text-gray-700 font-bold">Category</label>
             <div class="control">
               <select
                 v-model="category"
-                class="border border-green-300 bg-white text-gray-700 dark:text-white"
+                class="border border-green-300 bg-white text-gray-700 dark:text-white w-full py-2"
               >
                 <option value="AGRICULTURAL PRODUCT">AGRICULTURAL PRODUCT</option>
                 <option value="AGRICULTURAL MATERIAL">AGRICULTURAL MATERIAL</option>
@@ -79,7 +79,7 @@
               <div v-if="category == ''">
                 <select
                   v-model="title"
-                  class="border border-green-300 bg-white text-gray-700 dark:text-white"
+                  class="border border-green-300 bg-white text-gray-700 dark:text-white w-full py-2"
                 >
                   <option value="DAP">DAP</option>
                   <option value="UREA">UREA</option>
@@ -130,7 +130,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700 dark:text-white"
-                type="text"
+                type="number"
                 placeholder="Price of one product"
                 v-model="price"
                 required
@@ -160,7 +160,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="text"
+                type="number"
                 placeholder="Original Cost, without discount"
                 v-model="orginalCost"
                 required
@@ -192,7 +192,7 @@
             <div class="control">
               <select
                 v-model="measurementUnit"
-                class="border border-green-300 bg-white text-gray-700 dark:text-white"
+                class="border border-green-300 bg-white text-gray-700 dark:text-white w-full py-2"
               >
                 <option value="">Measurement</option>
                 <option value="50kg">50Kg</option>
@@ -225,7 +225,7 @@
             <div class="control">
               <input
                 class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="text"
+                type="number"
                 placeholder="Amount"
                 v-model="amount"
                 required
@@ -266,16 +266,20 @@
               </div>
             </div>
           </div>
+          <div class="field">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Image</label>
+            <div class="control">
+              <input
+                class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
+                type="file"
+                @change="onFileChange"
+              />
+            </div>
+          </div>
 
           <div class="field">
             <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
             <div class="control">
-              <!-- <input
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  placeholder="Description"
-                  v-model="description"
-                /> -->
               <textarea
                 name=""
                 id=""
@@ -293,26 +297,14 @@
               </p>
             </div>
           </div>
-
-          <div class="field">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Image</label>
-            <div class="control">
-              <input
-                class="border border-green-300 rounded w-full py-2 px-3 text-gray-700"
-                type="file"
-                @change="onFileChange"
-              />
-            </div>
-          </div>
-
-          <div class="control flex justify-center pl-8 pt-2">
-            <button
-              class="bg-green-300 hover:bg-green-700 text-white font-bold py-2 rounded-lg px-8"
-              @click="insertProduct"
-            >
-              Post now
-            </button>
-          </div>
+        </div>
+        <div class="control flex justify-center pb-16">
+          <button
+            class="bg-green-300 hover:bg-green-700 text-white font-bold py-2 rounded-lg px-8"
+            @click="insertProduct"
+          >
+            Post now
+          </button>
         </div>
       </div>
     </div>

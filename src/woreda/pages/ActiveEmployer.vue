@@ -22,13 +22,29 @@
           <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
         </div>
         <p
-          class="text-center pl-[30%] text-lg text-gray-700 dark:text-white font-bold font-mono"
+          class="text-center pl-[30%] text-2xl text-gray-700 dark:text-white font-bold font-mono"
         >
           Active Employees
         </p>
       </div>
       <div class="pb-6 w-full overflow-x-auto">
-        <table class="tableClass table-auto">
+        <div v-if="isData == false">
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No Active Members.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once employers create account active users will be
+                displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <table v-if="isData == true" class="tableClass table-auto">
           <thead class="text-gray-700 dark:text-white bg-slate-400">
             <tr>
               <th class="py-2 pl-2">Name</th>
@@ -107,14 +123,26 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const newUsers = ref([]);
 const router = useRouter();
+
+const isData = ref(false);
 
 const getTotalActiveEmployers = async () => {
   try {
     const users = await axios.get("http://localhost:5000/users");
     newUsers.value = users.data;
+    for (let x in newUsers.value) {
+      if (
+        (newUsers.value[x].user_role == "manager" ||
+          newUsers.value[x].user_role == "store") &&
+        newUsers.value[x].user_state == 1
+      ) {
+        isData.value = true;
+      }
+    }
   } catch (err) {}
 };
 onMounted(async () => {
@@ -123,7 +151,30 @@ onMounted(async () => {
     localStorage.getItem("woreda_admin_email") == null ||
     localStorage.getItem("role") != "woreda_admin"
   ) {
-    alert("login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   getTotalActiveEmployers();

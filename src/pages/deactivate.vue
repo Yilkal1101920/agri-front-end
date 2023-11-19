@@ -4,36 +4,46 @@
       <p class="font-mono font-bold text-lg text-red-500">
         Your account is temporary blocked
       </p>
-      <p class="font-mono font-bold text-sm text-gray-800">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, mollitia nam
-        maiores quia officiis laboriosam dolores pariatur incidunt reprehenderit
-        asperiores vel ea enim qui autem earum iste! Quia, porro quod.
+      <p class="font-mono font-bold text-lg text-gray-800">
+        Your account has been deactivated. As a result, you will no longer be able to
+        access your account or any of its associated features. If you believe this
+        deactivation was a mistake, please contact our support team at
+        <span class="text-green-600">
+          ayinalemmenber@gmail.com or click contact button
+        </span>
+        for assistance.
       </p>
-      <p v-show="knowMoreActivate" class="font-mono font-bold text-sm text-gray-800">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis impedit
-        accusamus, ratione velit molestias cupiditate obcaecati architecto rerum nulla
-        iure at perspiciatis amet! Ut, tenetur obcaecati. Quibusdam vitae ab expedita.
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam ipsum molestiae
-        cumque, a minima dolore architecto rem debitis, iusto alias ducimus reiciendis
-        illo mollitia id. Adipisci iste dolor suscipit provident? Lorem ipsum dolor sit
-        amet consectetur adipisicing elit. Debitis impedit accusamus, ratione velit
-        molestias cupiditate obcaecati architecto rerum nulla iure at perspiciatis amet!
-        Ut, tenetur obcaecati. Quibusdam vitae ab expedita. Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Aliquam ipsum molestiae cumque, a minima dolore
-        architecto rem debitis, iusto alias ducimus reiciendis illo mollitia id. Adipisci
-        iste dolor suscipit provident? Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Debitis impedit accusamus, ratione velit molestias cupiditate obcaecati
-        architecto rerum nulla iure at perspiciatis amet! Ut, tenetur obcaecati. Quibusdam
-        vitae ab expedita. Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-        Aliquam ipsum molestiae cumque, a minima dolore architecto rem debitis, iusto
-        alias ducimus reiciendis illo mollitia id. Adipisci iste dolor suscipit provident?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis impedit
-        accusamus, ratione velit molestias cupiditate obcaecati architecto rerum nulla
-        iure at perspiciatis amet! Ut, tenetur obcaecati. Quibusdam vitae ab expedita.
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam ipsum molestiae
-        cumque, a minima dolore architecto rem debitis, iusto alias ducimus reiciendis
-        illo mollitia id. Adipisci iste dolor suscipit provident?
-      </p>
+      <!-- <p v-show="knowMoreActivate" class="font-mono font-bold text-lg text-gray-800"> -->
+      <ul v-show="knowMoreActivate" class="font-mono font-bold text-lg text-gray-800">
+        <li>
+          <span class="text-2xl text-green-500">>></span> We are sorry to inform you that
+          your account has been deactivated due to a violation of our terms of service.
+          Specifically, the reason for the deactivation, Wrong activity, or violation of
+          community guidelines.
+        </li>
+        <li>
+          <span class="text-2xl text-green-500">>></span> Please note that this
+          deactivation is final and cannot be undone. If you wish to create a new account,
+          you will need to register again and agree to our terms of service.
+        </li>
+        <li>
+          <span class="text-2xl text-green-500">>></span> We take account security and
+          user privacy very seriously, and we reserve the right to deactivate any account
+          that violates our policies or poses a threat to our community. If you have any
+          questions or concerns about this deactivation, please don't hesitate to contact
+          us at
+          <span class="text-green-600">
+            ayinalemmenber@gmail.com or click contact button</span
+          >.
+        </li>
+        <li>
+          <span class="text-2xl text-green-500">>></span> We appreciate your understanding
+          and cooperation in this matter, and we hope to continue providing you with a
+          positive experience on our website in the future.
+        </li>
+      </ul>
+
+      <!-- </p> -->
       <div class="flex gap-4 items-center justify-around py-5">
         <button
           v-show="!knowMoreActivate"

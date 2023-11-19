@@ -17,6 +17,36 @@ export const useAuthStore = defineStore({
             const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password });
             this.user = user;
             const userInfo = await axios.get(`http://localhost:5000/users/${username}`);
+
+
+              localStorage.removeItem("user_id");
+              if (localStorage.getItem("role") == "manager") {
+                localStorage.removeItem("manager_email");
+                localStorage.removeItem("role");
+                localStorage.removeItem("kebele");
+              } else if (localStorage.getItem("role") == "store") {
+                localStorage.removeItem("store_email");
+                localStorage.removeItem("role");
+              } else if (localStorage.getItem("role") == "user") {
+                localStorage.removeItem("user_email");
+                localStorage.removeItem("role");
+                localStorage.removeItem("kebele");
+                localStorage.removeItem("ID");
+                localStorage.removeItem("reporterEmail");
+              } else if (localStorage.getItem("role") == "woreda_admin") {
+                localStorage.removeItem("woreda_admin_email");
+                localStorage.removeItem("role");
+              } else {
+                localStorage.removeItem("customer_email");
+                localStorage.removeItem("role");
+                localStorage.removeItem("kebele");
+                localStorage.removeItem("ID");
+                localStorage.removeItem("reporterEmail");
+                localStorage.removeItem("order_id");
+              }
+
+
+
             if (
               userInfo.data.user_role == "woreda_admin"
             ) {
@@ -51,6 +81,7 @@ export const useAuthStore = defineStore({
               localStorage.setItem("user_email", username);
               localStorage.setItem("user_state", userInfo.data.user_state);
               localStorage.setItem("seller", "mahiberat");
+              localStorage.setItem("ID", userInfo.data.username)
               self.location.replace("/product");
             }else if (
               userInfo.data.user_role == "user" &&

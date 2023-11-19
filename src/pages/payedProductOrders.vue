@@ -7,16 +7,46 @@
             <table class="tableClass table-auto w-full">
               <thead class="text-gray-700 bg-slate-400">
                 <tr class="">
-                  <th class="py-2 pl-12">የእቃው መለያ</th>
-                  <th class="py-2 pl-2">መደብ</th>
-                  <th class="py-2 pl-2">የእቃው አይነት</th>
-                  <th class="py-2 pl-2">ስም</th>
-                  <th class="py-2 pl-2">ዋጋ</th>
-                  <th class="py-2 pl-2">የመጀመሪያ ዋጋ</th>
-                  <th class="py-2 pl-2">የእቃ ድምር</th>
-                  <th class="py-2 pl-2">ጠቅላላ ዋጋ</th>
-                  <th class="py-2 pl-2">ምስል</th>
-                  <th class="py-2 pl-2">ምርመራ</th>
+                  <th class="py-2 pl-12">
+                    <h4 v-if="languageStore.language == 'En'">Product id</h4>
+                    <h4 v-if="languageStore.language == 'Am'">የምርቱ መለያ</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Category</h4>
+                    <h4 v-if="languageStore.language == 'Am'">መደብ</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Product Type</h4>
+                    <h4 v-if="languageStore.language == 'Am'">የምርቱ አይነት</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Name</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ስም</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Price</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ዋጋ</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Cost</h4>
+                    <h4 v-if="languageStore.language == 'Am'">የመጀመሪያ ዋጋ</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Total Products</h4>
+                    <h4 v-if="languageStore.language == 'Am'">የምርቱ ድምር</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Total Price</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ጠቅላላ ዋጋ</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Image</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ምስል</h4>
+                  </th>
+                  <th class="py-2 pl-2">
+                    <h4 v-if="languageStore.language == 'En'">Confirmation</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ምርመራ</h4>
+                  </th>
                 </tr>
               </thead>
               <tbody class="text-gray-700">
@@ -216,16 +246,9 @@
             type="submit"
             class="text-lg p-4 m-6 text-gray-700 text-center bg-green-200 font-mono rounded-lg shadow-md"
           >
-            ጠቅላላ የተከፈለ = {{ totalCostInBirr }} ብር
+            <P v-if="languageStore.language == 'En'">Total Paid = {{ totalCostInBirr }} Birr</P>
+            <P v-if="languageStore.language == 'Am'">ጠቅላላ የተከፈለ = {{ totalCostInBirr }} ብር</P>
           </p>
-          <!-- 
-          <button
-            type="submit"
-            class="text-lg font-bold float-right py-2 w-[15%] mr-6 mb-6 bg-green-300 hover:text-white font-mono rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
-            @click.prevent="gotoInfoPage()"
-          >
-            ክፈል
-          </button> -->
         </div>
       </div>
     </div>
@@ -236,13 +259,12 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
-import { useCartConfirmStore } from "../state/cartConfirm"; //for seleced cart confirmation
 // sweetalert start
-
 import Swal from "sweetalert2";
 // sweetalert end here
-const useCartConfirm = useCartConfirmStore();
+import { useLanguageStore } from "../state/languageStore";
+
+const languageStore = useLanguageStore();
 
 const router = useRouter();
 const datas = ref([]);
@@ -354,7 +376,30 @@ const getOrderedProductByIdforConfirm = async (id) => {
         // sweetalert end
       }
     } else {
-      alert("Product in the market is finished");
+      let timerInterval;
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          // title: "ስህተት",
+          html: "Product in the market is finished",
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            // Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector("b");
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft();
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          },
+        }).then((result) => {
+          /* Read more about handling dismissals below */
+          if (result.dismiss === Swal.DismissReason.timer) {
+            // console.log("I was closed by the timer");
+          }
+        });
     }
     window.location.reload();
   } catch (err) {

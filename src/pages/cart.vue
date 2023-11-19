@@ -1,272 +1,313 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 h-full w-full">
-    <div class="flex flex-col m lg:mx-8">
-      <div class="inset-x-20 inset-y-0">
-        <div class="">
-          <div class="overflow-x-auto text-justify flex justify-center mt-6">
-            <table class="tableClass table-auto w-full">
-              <thead class="text-gray-700 bg-slate-400">
-                <tr class="">
-                  <th class="py-2 pl-12">
-                    <p v-if="languageStore.language == 'Am'">የእቃው መለያ</p>
-                    <p v-if="languageStore.language == 'En'">Product Id</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">መደብ</p>
-                    <p v-if="languageStore.language == 'En'">Category</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">የእቃው አይነት</p>
-                    <p v-if="languageStore.language == 'En'">Type</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">ስም</p>
-                    <p v-if="languageStore.language == 'En'">Name</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">ዋጋ</p>
-                    <p v-if="languageStore.language == 'En'">Price</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">የመጀመሪያ ዋጋ</p>
-                    <p v-if="languageStore.language == 'En'">Cost</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">የእቃ ድምር</p>
-                    <p v-if="languageStore.language == 'En'">Quantity</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">ጠቅላላ ዋጋ</p>
-                    <p v-if="languageStore.language == 'En'">Total Price</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">ምስል</p>
-                    <p v-if="languageStore.language == 'En'">Image</p>
-                  </th>
-                  <th class="py-2 pl-2">
-                    <p v-if="languageStore.language == 'Am'">ምርመራ</p>
-                    <p v-if="languageStore.language == 'En'">Confirm</p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="text-gray-700">
-                <tr
-                  v-for="item in Ordereddatas"
-                  :key="item.order_id"
-                  class="hover:bg-slate-200"
-                >
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-12"
-                  >
-                    {{ item.product_id }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.category }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.type_product }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.title }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.price }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    {{ item.original_cost }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    <div>
-                      <input
-                        type="text"
-                        v-if="item.confirm != 1"
-                        class="w-12 hover:shadow-md hover:shadow-green-300 h-4 form-control block p text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        v-model="orderArray[item.order_id]"
-                        v-model.content="item.nOrders"
-                      />
-                      <h1 v-if="item.confir == 1">{{ item.nOrders }}</h1>
-                    </div>
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class=""
-                  >
-                    {{ item.price * item.nOrders }}
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    <img class="w-10 h-8" :src="item.image" />
-                  </td>
-                  <td
-                    v-if="
-                      item.user_email == cart_email &&
-                      item.cancel != 1 &&
-                      item.payStatus == 0
-                    "
-                    class="pl-2"
-                  >
-                    <div class="flex flex-row">
-                      <!-- confirm -->
-                      <button
-                        v-if="item.confirm != 1"
-                        class="hover:cursor-pointer mr-3"
-                        @click.prevent="checkInput(item.order_id)"
-                      >
-                        <svg
-                          class="fill-current h-6 w-auto text-green-600"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="ThumbUpAltOutlinedIcon"
-                          tabindex="-1"
-                          title="ThumbUpAltOutlined"
-                        >
-                          <path
-                            d="M21 8h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2c0-1.1-.9-2-2-2zm0 4-3 7H9V9l4.34-4.34L12.23 10H21v2zM1 9h4v12H1z"
-                          ></path>
-                        </svg>
-                      </button>
-                      <!-- confirmed -->
-                      <h1 v-if="item.confir == 1">
-                        <svg
-                          class="fill-current h-6 w-auto text-green-500"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="CheckOutlinedIcon"
-                          tabindex="-1"
-                          title="CheckOutlined"
-                        >
-                          <path
-                            d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-                          ></path>
-                        </svg>
-                      </h1>
-                      <!-- cancel -->
-                      <button
-                        v-if="item.confirm != 1"
-                        class="hover:cursor-pointer ml-3"
-                        @click.prevent="getOrderedProductById(item.order_id)"
-                      >
-                        <svg
-                          class="fill-current h-6 w-auto text-red-500"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="ClearOutlinedIcon"
-                          tabindex="-1"
-                          title="ClearOutlined"
-                        >
-                          <path
-                            d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
-                          ></path>
-                        </svg>
-                      </button>
-                      <!-- canceled -->
-                      <h v-if="item.cancel == 1">
-                        <svg
-                          class="fill-current h-6 w-auto text-red-900"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="CancelOutlinedIcon"
-                          tabindex="-1"
-                          title="CancelOutlined"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"
-                          ></path>
-                        </svg>
-                      </h>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+    <div class="flex flex-col lg:mx-8">
+      <div v-if="isData == false" col class="py-0 md:pb-36">
+        <div colspan="11" class="col-span-full">
+          <div class="text-gray-800 dark:text-white block py-11 px-11">
+            <div class="flex justify-center">
+              <img src="../assets/emptyCart.png" alt="" class="h-32 w-auto" />
+            </div>
+            <P
+              class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+              >Your cart is Empty.</P
+            >
+            <p
+              class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+            >
+              No thing to show. once you add the product it will be displayed here.
+            </p>
+            <div class="flex justify-center pt-9">
+              <router-link
+                to="/product"
+                class="text-gray-800 text-lg font-mono font-bold border border-green-600 rounded-lg hover:bg-green-700 hover:text-white px-4 py-2"
+                >Order know</router-link
+              >
+            </div>
           </div>
-
-          <p
-            v-if="languageStore.language == 'Am'"
-            type="submit"
-            class="text-lg p-4 m-6 text-gray-700 text-center bg-green-200 font-mono rounded-lg shadow-md"
-          >
-            ጠቅላላ ክፍያ = {{ totalCostInBirr }} ብር
-          </p>
-          <p
-            v-if="languageStore.language == 'En'"
-            type="submit"
-            class="text-lg p-4 m-6 text-gray-700 text-center bg-green-200 font-mono rounded-lg shadow-md"
-          >
-            Total Price = {{ totalCostInBirr }} Birr
-          </p>
-
-          <button
-            type="submit"
-            class="text-lg font-bold float-right py-2 w-[15%] mr-6 mb-6 bg-green-300 hover:text-white font-mono rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
-            @click.prevent="gotoInfoPage()"
-          >
-            <p v-if="languageStore.language == 'Am'">ክፈል</p>
-            <p v-if="languageStore.language == 'En'">pay</p>
-          </button>
         </div>
       </div>
+      <div v-if="isData == true" class="">
+        <div class="overflow-x-auto text-justify flex justify-center mt-6">
+          <table class="table-auto">
+            <thead class="text-gray-700 bg-slate-400">
+              <tr class="">
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">የምርቱ መለያ</p>
+                  <p v-if="languageStore.language == 'En'">Product Id</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">መደብ</p>
+                  <p v-if="languageStore.language == 'En'">Category</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ስም</p>
+                  <p v-if="languageStore.language == 'En'">Name</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ዋጋ</p>
+                  <p v-if="languageStore.language == 'En'">Price</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ብዛት</p>
+                  <p v-if="languageStore.language == 'En'">Quantity</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ጠቅላላ ዋጋ</p>
+                  <p v-if="languageStore.language == 'En'">Total Price</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ምስል</p>
+                  <p v-if="languageStore.language == 'En'">Image</p>
+                </th>
+                <th class="py-2 pl-2">
+                  <p v-if="languageStore.language == 'Am'">ምርመራ</p>
+                  <p v-if="languageStore.language == 'En'">Confirm</p>
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="text-lg font-bold text-gray-800 dark:text-white text-center"
+              v-if="loading"
+            >
+              <!-- <Circle4></Circle4> -->
+              <vue-spinner
+                :color="'#007aff'"
+                :size="'50px'"
+                :margin="'5px'"
+                :radius="'100%'"
+              />
+              Loading...
+            </tbody>
+            <tbody class="text-gray-700">
+              <tr
+                v-for="item in Ordereddatas"
+                :key="item.order_id"
+                class="hover:bg-slate-200"
+              >
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-12"
+                >
+                  {{ item.product_id }}
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  {{ item.category }}
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  {{ item.title }}
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  {{ item.price }}
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  <div>
+                    <input
+                      type="text"
+                      v-if="item.confirm != 1"
+                      class="w-12 hover:shadow-md hover:shadow-green-300 h-4 form-control block p text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-green-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      v-model="orderArray[item.order_id]"
+                      v-model.content="item.nOrders"
+                    />
+                    <h1 v-if="item.confir == 1">{{ item.nOrders }}</h1>
+                  </div>
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class=""
+                >
+                  {{ item.price * item.nOrders }}
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  <img class="w-10 h-8" :src="item.image" />
+                </td>
+                <td
+                  v-if="
+                    item.user_email == cart_email &&
+                    item.seller == 'mahiberat' &&
+                    item.cancel != 1 &&
+                    item.payStatus == 0
+                  "
+                  class="pl-2"
+                >
+                  <div class="flex flex-row">
+                    <!-- confirm -->
+                    <button
+                      v-if="item.confirm != 1"
+                      class="hover:cursor-pointer mr-3"
+                      @click.prevent="checkInput(item.order_id)"
+                    >
+                      <svg
+                        class="fill-current h-6 w-auto text-green-600"
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-testid="ThumbUpAltOutlinedIcon"
+                        tabindex="-1"
+                        title="ThumbUpAltOutlined"
+                      >
+                        <path
+                          d="M21 8h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2c0-1.1-.9-2-2-2zm0 4-3 7H9V9l4.34-4.34L12.23 10H21v2zM1 9h4v12H1z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <!-- confirmed -->
+                    <h1 v-if="item.confir == 1">
+                      <svg
+                        class="fill-current h-6 w-auto text-green-500"
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-testid="CheckOutlinedIcon"
+                        tabindex="-1"
+                        title="CheckOutlined"
+                      >
+                        <path
+                          d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                        ></path>
+                      </svg>
+                    </h1>
+                    <!-- cancel -->
+                    <button
+                      v-if="item.confirm != 1"
+                      class="hover:cursor-pointer ml-3"
+                      @click.prevent="getOrderedProductById(item.order_id)"
+                    >
+                      <svg
+                        class="fill-current h-6 w-auto text-red-500"
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-testid="ClearOutlinedIcon"
+                        tabindex="-1"
+                        title="ClearOutlined"
+                      >
+                        <path
+                          d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <!-- canceled -->
+                    <h v-if="item.cancel == 1">
+                      <svg
+                        class="fill-current h-6 w-auto text-red-900"
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-testid="CancelOutlinedIcon"
+                        tabindex="-1"
+                        title="CancelOutlined"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"
+                        ></path>
+                      </svg>
+                    </h>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p
+          v-if="languageStore.language == 'Am'"
+          type="submit"
+          class="text-lg p-4 m-6 text-gray-700 text-center bg-green-200 font-mono rounded-lg shadow-md"
+        >
+          ጠቅላላ ክፍያ = {{ totalCostInBirr }} ብር
+        </p>
+        <p
+          v-if="languageStore.language == 'En'"
+          type="submit"
+          class="text-lg p-4 m-6 text-gray-700 text-center bg-green-200 font-mono rounded-lg shadow-md"
+        >
+          Total Price = {{ totalCostInBirr }} Birr
+        </p>
+        <button
+          type="submit"
+          class="text-lg font-bold py-1 px-2 flex justify-center shadow-gray-700 bg-green-300 text-white font-mono rounded-full shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-non active:shadow-lg transition duration-150 ease-in-out"
+          @click.prevent="gotoInfoPage()"
+        >
+          <p v-if="languageStore.language == 'Am'">አሁን ይክፈሉ</p>
+          <p v-if="languageStore.language == 'En'">pay now</p>
+        </button>
+      </div>
+      <!-- <div class="pl-11 pt-4 flex flex-row gap-2 items-center border-2 p-4 my-3">
+        <div class="">
+          <p class="text-2xl font-bold font-mono">Your cart from mahiberat or farmer</p>
+          <p>
+            This is your cart from mahiberat or or farmers. The cart count which is shown
+            on top navigation bar is the cart you add from mahiberat or customer. To
+            navigate click the cart shown here.
+          </p>
+        </div>
+        <div class="rounded-full h-11 w-11 pl-2 pb-2 flex flex-col justify-center">
+          <div class="flex flex-col text-gray-800 dark:text-text-gray-800">
+            <button
+              class="absolute ml-3 bg-orange-500 w-6 h-6 rounded-[100%] flex justify-center text-lg font-bold font-mono text-white"
+              @click.prevent="changeCart()"
+            >
+              {{ numberOfCarts }}
+            </button>
+          </div>
+          <RouterLink to="/product/cart"
+            ><svg class="pt-3 fill-current text-blue-900 w-8 h-8">
+              <path
+                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+              ></path></svg
+          ></RouterLink>
+        </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -276,7 +317,6 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { useCartConfirmStore } from "../state/cartConfirm"; //for seleced cart confirmation
 // sweetalert start
 
 import Swal from "sweetalert2";
@@ -284,12 +324,22 @@ import Swal from "sweetalert2";
 
 import { useLanguageStore } from "../state/languageStore";
 
-const useCartConfirm = useCartConfirmStore();
+//loading
+
+import VueSpinner from "vue-spinner/src/PulseLoader.vue";
+
+//end loading
+
+import { useReportsData } from "../state/reportStore";
+
 const languageStore = useLanguageStore();
+
+const ReportsData = useReportsData();
 
 const router = useRouter();
 const datas = ref([]);
 const Ordereddatas = ref([]);
+const selectedProductsToSell = ref([]);
 const nOrderCart = ref(0);
 const productId = ref(0);
 const cart_email = localStorage.getItem("user_email");
@@ -311,6 +361,15 @@ const kebele_address = localStorage.getItem("kebele");
 
 const postedProductForMarket = ref(0);
 
+const productTitle = ref("");
+const reporterEmail = ref("");
+const quantity = ref("");
+
+const loading = ref(true);
+var reportDatas = ref([]);
+var reportData = ref({});
+const isData = ref(false);
+
 const getProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/order");
@@ -324,8 +383,20 @@ const getOrderedProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/orderedProducts");
     Ordereddatas.value = response.data;
-
     confirmDisplay.value[Ordereddatas.value.order_id] = true;
+    for (let x in Ordereddatas.value) {
+      if (
+        Ordereddatas.value[x].user_email == cart_email &&
+        Ordereddatas.value[x].seller == "mahiberat" &&
+        Ordereddatas.value[x].cancel != 1 &&
+        Ordereddatas.value[x].payStatus == 0
+      ) {
+        isData.value = true;
+        reporterEmail.value = Ordereddatas.value[x].patent_email;
+      }
+    }
+    localStorage.setItem("reporterEmail", reporterEmail.value);
+    loading.value = false;
   } catch (err) {}
 };
 
@@ -429,7 +500,30 @@ const getOrderedProductByIdforConfirm = async (id) => {
         // sweetalert end
       }
     } else {
-      alert("Product in the market is finished");
+      let timerInterval;
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        // title: "ስህተት",
+        html: "Product in the market is finished!",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          // Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // console.log("I was closed by the timer");
+        }
+      });
     }
     window.location.reload();
   } catch (err) {
@@ -569,12 +663,36 @@ const updateOrderByOrderIdCancel = async (id) => {
 };
 
 const gotoInfoPage = () => {
-  localStorage.setItem("totalCost", totalCostInBirr);
+  localStorage.setItem("productSeller", "mahiberat");
+  selectedProductsToSell.value = Ordereddatas.value.filter(
+    (product) =>
+      product.user_email == cart_email &&
+      product.seller == "mahiberat" &&
+      product.cancel != 1 &&
+      product.payStatus == 0
+  );
+  for (let x in selectedProductsToSell.value) {
+    productTitle.value = productTitle.value + selectedProductsToSell.value[x].title + " ";
+    quantity.value = selectedProductsToSell.value[x].nOrders;
+    reportData.value = {
+      orderId: selectedProductsToSell.value[x].order_id,
+      cost: selectedProductsToSell.value[x].price,
+      quantity: selectedProductsToSell.value[x].nOrders,
+      product: selectedProductsToSell.value[x].title,
+    };
+    ReportsData.totalPrice =
+      ReportsData.totalPrice +
+      selectedProductsToSell.value[x].nOrders * selectedProductsToSell.value[x].price;
+    reportDatas.value.push(reportData.value);
+  }
+  ReportsData.reportDatas = reportDatas.value;
+  localStorage.setItem("totalCost", totalCost);
+  localStorage.setItem("selectedProductsToSell", productTitle.value);
+  localStorage.setItem("quantity", quantity.value);
   router.replace("/product/order");
 };
 
 const deleteOrder = async (id) => {
-  console.log("Are You sure to delete");
   try {
     await axios.delete(`http://localhost:5000/order/${id}`);
     getProducts();
@@ -591,6 +709,7 @@ const getTotalCostPrice = async () => {
     for (let x in totalCost.value) {
       if (
         totalCost.value[x].user_email == cart_email &&
+        totalCost.value[x].seller == "mahiberat" &&
         totalCost.value[x].payStatus == 0
       ) {
         totalCostInBirr.value =
@@ -662,6 +781,10 @@ const getOrderRestrictionQuantity = async (name, kebele) => {
   );
 
   orderRestrictAmount.value = orderRestriction.data.allowed_quantity;
+};
+const changeCart = async () => {
+  localStorage.setItem("seller", "farmer");
+  location.href = "/product/customer/cart";
 };
 </script>
 <style scoped>

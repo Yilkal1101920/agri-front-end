@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-row bg-green-50 dark:bg-gray-800">
     <div class="w-full">
-      <div class="flex justify-evenly items-center mt-6 mb-2 gap-5 w-full">
+      <div
+        class="flex justify-between items-center mt-6 mb-2 gap-5 flex-wrap px-4 w-full"
+      >
         <div class="flex gap-1 items-center ml-8 py-4">
           <router-link to="/farmer/dashboard">
             <span
@@ -21,7 +23,7 @@
           </router-link>
           <p class="text-gray-700 dark:text-white">Back to dashboard</p>
         </div>
-        <div class="w-[50%]">
+        <div class="">
           <form action="">
             <div class="flex gap-0">
               <input
@@ -30,7 +32,7 @@
                 name="search"
                 id="searchProduct"
                 placeholder=" Search Product..."
-                class="w-[80%] p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
+                class="w-full p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
               />
               <input
                 type="submit"
@@ -49,16 +51,31 @@
         </button>
       </div>
       <div class="overflow-x-auto text-justify flex justify-center mt-1 mx-6 mb-6">
-        <table class="table-auto text-gray-700 dark:text-white w-full">
+        <div v-if="isData == false">
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No Products.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once post products, the products will be displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <table
+          v-if="isData == true"
+          class="table-auto text-gray-700 dark:text-white w-full"
+        >
           <thead class="bg-slate-400 dark:bg-white">
             <tr>
               <th class="py-2 pl-2">ProductId</th>
-              <th class="py-2 pl-2">Category</th>
-              <th class="py-2 pl-2">ProductType</th>
               <th class="py-2 pl-2">Title</th>
               <th class="py-2 pl-2">Price</th>
-              <th class="py-2 pl-2">Amout</th>
-              <th class="py-2 pl-2">Address</th>
+              <th class="py-2 pl-2">Amout(Kuntal)</th>
               <th class="py-2 pl-2">Image</th>
               <th class="py-2 pl-2">Description</th>
               <th class="py-2 pl-2">Actions</th>
@@ -68,7 +85,8 @@
             <tr v-for="item in datas" :key="item.product_id" class="hover:bg-slate-200">
               <td
                 v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -80,31 +98,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
-                  (item.category.includes(productName) ||
-                    item.type_product.includes(productName) ||
-                    item.title.includes(productName) ||
-                    item.description.includes(productName))
-                "
-                class="pl-2"
-              >
-                {{ item.category }}
-              </td>
-              <td
-                v-if="
-                  item.email == user_email &&
-                  (item.category.includes(productName) ||
-                    item.type_product.includes(productName) ||
-                    item.title.includes(productName) ||
-                    item.description.includes(productName))
-                "
-                class="pl-2"
-              >
-                {{ item.type_product }}
-              </td>
-              <td
-                v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -116,7 +111,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -128,7 +124,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -140,19 +137,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
-                  (item.category.includes(productName) ||
-                    item.type_product.includes(productName) ||
-                    item.title.includes(productName) ||
-                    item.description.includes(productName))
-                "
-                class="pl-2"
-              >
-                {{ item.address }}
-              </td>
-              <td
-                v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -164,7 +150,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -176,7 +163,8 @@
               </td>
               <td
                 v-if="
-                  item.email == user_email &&
+                  item.post_email == user_email &&
+                  item.marketState == 1 &&
                   (item.category.includes(productName) ||
                     item.type_product.includes(productName) ||
                     item.title.includes(productName) ||
@@ -236,10 +224,13 @@
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
 const datas = ref([]);
 const router = useRouter();
 const user_email = localStorage.getItem("user_email");
 const productName = ref("");
+const isData = ref(false);
 
 const productAdd = () => {
   router.replace("/farmer/addProduct");
@@ -250,6 +241,11 @@ const getProducts = async () => {
     const response = await axios.get("http://localhost:5000/products");
     datas.value = response.data;
     console.log(datas.value);
+    for (let x in datas.value) {
+      if (datas.value[x].post_email == user_email && datas.value[x].marketState == 1) {
+        isData.value = true;
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -260,14 +256,50 @@ onMounted(async () => {
     localStorage.getItem("user_email") == null ||
     localStorage.getItem("role") != "user"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
-  getProducts();
+  await getProducts();
+  console.log(user_email);
 });
 
 const deleteProduct = async (id) => {
-  alert("Are You sure to delete");
+  Swal.fire({
+    title: "Are you sure to delete?",
+    showCancelButton: true,
+    confirmButtonText: "Ok",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteFarmerProduct(id);
+      Swal.fire("Deleted Successfully!");
+    }
+  });
+};
+
+const deleteFarmerProduct = async (id) => {
   try {
     await axios.delete(`http://localhost:5000/products/${id}`);
     getProducts();

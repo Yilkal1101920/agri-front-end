@@ -1,21 +1,36 @@
 <template>
   <div class="bg-green-50 dark:bg-gray-800 ">
-              <p class="font-mono font-bold pt-4 text-center text-orange-900 dark:text-white">
+  <p class="font-mono font-bold pt-4 text-center text-lg text-gray-800 dark:text-white">
 ማንኛውንም አይነት የገበሬ ማህበራት መረጃ እዚህ ማግኘት ይችላሉ፡፡ 
 <pre class="font-bold font-mono"> 
   ማህበራቶች የሚያወጡት ማስታዎቂያ
   ማህበራቶች እና የወረዳው የስራ ቅጥር
   ማህበራቶች የሚያደርጓቸውን ድርጊቶች
-   </pre>
 መከታተል ይችላሉ፡፡
+   </pre>
               </p>
-        <div class="pl-10" v-for="item in news.slice().reverse()" :key="item.id">
-         <div v-if="item.kebele == kebele_address">
-         <div v-if="item.title" class="lg:flex lg:flex-row flex flex-col gap-10">
+              <div>
+                <p
+                  class="text-lg font-bold text-gray-800 dark:text-white text-center"
+                  v-if="loading"
+                >
+                  <!-- <Circle4></Circle4> -->
+                  <vue-spinner
+                    :color="'#007aff'"
+                    :size="'50px'"
+                    :margin="'5px'"
+                    :radius="'100%'"
+                  />
+                  Loading...
+                </p>
+              </div>
+        <div class="px-10" v-for="source in news.slice().reverse()" :key="source.id">
+         <div v-if="(source.kebele == kebele_address && user_role == 'user' && source.newsSource == 'Mahiberat') || source.newsSource == 'User'">
+         <div v-if="source.title" class="lg:flex lg:flex-row flex flex-col gap-10">
           <div class="flex items-center justify-center pb-10">
             <img
              class="EventsImage w-70 h-60 lg:w-50 lg:h-40 mt-2 border rounded-lg hover:scale-110"
-                      :src="item.newsImage"
+                      :src="source.newsImage"
                       alt="image"
                     />
           </div>
@@ -23,14 +38,16 @@
             <ul>
             <li>
                 <div class="block text-black font-mono items-center justify-center flex-wrap">
-                  <div class="text-center text-2xl text-gray-700 dark:text-white">{{ item.title }}</div>
-                  <div class="pl-3 text-gray-700 dark:text-white">{{ item.description }}</div>
+                  <div class="text-center text-2xl text-gray-700 dark:text-white">{{ source.title }}</div>
+                  <div class="pl-3 text-gray-700 dark:text-white">{{ source.description }}</div>
                   <div class="dateAndLink text-center flex items-center md:gap-24 justify-center flex-wrap">
-                    <div class="pl-3 text-center text-gray-700 dark:text-white"><p>የወጣበት ቀን፡ {{ item.postedDate }} ዓ.ም</p></div>
+                    <div class="pl-3 text-center text-gray-700 dark:text-white"><p>የወጣበት ቀን፡ {{ source.postedDate }} ዓ.ም</p></div>
                     <a href="">
-                    <span class="flex gap-1">
-                    <span><img src="https://th.bing.com/th/id/R.cf61cc1b9c4a8b8f8c290442f43117a8?rik=h4fG9BLSmf9Hyw&riu=http%3a%2f%2fwww.wur.nl%2fupload%2f12ba3fb8-3f91-41c4-885c-4083e8c648e4_Fertilizer+Ethiopia.jpeg&ehk=2xcx2h4xvfTtoavPU%2bawNzE5S6JMjuo50AVPGw%2bZucM%3d&risl=&pid=ImgRaw&r=0" alt="link image" class="h-7 w-auto border rounded-lg"></span>
-                    <div class="pl-3 text-gray-700 dark:text-white">{{ item.newsSource }}</div>
+                    <span class="flex gap-1 items-center">
+                    <span>
+                      <svg class="fill-current h-8 w-auto text-blue" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="InsertLinkOutlinedIcon" tabindex="-1" title="InsertLinkOutlined"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg>
+                    </span>
+                    <div class="pl-3 text-gray-700 dark:text-white">{{ source.kebele }}</div>
                   </span>
                 </a>
                   </div>
@@ -41,7 +58,7 @@
         </div>
         <div v-else class="justify-center items-center">
 <p class="text-6xl font-mono text-orange-900 dark:text-white">
-  ባዶ፡ ምንም ክስተት የለም
+  ባዶ፡ ምንም ሁነት የለም
 </p>
         </div>
         </div>
@@ -55,10 +72,19 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
+//loading
+
+import VueSpinner from "vue-spinner/src/PulseLoader.vue";
+
+//end loading
+
 const router = useRouter();
 
 const news = ref([]);
 const kebele_address = localStorage.getItem("kebele");
+const user_role = localStorage.getItem("role");
+
+const loading = ref(true);
 
 const getNews = async () => {
   try {
@@ -66,17 +92,21 @@ const getNews = async () => {
     news.value = response.data;
 
     console.log(news.value);
-
+    loading.value = false;
   } catch (err) {
   }
 };
 
 onMounted(async () => {
     if (
-    localStorage.getItem("user_email") == undefined ||
+    (localStorage.getItem("user_email") == undefined ||
     localStorage.getItem("user_email") == null ||
     localStorage.getItem("role") != "user" ||
-    localStorage.getItem("user_state") != 1
+    localStorage.getItem("user_state") != 1)&&
+    (localStorage.getItem("customer_email") == undefined ||
+    localStorage.getItem("customer_email") == null ||
+    localStorage.getItem("role") != "customer" ||
+    localStorage.getItem("user_state") != 1)
   ) {
     let timerInterval;
     Swal.fire({

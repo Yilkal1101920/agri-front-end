@@ -1,24 +1,27 @@
 <template>
   <div>
-    <aside
-      class="absolute overflow-y-auto rounded bg-blue-400 dark:bg-gray-800 py-8 px-3"
-      aria-label="Sidebar"
-    >
+    <aside class="rounded bg-gray-200 dark:bg-gray-800 py-2 px-3" aria-label="Sidebar">
       <div class="">
-        <div class="nav" v-for="item in news.slice().reverse()" :key="item.id">
+        <div class="nav" v-for="source in news.slice().reverse()" :key="source.id">
           <ul
             v-if="
-              item.id > useNotification.showNewNotificationStart && item.kebele == kebele
+              (source.id > useNotification.showNewNotificationStart &&
+                source.kebele == kebele &&
+                source.newsSource == 'Mahiberat' &&
+                role == 'user') ||
+              (source.id > useNotification.showNewNotificationStart &&
+                source.newsSource == 'User')
             "
           >
             <li
+              class="border border-white p-2"
               @click.prevent="
                 useNotification.showNotificationBar = !useNotification.showNotificationBar
               "
             >
               <router-link to="/events">
                 <div>
-                  {{ item.description }}
+                  <p class="hover:text-green-600">{{ source.description }}</p>
                 </div>
               </router-link>
             </li>
@@ -37,6 +40,7 @@ import { useNotificationStore } from "../state/showNotification.js";
 var useNotification = useNotificationStore();
 const news = ref([]);
 const kebele = localStorage.getItem("kebele");
+const role = localStorage.getItem("role");
 
 const getNews = async () => {
   try {

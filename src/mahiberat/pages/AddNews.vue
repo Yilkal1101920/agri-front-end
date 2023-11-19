@@ -41,9 +41,7 @@
             </div>
           </div>
           <div class="field">
-            <label class="block text-gray-700 text-lg font-bold mb-2"
-              >Mahiberat name</label
-            >
+            <label class="block text-gray-700 text-lg font-bold mb-2">Source name</label>
             <div class="control">
               <select
                 required
@@ -51,7 +49,7 @@
                 type="text"
                 v-model="news_source"
               >
-                <option>{{ kebele }}</option>
+                <option>Mahiberat</option>
               </select>
               <div class="mb-0 ml-5">
                 <p class="text-red-600" v-if="news_source == '' && tryCount == 1">
@@ -92,9 +90,9 @@
             </div>
           </div>
         </div>
-        <div class="control flex justify-center">
+        <div class="control flex justify-center pb-7">
           <button
-            class="bg-green-300 px-7 hover:bg-green-700 text-gray-900 hover:text-white font-bold py-2 mt-2 rounded-lg text-lg font-mono"
+            class="bg-green-300 px-10 hover:bg-green-700 text-gray-900 hover:text-white font-bold py-2 mt-2 rounded-lg text-lg font-mono"
             @click.prevent="postNotification"
           >
             Post now
@@ -218,6 +216,7 @@ const notify = async () => {
       title: title.value,
       postedDate: posted_date.value,
       newsSource: news_source.value,
+      poster_email: localStorage.getItem("manager_email"),
       description: description.value.ops[0].insert,
       newsImage: url.value,
       news_quantity: 1,

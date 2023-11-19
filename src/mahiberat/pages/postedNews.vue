@@ -8,25 +8,23 @@
             <p class="font-mono font-bold text-lg text-gray-700 dark:text-white">
               All events posted
             </p>
-            <div class="w-[50%]">
+            <div class="w-[50%] flex gap-0">
               <form action="">
-                <div class="flex gap-0">
-                  <input
-                    type="search"
-                    v-model="eventSearchValue"
-                    name="search"
-                    id="searchProduct"
-                    placeholder=" Search Event..."
-                    class="w-[80%] shadow-sm p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
-                  />
-                  <input
-                    type="submit"
-                    value="Search"
-                    @click="searchEvents"
-                    class="shadow-sm text-gray-700 dark:text-white bg-green-300 hover:bg-green-700 p-2 rounded-r-lg hover:text-white hover:cursor-pointer"
-                  />
-                </div>
+                <input
+                  type="search"
+                  v-model="eventSearchValue"
+                  name="search"
+                  id="searchProduct"
+                  placeholder=" Search Event..."
+                  class="w-[80%] shadow-sm p-2 border-green-300 text-gray-700 ml-6 py-2 rounded-l-md"
+                />
               </form>
+              <button
+                @click="searchEvents(eventSearchValue)"
+                class="shadow-sm text-gray-700 dark:text-white bg-green-300 hover:bg-green-700 p-2 rounded-r-lg hover:text-white hover:cursor-pointer"
+              >
+                Search
+              </button>
             </div>
             <router-link to="/mahiberat/addNews">
               <button
@@ -38,8 +36,29 @@
             </router-link>
           </div>
         </div>
-        <div class="pl-5" v-for="event in news.slice().reverse()" :key="event.id">
-          <div v-if="event.kebele == kebele_address">
+        <div v-if="isData == false">
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No events are posted untill now.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once mahiberat admin posts new events, posted events
+                will be displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="isData == true"
+          class="pl-5"
+          v-for="event in filteredEventsData.slice().reverse()"
+          :key="event.id"
+        >
+          <div v-if="event.kebele == kebele_address && event.newsSource == 'Mahiberat'">
             <div v-if="event.title" class="lg:flex lg:flex-row flex flex-col gap-10">
               <div class="flex items-center justify-center pb-10">
                 <img
@@ -126,13 +145,26 @@ import Swal from "sweetalert2";
 const router = useRouter();
 
 const news = ref([]);
+const filteredEventsData = ref([]);
 const eventSearchValue = ref("");
 const kebele_address = localStorage.getItem("kebele");
+
+const isData = ref(false);
 
 const getNews = async () => {
   try {
     const response = await axios.get("http://localhost:5000/news");
     news.value = response.data;
+    filteredEventsData.value = news.value;
+
+    for (let x in filteredEventsData.value) {
+      if (
+        filteredEventsData.value[x].kebele == kebele_address &&
+        filteredEventsData.value[x].newsSource == "Mahiberat"
+      ) {
+        isData.value = true;
+      }
+    }
 
     console.log(news.value);
   } catch (err) {}
@@ -144,7 +176,30 @@ onMounted(async () => {
     localStorage.getItem("manager_email") == null ||
     localStorage.getItem("role") != "manager"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
   await getNews();
@@ -171,9 +226,18 @@ const deleteNews = async (id) => {
     }
   });
 };
-const searchEvents = async () => {
-  localStorage.setItem("event_search_value", eventSearchValue.value);
-  router.push(`/mahiberat/postedNews/${eventSearchValue.value}`);
+const searchEvents = async (searchResult) => {
+  try {
+    filteredEventsData.value = news.value.filter(
+      (event) =>
+        event.title == searchResult ||
+        event.description == searchResult ||
+        event.postedDate == searchResult ||
+        event.newsSource == searchResult
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 <style scoped>

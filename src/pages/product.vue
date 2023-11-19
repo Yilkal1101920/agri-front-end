@@ -1,11 +1,12 @@
 <template>
   <div class="w-full h-full">
-    <div class="bg-green-50 dark:bg-gray-800 pb-6">
-      <div class="grid h-full w-full mx-8">
+    <div class="bg-green-50 dark:bg-gray-800 pb-6 pt-8 w-full">
+      <div class="h-full mx-8">
         <div class="gap-7 flex flex-col lg:flex lg:flex-row">
           <div class="text-black dark:text-white w-60 p-10 lg:p-0">
             <div class=" ">
-              <h1><b>Filter by Price</b></h1>
+              <h1 v-if="languageStore.language == 'En'"><b>Filter by Price</b></h1>
+              <h1 v-if="languageStore.language == 'Am'"><b>በዋጋ ምረጥ</b></h1>
               <div class="">
                 <div class="flex flex-row">
                   <input
@@ -17,10 +18,10 @@
                     @click.prevent="getProductByPrice"
                     class="bg-green-400 hover:text-white hover:bg-green-700 px-3 rounded-r-lg"
                   >
-                    Filter
+                    <h4 v-if="languageStore.language == 'En'">Filter</h4>
+                    <h4 v-if="languageStore.language == 'Am'">ምረጥ</h4>
                   </button>
                 </div>
-                <p>price: 0-50000</p>
               </div>
             </div>
             <div class="">
@@ -253,37 +254,37 @@
                     </svg>
                   </button>
                 </li>
-                <li class="py-1">
+                <li
+                  class="py-1 border border-blue-100 shadow-lg p-2 rounded-lg hover:bg-green-400 bg-slate-100"
+                >
                   <button class="flex flex-row" @click.prevent="getFarmersProduct">
                     <h1 v-if="languageStore.language == 'Am'">ከገበሬዎች ይግዙ</h1>
                     <h1 v-if="languageStore.language == 'En'">Buy From Farmers</h1>
-                    <svg
-                      aria-hidden="true"
-                      focusable="false"
-                      data-prefix="fas"
-                      data-icon="caret-down"
-                      class="w-4 p-1"
-                      role="img"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 320 512"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      ></path>
-                    </svg>
                   </button>
                 </li>
               </ul>
             </div>
           </div>
-          <div class="flex">
-            <div class="lg:p-2">
-              <div class="container">
-                <div
-                  class="text-blue-500 flex flex-row flex-wrap gap-3 lg:justify-center"
+          <div class="flex w-full">
+            <div class="lg:p-2 w-full">
+              <div>
+                <p
+                  class="text-lg font-bold text-gray-800 dark:text-white text-center"
+                  v-if="loading"
                 >
-                  <div v-for="item in datas" :key="item.product_id">
+                  <!-- <Circle4></Circle4> -->
+                  <vue-spinner
+                    :color="'#007aff'"
+                    :size="'50px'"
+                    :margin="'5px'"
+                    :radius="'100%'"
+                  />
+                  Loading...
+                </p>
+              </div>
+              <div class="container">
+                <div class="text-blue-500 flex flex-row flex-wrap gap-3 px-8">
+                  <div v-for="item in filteredProductsData" :key="item.product_id">
                     <div
                       v-if="
                         item.amount > 0 &&
@@ -322,318 +323,38 @@
                             </div>
                           </div>
                           <p class="w-full flex justify-center">{{ item.title }}</p>
-                          <div
-                            v-for="productRate in ratingAndFavoriteData"
-                            :key="productRate.favorite_id"
-                          >
-                            <div
-                              v-if="
-                                productRate.user_email == order_email &&
-                                productRate.product_id == item.product_id
-                              "
+                          <div>
+                            <star-rating
+                              v-model:rating="rating[item.product_id]"
                               class="flex justify-center"
+                              v-bind:increment="0.5"
+                              v-bind:max-rating="5"
+                              inactive-color="gray"
+                              active-color="yellow"
+                              v-bind:star-size="18"
+                              @update:rating="
+                                setRating(item.product_id, rating[item.product_id])
+                              "
                             >
-                              <button class="hover:bg-yellow-300">
-                                <svg
-                                  v-if="productRate.star1 == 1"
-                                  @click.prevent="productRate1(item.product_id)"
-                                  class="w-5 h-5 fill-current text-yellow-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                                <svg
-                                  v-else
-                                  @click.prevent="productRate1(item.product_id)"
-                                  class="w-5 h-5 fill-current text-blue-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                              </button>
-                              <button class="hover:bg-yellow-300">
-                                <svg
-                                  v-if="productRate.star2 == 1"
-                                  @click.prevent="productRate2(item.product_id)"
-                                  class="w-5 h-5 fill-current text-yellow-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                                <svg
-                                  v-else
-                                  @click.prevent="productRate2(item.product_id)"
-                                  class="w-5 h-5 fill-current text-blue-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                              </button>
-                              <button class="hover:bg-yellow-300">
-                                <svg
-                                  v-if="productRate.star3 == 1"
-                                  @click.prevent="productRate3(item.product_id)"
-                                  class="w-5 h-5 fill-current text-yellow-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                                <svg
-                                  v-else
-                                  @click.prevent="productRate3(item.product_id)"
-                                  class="w-5 h-5 fill-current text-blue-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                              </button>
-                              <button class="hover:bg-yellow-300">
-                                <svg
-                                  v-if="productRate.star4 == 1"
-                                  @click.prevent="productRate4(item.product_id)"
-                                  class="w-5 h-5 fill-current text-yellow-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                                <svg
-                                  v-else
-                                  @click.prevent="productRate4(item.product_id)"
-                                  class="w-5 h-5 fill-current text-blue-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                              </button>
-                              <button class="hover:bg-yellow-300">
-                                <svg
-                                  v-if="productRate.star5 == 1"
-                                  @click.prevent="productRate5(item.product_id)"
-                                  class="w-5 h-5 fill-current text-yellow-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                                <svg
-                                  v-else
-                                  @click.prevent="productRate5(item.product_id)"
-                                  class="w-5 h-5 fill-current text-blue-500"
-                                  focusable="false"
-                                  aria-hidden="true"
-                                  viewBox="0 0 24 24"
-                                  data-testid="StarIcon"
-                                >
-                                  <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                  ></path>
-                                </svg>
-                              </button>
-                            </div>
+                            </star-rating>
                           </div>
-                          <div
-                            v-if="
-                              rateShow != 0 &&
-                              productIdForRate != 0 &&
-                              verfying_email == order_email
-                            "
-                            class="flex justify-center"
-                          >
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate1(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate2(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate3(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate4(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate5(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                          </div>
-
-                          <div
-                            v-if="rateShow != 0 && productIdForRate == 0"
-                            class="flex justify-center"
-                          >
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate1(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate2(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate3(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate4(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                @click.prevent="productRate5(item.product_id)"
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                          </div>
-
                           <div class="flex justify-center">
-                            <div>{{ item.price }}</div>
-                            <div class="pl-1">ብር ቫት ጨምሮ</div>
+                            <div class="flex flex-row">
+                              {{ item.price }}
+                              <h4 class="pl-1" v-if="languageStore.language == 'En'">
+                                Birr
+                              </h4>
+                              <h4 class="pl-1" v-if="languageStore.language == 'Am'">
+                                ብር
+                              </h4>
+                              <h4 v-if="languageStore.language == 'En'" class="pl-1">
+                                /
+                              </h4>
+                              <h4 v-if="languageStore.language == 'Am'" class="pl-1">
+                                /
+                              </h4>
+                            </div>
+                            <div class="pl-1">{{ item.measurement }}</div>
                           </div>
                           <div class="flex flex-row">
                             <div>
@@ -659,7 +380,7 @@
                                 "
                                 class="bg-green-400 hover:bg-green-700 hover:text-white ml-1 border rounded-lg"
                               >
-                                <p v-if="languageStore.language == 'Am'">ወደ ካርት ጨምር</p>
+                                <p v-if="languageStore.language == 'Am'">ወደ ቅርጫት ጨምር</p>
                                 <p v-if="languageStore.language == 'En'">add to cart</p>
                               </button>
                             </div>
@@ -690,7 +411,18 @@ import { useFilterStore } from "../state/filterStore"; //for filtering purpose
 import Swal from "sweetalert2";
 
 import { useLanguageStore } from "../state/languageStore";
+import StarRating from "vue-star-rating";
 
+//loading
+
+import VueSpinner from "vue-spinner/src/PulseLoader.vue";
+//end loading
+
+const loading = ref(true);
+
+const rating = ref([]);
+const productRateDatas = ref([]);
+const productRateData = ref("");
 const languageStore = useLanguageStore();
 
 var usefilter = useFilterStore();
@@ -710,6 +442,7 @@ const osMore = ref(false);
 const fMore = ref(false);
 const sMore = ref(false);
 const datas = ref([]);
+var filteredProductsData = ref([]);
 const numberOfItems = ref(0); //total amounts of items before updated
 const updatedAmount = ref(0); //total amounts of items after updated
 const idforVmodell = ref(0);
@@ -721,40 +454,13 @@ const totalOrderQuantity = ref("");
 
 const kebele_address = localStorage.getItem("kebele");
 const order_email = localStorage.getItem("user_email"); // the email of user who orders the product to add cart
-var verfying_email = localStorage.getItem("user_email");
 const pro_id = ref(0); ///the primary key id of the product
 const orderRestrictAmount = ref(0);
 const updateOrderAmount = ref(0);
-
-const RatingAndFavorite = ref([]);
-const rate1 = ref(0);
-const rate2 = ref(0);
-const rate3 = ref(0);
-const rate4 = ref(0);
-const rate5 = ref(0);
-const productFavorite = ref(0);
-const starNumber = ref(0);
-
-const star1 = ref(0);
-const star2 = ref(0);
-const star3 = ref(0);
-const star4 = ref(0);
-const star5 = ref(0);
-
+const user_email = localStorage.getItem("user_email");
 const order_date = ref("");
-const rateShow = ref(0);
-
-const ratingAndFavoriteData = ref([]);
-
-const productIdForRate = ref(0);
 
 const patent_email = ref("");
-
-const day = ref("");
-const dayName = ref("");
-const month = ref("");
-const monthName = ref("");
-
 const checkInput = async (id, email) => {
   patent_email.value = email;
   localStorage.setItem("seller", "mahiberat");
@@ -798,38 +504,6 @@ const getProductByIdforVmodel = async (id) => {
   checkAmount(idforVmodell.value);
 };
 
-const productRate1 = async (id) => {
-  starNumber.value = 1;
-  await svgClicked(id);
-};
-const productRate2 = async (id) => {
-  starNumber.value = 2;
-  await svgClicked(id);
-};
-const productRate3 = async (id) => {
-  starNumber.value = 3;
-  await svgClicked(id);
-};
-const productRate4 = async (id) => {
-  starNumber.value = 4;
-  await svgClicked(id);
-};
-const productRate5 = async (id) => {
-  starNumber.value = 5;
-  await svgClicked(id);
-};
-const svgClicked = async (id) => {
-  try {
-    await getRatingAndFavoriteByUserEmailAndProductId(order_email, id);
-    if (rate1.value == undefined) {
-      await insertRatingAndFavorite(id);
-    } else {
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const totalOrderedCart = () => {
   //total  ordered carts calculation
   useCounter.inputValue = count2.value[idforVmodell.value];
@@ -841,28 +515,11 @@ const getProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/products");
     datas.value = response.data;
-  } catch (err) {}
-};
-
-const getRatingAndFavorite = async () => {
-  try {
-    const favoriteAndRate = await axios.get(
-      "http://localhost:5000/products/ratingAndFavorite"
-    );
-    ratingAndFavoriteData.value = favoriteAndRate.data;
-    for (let x in ratingAndFavoriteData.value) {
-      if (order_email == ratingAndFavoriteData.value[x].user_email) {
-        productIdForRate.value = ratingAndFavoriteData.value[x].product_id;
-        verfying_email = ratingAndFavoriteData.value[x].user_email;
-      }
-      if (
-        order_email != ratingAndFavoriteData.value[x].user_email &&
-        productIdForRate.value == 0
-      ) {
-        rateShow.value = rateShow.value + 1;
-      }
-    }
-  } catch (err) {}
+    filteredProductsData.value = datas.value;
+  } catch (err) {
+  } finally {
+    loading.value = false;
+  }
 };
 
 onMounted(() => {
@@ -899,20 +556,25 @@ onMounted(() => {
     router.replace("/login");
   }
   getProducts();
-  getRatingAndFavorite();
+  getProductRate();
 });
 
 const getProductByPrice = () => {
-  //show products by price
-  usefilter.filterStore = filterByPrice.value;
-  localStorage.setItem("filterByPrice", filterByPrice.value);
-  router.replace("/product/byPrice");
+  try {
+    filteredProductsData.value = datas.value.filter(
+      (product) => product.price == filterByPrice.value
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getProductByName = (name) => {
-  usefilter.filterByName = name;
-  localStorage.setItem("filterByName", name);
-  router.replace("/product/byName");
+  try {
+    filteredProductsData.value = datas.value.filter((product) => product.title == name);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getProductById = async (id) => {
@@ -1016,11 +678,16 @@ const checkAmount = async (id) => {
           }
         }
       } else {
-        alert(
-          "You can only order from 0 upto " +
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title:
+            "You can only order from 0 upto " +
             numberOfItems.value +
-            " items please re-order again"
-        );
+            " items please re-order again",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (err) {}
   }
@@ -1133,7 +800,6 @@ const addOrder = async () => {
       edited_date: order_date.value,
       order_kebele: kebele_address,
     });
-    await insertReport();
   } catch (err) {}
 };
 
@@ -1147,183 +813,63 @@ const addToTransaction = async () => {
     });
   } catch (err) {}
 };
-
-const getRatingAndFavoriteByUserEmailAndProductId = async (email, id) => {
-  const ratingAndFavorite = await axios.get(
-    `http://localhost:5000/products/ratingAndFavorite/${email}/${id}`
-  );
-  RatingAndFavorite.value = ratingAndFavorite.data;
-  rate1.value = ratingAndFavorite.data.star1;
-  rate2.value = ratingAndFavorite.data.star2;
-  rate3.value = ratingAndFavorite.data.star3;
-  rate4.value = ratingAndFavorite.data.star4;
-  rate5.value = ratingAndFavorite.data.star5;
-  productFavorite.value = ratingAndFavorite.data.favorite;
-};
-const insertRatingAndFavorite = async (productId) => {
-  await checkStarNumber();
-  try {
-    await axios.post("http://localhost:5000/products/ratingAndFavorite", {
-      user_email: order_email,
-      product_id: productId,
-      star1: star1.value,
-      star2: star2.value,
-      star3: star3.value,
-      star4: star4.value,
-      star5: star5.value,
-      favorite: 0,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const updateRatingAndFavorite = async (productId) => {
-  await checkStarNumber();
-  try {
-    await axios.put(`http://localhost:5000/products/ratingAndFavorite/${email}/${id}`, {
-      user_email: order_email,
-      product_id: productId,
-      star1: star1.value,
-      star2: star2.value,
-      star3: star3.value,
-      star4: star4.value,
-      star5: star5.value,
-      favorite: 0,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const checkStarNumber = async () => {
-  if (starNumber.value == 1) {
-    star1.value = 1;
-    star2.value = 0;
-    star3.value = 0;
-    star4.value = 0;
-    star5.value = 0;
-  }
-  if (starNumber.value == 2) {
-    star1.value = 1;
-    star2.value = 1;
-    star3.value = 0;
-    star4.value = 0;
-    star5.value = 0;
-  }
-  if (starNumber.value == 3) {
-    star1.value = 1;
-    star2.value = 1;
-    star3.value = 1;
-    star4.value = 0;
-    star5.value = 0;
-  }
-  if (starNumber.value == 4) {
-    star1.value = 1;
-    star2.value = 1;
-    star3.value = 1;
-    star4.value = 1;
-    star5.value = 0;
-  }
-  if (starNumber.value == 5) {
-    star1.value = 1;
-    star2.value = 1;
-    star3.value = 1;
-    star4.value = 1;
-    star5.value = 1;
-  }
-};
-
 const getFarmersProduct = async () => {
   localStorage.setItem("seller", "farmer");
   router.replace("/farmersProduct");
 };
-
-const insertReport = async () => {
+const setRating = async (id, star) => {
+  await getProductRateByEmailAndProuctId(user_email, id);
+  if (productRateData.value.star == undefined) {
+    await insertProductRate(id, star);
+  } else {
+    await updateProductRateById(productRateData.value.favorite_id, star);
+  }
+};
+const getProductRate = async () => {
   try {
-    order_date.value = new Date();
-    const date = new Date(order_date.value);
-    day.value = date.getDay();
-    if (day.value == 0) {
-      dayName.value = "Monday";
+    const responseRate = await axios.get(
+      "http://localhost:5000/products/ratingAndFavorite"
+    );
+    productRateDatas.value = responseRate.data;
+    for (let x in productRateDatas.value) {
+      if (productRateDatas.value[x].user_email == user_email) {
+        rating.value[productRateDatas.value[x].product_id] =
+          productRateDatas.value[x].star;
+      }
     }
-    if (day.value == 1) {
-      dayName.value = "Tuesday";
-    }
-    if (day.value == 2) {
-      dayName.value = "Wednsday";
-    }
-    if (day.value == 3) {
-      dayName.value = "Tursday";
-    }
-    if (day.value == 4) {
-      dayName.value = "Friday";
-    }
-    if (day.value == 5) {
-      dayName.value = "Saturday";
-    }
-    if (day.value == 6) {
-      dayName.value = "Sunday";
-    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-    month.value = date.getMonth();
+const getProductRateByEmailAndProuctId = async (email, id) => {
+  try {
+    const productRate = await axios.get(
+      `http://localhost:5000/products/ratingAndFavorite/${email}/${id}`
+    );
+    productRateData.value = productRate.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-    if (month.value == 0) {
-      monthName.value = "January";
-    }
-    if (month.value == 1) {
-      monthName.value = "February";
-    }
-    if (month.value == 2) {
-      monthName.value = "March";
-    }
-    if (month.value == 3) {
-      monthName.value = "April";
-    }
-    if (month.value == 4) {
-      monthName.value = "May";
-    }
-    if (month.value == 5) {
-      monthName.value = "June";
-    }
-    if (month.value == 6) {
-      monthName.value = "Junly";
-    }
-    if (month.value == 7) {
-      monthName.value = "Ogust";
-    }
-    if (month.value == 8) {
-      monthName.value = "September";
-    }
-    if (month.value == 9) {
-      monthName.value = "October";
-    }
-    if (month.value == 10) {
-      monthName.value = "November";
-    }
-    if (month.value == 11) {
-      monthName.value = "December";
-    }
-    await axios.post("http://localhost:5000/report", {
-      reporter_email: "yilkal@gmail.com",
-      product_name: "teff",
-      quantity: 5,
-      report_owner: "yemezegn",
-      report_status: "order",
-      transaction: "no",
-      transaction_in_birr: 0,
-      day: dayName.value,
-      monthName: monthName.value,
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      date: date.getDate(),
-      hour: date.getHours(),
-      minute: date.getMinutes(),
-      second: date.getSeconds(),
-      millisecond: date.getMilliseconds(),
+const insertProductRate = async (id, star) => {
+  try {
+    await axios.post("http://localhost:5000/products/ratingAndFavorite", {
+      user_email: user_email,
+      product_id: id,
+      star: star,
+      favorite: 0,
     });
   } catch (err) {
     console.log(err);
   }
+};
+const updateProductRateById = async (id, star) => {
+  try {
+    await axios.put(`http://localhost:5000/products/ratingAndFavorite/${id}`, {
+      star: star,
+    });
+  } catch (err) {}
 };
 </script>

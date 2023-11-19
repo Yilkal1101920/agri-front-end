@@ -21,7 +21,10 @@
           </router-link>
           <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
         </div>
-        <div class="w-[50%]">
+        <div>
+          <p class="text-2xl font-bold font-mono">Store Product list</p>
+        </div>
+        <div class="w-[30%]">
           <form action="">
             <div class="flex gap-0">
               <input
@@ -48,42 +51,48 @@
           Add Product
         </button>
       </div>
-      <div class="overflow-x-auto text-justify flex justify-center mt-1 mx-6 mb-6">
-        <table class="table-auto text-gray-700 dark:text-white w-full">
+      <div class="overflow-x-auto text-justify flex justify-center mt-1 mx-6 mb-28">
+        <div v-if="isData == false">
+          <div colspan="11" class="col-span-full">
+            <div class="text-gray-800 dark:text-white block py-11 px-11">
+              <P
+                class="text-gray-400 text-center dark:text-white text-4xl italic font-mono font-bold"
+                >No Products in store.</P
+              >
+              <p
+                class="text-center text-gray-400 dark:text-white font-mono font-bold text-lg"
+              >
+                No thing to show. once upload products from store, the products will be
+                displayed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <table
+          v-if="isData == true"
+          class="table-auto text-gray-700 dark:text-white w-full"
+        >
           <thead class="bg-slate-400 dark:bg-white">
             <tr>
-              <th class="py-2 pl-2">ProductId</th>
               <th class="py-2 pl-2">Category</th>
-              <th class="py-2 pl-2">ProductType</th>
               <th class="py-2 pl-2">Title</th>
-              <th class="py-2 pl-2">Price</th>
-              <th class="py-2 pl-2">OrginalCost</th>
-              <th class="py-2 pl-2">Amout</th>
-              <th class="py-2 pl-2">Address</th>
+              <th class="py-2 pl-2">Amout(Kuntal)</th>
               <th class="py-2 pl-2">Image</th>
               <th class="py-2 pl-2">Description</th>
               <th class="py-2 pl-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in datas" :key="item.product_id" class="hover:bg-slate-200">
-              <td
-                v-if="item.kebele == kebele && item.post_email == store_email"
-                class="pl-2"
-              >
-                {{ item.product_id }}
-              </td>
+            <tr
+              v-for="item in filteredJsonData"
+              :key="item.product_id"
+              class="hover:bg-slate-200"
+            >
               <td
                 v-if="item.kebele == kebele && item.post_email == store_email"
                 class="pl-2"
               >
                 {{ item.category }}
-              </td>
-              <td
-                v-if="item.kebele == kebele && item.post_email == store_email"
-                class="pl-2"
-              >
-                {{ item.type_product }}
               </td>
               <td
                 v-if="item.kebele == kebele && item.post_email == store_email"
@@ -95,25 +104,7 @@
                 v-if="item.kebele == kebele && item.post_email == store_email"
                 class="pl-2"
               >
-                {{ item.price }}
-              </td>
-              <td
-                v-if="item.kebele == kebele && item.post_email == store_email"
-                class="pl-2"
-              >
-                {{ item.original_cost }}
-              </td>
-              <td
-                v-if="item.kebele == kebele && item.post_email == store_email"
-                class="pl-2"
-              >
                 {{ item.amount }}
-              </td>
-              <td
-                v-if="item.kebele == kebele && item.post_email == store_email"
-                class="pl-2"
-              >
-                {{ item.address }}
               </td>
               <td
                 v-if="item.kebele == kebele && item.post_email == store_email"
@@ -198,7 +189,7 @@
 
 <script setup>
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useSelectStore } from "../state/selectProStore";
 import Swal from "sweetalert2";
@@ -209,6 +200,8 @@ const router = useRouter();
 const kebele = localStorage.getItem("kebele");
 const productName = ref("");
 const store_email = localStorage.getItem("store_email");
+const filteredJsonData = ref([]);
+var isData = ref(false);
 
 const productAdd = () => {
   router.replace("/mahiberat/addProductToStore");
@@ -229,10 +222,35 @@ onMounted(async () => {
     localStorage.getItem("store_email") == null ||
     localStorage.getItem("role") != "store"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
+  } else {
+    await getProducts();
+    await filteredData();
   }
-  getProducts();
 });
 
 const deleteProduct = async (id) => {
@@ -288,9 +306,61 @@ const searchProductByName = async () => {
   localStorage.setItem("product_name", productName.value);
   router.push("/mahiberat/storeProductsListByName");
 };
+
+const filteredData = async () => {
+  // Create an empty object to store unique names
+  const uniqueNames = {};
+  const sums = {};
+
+  const filteredProducts = datas.value.filter((item) => item.post_email == store_email);
+
+  // Loop through the array and add each unique name to the object
+  filteredProducts.forEach((obj) => {
+    if (obj.post_email === store_email && obj.kebele === kebele) {
+      if (sums[obj.title]) {
+        sums[obj.title] += obj.amount;
+      } else {
+        sums[obj.title] = obj.amount;
+      }
+      uniqueNames[obj.title] = true;
+    }
+  });
+
+  // Create a new array of objects with unique names
+  const filteredArray = Object.keys(uniqueNames).map((title) => {
+    const obj = filteredProducts.find((item) => item.title === title);
+    return {
+      product_id: obj.product_id,
+      post_email: obj.post_email,
+      category: obj.category,
+      type_product: obj.type_product,
+      title,
+      kebele: obj.kebele,
+      original_cost: obj.original_cost,
+      price: obj.price,
+      amount: sums[title],
+      postedForMarket: obj.postedForMarket,
+      image: obj.image,
+      address: obj.address,
+      description: obj.description,
+    };
+  });
+
+  // Convert the filtered array back to JSON
+  filteredJsonData.value = filteredArray;
+  for (let x in filteredJsonData.value) {
+    if (
+      filteredJsonData.value[x].kebele == kebele &&
+      filteredJsonData.value[x].post_email == store_email
+    ) {
+      isData.value = true;
+    }
+  }
+  console.log(filteredJsonData.value);
+};
 </script>
 
-<style>
+<style scoped>
 .bg {
   background-color: #d3f5ce;
 }

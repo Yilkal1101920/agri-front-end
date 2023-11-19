@@ -121,23 +121,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="pt-16 pb-2">
-      <p class="text-center font-mono font-bold text-lg text-gray-800">ወይም ከዚህ ይፈልጉ</p>
-      <form action="" class="flex gap-0 px-8 py-6">
-        <input
-          type="search"
-          placeholder="Example: home, product, events, about, help..."
-          name="search"
-          id="searchNotFound"
-          class="text-gray-800 border-b-4 pl-4 border-green-400 w-full"
-        />
-        <input
-          type="submit"
-          value="ፈልግ"
-          class="cursor-pointer px-11 py-2 bg-green-400 text-white hover:bg-green-700 rounded-l-none rounded-lg"
-        />
-      </form>
-    </div> -->
   </div>
 </template>
 

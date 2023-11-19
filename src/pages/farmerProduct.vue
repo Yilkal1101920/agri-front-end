@@ -2,6 +2,9 @@
   <div class="w-full h-full">
     <div class="bg-green-50 dark:bg-gray-800 pb-6">
       <div class="grid h-full w-full mx-8">
+        <p class="text-center font-bold font-mono pt-6 pb-3 text-3xl">
+          Buy directly from farmers
+        </p>
         <div class="gap-7 flex flex-col lg:flex lg:flex-row">
           <div class="flex">
             <div class="lg:p-2">
@@ -9,6 +12,21 @@
                 <div
                   class="text-blue-500 flex flex-row flex-wrap gap-3 lg:justify-center"
                 >
+                  <div class="flex justify-center">
+                    <p
+                      class="text-lg font-bold text-gray-800 dark:text-white text-center"
+                      v-if="loading"
+                    >
+                      <!-- <Circle4></Circle4> -->
+                      <vue-spinner
+                        :color="'#007aff'"
+                        :size="'50px'"
+                        :margin="'5px'"
+                        :radius="'100%'"
+                      />
+                      Loading...
+                    </p>
+                  </div>
                   <div v-for="item in datas" :key="item.product_id">
                     <div
                       v-if="
@@ -47,77 +65,30 @@
                             </div>
                           </div>
                           <p class="w-full flex justify-center">{{ item.title }}</p>
-                          <div class="flex justify-center">
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
-                            <button class="hover:bg-yellow-300">
-                              <svg
-                                class="w-5 h-5 fill-current text-blue-500"
-                                focusable="false"
-                                aria-hidden="true"
-                                viewBox="0 0 24 24"
-                                data-testid="StarIcon"
-                              >
-                                <path
-                                  d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                ></path>
-                              </svg>
-                            </button>
+                          <div>
+                            <star-rating
+                              v-model:rating="rating[item.product_id]"
+                              class="flex justify-center"
+                              v-bind:increment="0.5"
+                              v-bind:max-rating="5"
+                              inactive-color="gray"
+                              active-color="yellow"
+                              v-bind:star-size="18"
+                              @update:rating="
+                                setRating(item.product_id, rating[item.product_id])
+                              "
+                            >
+                            </star-rating>
                           </div>
-
                           <div class="flex justify-center">
                             <div>{{ item.price }}</div>
-                            <div class="pl-1">ብር ቫት ጨምሮ</div>
+                            <div class="pl-1">
+                              <h4 v-if="languageStore.language == 'En'">Birr</h4>
+                              <h4 v-if="languageStore.language == 'Am'">ብር</h4>
+                            </div>
+                            <h4 class="pl-1" v-if="languageStore.language == 'En'">/</h4>
+                            <h4 class="pl-1" v-if="languageStore.language == 'Am'">/</h4>
+                            <div class="pl-1">{{ item.measurement }}</div>
                           </div>
                           <div class="flex flex-row">
                             <div>
@@ -141,7 +112,7 @@
                                 @click.prevent="addCart(item.product_id, item.post_email)"
                                 class="bg-green-400 hover:bg-green-700 hover:text-white ml-1 border rounded-lg"
                               >
-                                <p v-if="languageStore.language == 'Am'">ወደ ካርት ጨምር</p>
+                                <p v-if="languageStore.language == 'Am'">ወደ ቅርጫት ጨምር</p>
                                 <p v-if="languageStore.language == 'En'">add to cart</p>
                               </button>
                             </div>
@@ -169,6 +140,17 @@ import Swal from "sweetalert2";
 
 import { useLanguageStore } from "../state/languageStore";
 
+//loading
+
+import VueSpinner from "vue-spinner/src/PulseLoader.vue";
+
+//end loading
+
+import StarRating from "vue-star-rating";
+const rating = ref([]);
+const productRateDatas = ref([]);
+const productRateData = ref("");
+
 const languageStore = useLanguageStore();
 
 const router = useRouter();
@@ -182,10 +164,15 @@ const pro_id = ref(0); ///the primary key id of the product
 const updateOrderAmount = ref(0);
 const order_date = ref("");
 
-const order_email = localStorage.getItem("customer_email");
+var order_email = localStorage.getItem("customer_email");
+var customer_email = localStorage.getItem("customer_email");
+const user_email = localStorage.getItem("user_email");
+
 const patent_email = ref("");
 
 const totalAmount = ref("");
+
+const loading = ref(true);
 
 const checkInput = async (id) => {
   if (count2.value[id] > 0) {
@@ -220,10 +207,11 @@ const getProducts = async () => {
   try {
     const response = await axios.get("http://localhost:5000/products");
     datas.value = response.data;
+    loading.value = false;
   } catch (err) {}
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (
     (localStorage.getItem("user_email") == undefined ||
       localStorage.getItem("user_email") == null ||
@@ -258,7 +246,11 @@ onMounted(() => {
     });
     router.replace("/login");
   }
-  getProducts();
+  await getProducts();
+  await getProductRate();
+  if (order_email == null) {
+    order_email = user_email;
+  }
 });
 
 const addCart = async (id, email) => {
@@ -272,8 +264,31 @@ const addCart = async (id, email) => {
 };
 
 const checkAmount = async (id) => {
-  if (!localStorage.getItem("customer_email")) {
-    alert("login first to order product");
+  if (!localStorage.getItem("customer_email") && !localStorage.getItem("user_email")) {
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "login first to order product!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   } else {
     try {
@@ -395,5 +410,67 @@ const updateProductById = async (id) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+const setRating = async (id, star) => {
+  if (customer_email == undefined || customer_email == null) {
+    customer_email = user_email;
+  }
+  await getProductRateByEmailAndProuctId(customer_email, id);
+  if (productRateData.value.star == undefined) {
+    await insertProductRate(id, star);
+  } else {
+    await updateProductRateById(productRateData.value.favorite_id, star);
+  }
+};
+const getProductRate = async () => {
+  try {
+    if (customer_email == undefined || customer_email == null) {
+      customer_email = user_email;
+    }
+    const responseRate = await axios.get(
+      "http://localhost:5000/products/ratingAndFavorite"
+    );
+    productRateDatas.value = responseRate.data;
+    for (let x in productRateDatas.value) {
+      if (productRateDatas.value[x].user_email == customer_email) {
+        rating.value[productRateDatas.value[x].product_id] =
+          productRateDatas.value[x].star;
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getProductRateByEmailAndProuctId = async (email, id) => {
+  try {
+    const productRate = await axios.get(
+      `http://localhost:5000/products/ratingAndFavorite/${email}/${id}`
+    );
+    productRateData.value = productRate.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const insertProductRate = async (id, star) => {
+  try {
+    await axios.post("http://localhost:5000/products/ratingAndFavorite", {
+      user_email: customer_email,
+      product_id: id,
+      star: star,
+      favorite: 0,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+const updateProductRateById = async (id, star) => {
+  try {
+    await axios.put(`http://localhost:5000/products/ratingAndFavorite/${id}`, {
+      star: star,
+    });
+  } catch (err) {}
 };
 </script>

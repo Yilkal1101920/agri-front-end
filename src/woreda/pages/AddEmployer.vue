@@ -21,13 +21,13 @@
         <p class="text-gray-700 dark:text-white">Back to Dashboard</p>
       </div>
       <p
-        class="ml-[30%] font-mono font-bold text-lg text-center text-gray-700 dark:text-white"
+        class="ml-[30%] font-mono font-bold text-2xl text-center text-gray-700 dark:text-white"
       >
         Register employee
       </p>
     </div>
     <div
-      class="w-full pl-8 text-gray-700 dark:text-white inset-y-0 flex flex-row items-center gap-4 flex-wrap p-2 px-8 pt-6 justify-center"
+      class="px-[13%] text-gray-700 dark:text-white grid md:grid-cols-3 items-center gap-4 flex-wrap pt-6 justify-center"
     >
       <div class="field">
         <label class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
@@ -68,7 +68,7 @@
           <input
             class="border-green-300 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
             type="text"
-            placeholder="ID"
+            placeholder="Identification Card"
             v-model="id"
           />
           <div class="mb-0 ml-5">
@@ -150,12 +150,13 @@
         </div>
       </div>
       <div class="field">
-        <label class="block text-gray-700 text-sm font-bold mb-2">Sex</label>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Gender</label>
         <div class="control">
           <select
-            class="border-green-300 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+            class="border-green-300 shadow border rounded w-full py-2 px-3 text-gray-700"
             v-model="sex"
           >
+            <option value="" selected>Gender</option>
             <option value="male" selected>Male</option>
             <option value="female">Female</option>
           </select>
@@ -169,7 +170,7 @@
         <div class="control">
           <input
             class="border-green-300 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-            type="text"
+            type="number"
             placeholder="Age"
             v-model="age"
           />
@@ -260,7 +261,30 @@ onMounted(() => {
     localStorage.getItem("woreda_admin_email") == null ||
     localStorage.getItem("role") != "woreda_admin"
   ) {
-    alert("please login first");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "please login first!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   }
 });
@@ -336,7 +360,7 @@ const checkInputField = async () => {
     role.value != "" &&
     kebele != ""
   ) {
-    await insertNewMemberInfo();
+    await validateEthiopianPhoneNumber(phone.value);
   } else {
     let timerInterval;
     Swal.fire({
@@ -367,7 +391,7 @@ const checkInputField = async () => {
 
 const insertNewMemberInfo = async () => {
   try {
-    await axios.post("http://localhost:5000/mahiberat/addNewMembers", {
+    await axios.post("http://localhost:5000/mahiberat/worker/addNewMembers", {
       fName: first_name.value,
       faName: last_name.value,
       username: id.value,
@@ -383,7 +407,67 @@ const insertNewMemberInfo = async () => {
       kebele_id_photo: idUrl.value,
       photo: photoUrl.value,
     });
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      // title: "ስህተት",
+      html: "correctly registered!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.push("/woreda/totalEmployer");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const validateEthiopianPhoneNumber = async (phone) => {
+  try {
+    var regex = /^(\+251|0)(9|7)\d{8}$/;
+    if (regex.test(phone)) {
+      await insertNewMemberInfo();
+    } else {
+      let timerInterval;
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        // title: "ስህተት",
+        html: "Please enter Ethiopian Phone number!",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          // Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // console.log("I was closed by the timer");
+        }
+      });
+    }
   } catch (err) {
     console.log(err);
   }

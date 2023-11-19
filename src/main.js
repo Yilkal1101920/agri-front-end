@@ -4,6 +4,11 @@ import App from './App.vue'
 import router from './router'
 // import firebase from "firebase/compat/app"
 import './assets/main.css'
+
+import 'gitart-vue-dialog/dist/style.css'
+import { GDialog } from 'gitart-vue-dialog'
+import { plugin as dialogPlugin } from 'gitart-vue-dialog'
+
 const pinia = createPinia()
 // const config = {
 //   apiKey: "AIzaSyD1SwNEPuWJRym2gnGbh0bjK0CAjzb-DIU",
@@ -15,7 +20,8 @@ const pinia = createPinia()
 // }
 // firebase.initializeApp(config)
 const app = createApp(App)
-
+app.use(dialogPlugin)
+app.component('GDialog', GDialog)
 app.use(router)
 app.use(pinia)
 

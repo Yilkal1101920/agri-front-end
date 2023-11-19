@@ -3,7 +3,7 @@
     <div
       v-for="item in datas"
       :key="item.product_id"
-      class="w-full text-gray-700 dark:text-white flex flex-row flex-wrap"
+      class="w-full text-gray-700 dark:text-white flex flex-row flex-wrap justify-center"
     >
       <div
         v-if="
@@ -13,97 +13,36 @@
           item.marketState == 1 &&
           item.postedForMarket != 0
         "
-        class="flex justify-center w-full px-8 gap-6 h-74"
+        class="px-8 gap-6"
       >
-        <div
-          class="border-b-4 justify-center grid sm:grid-cols-1 md:grid-cols-2 md:gap-8 py-6"
-        >
+        <div class="border-b-2 flex flex-wrap md:gap-8 py-6">
           <div class="" @click.prevent="getProductById(item.product_id)">
-            <div class="w-full h-48">
+            <div class="w-full">
               <img
-                class="h-48 shadow-lg cursor-pointer lg:w-80 lg:mt-2 rounded-lg hover:scale-110"
+                class="h-96 shadow-lg cursor-pointer lg:w-80 lg:mt-2 rounded-lg hover:scale-110"
                 :src="item.image"
                 alt="This was image"
               />
             </div>
           </div>
-          <div class="gap-11">
-            <p class="w-full flex justify-center font-mono font-bold text-lg">
+          <div class="gap-5 text-lg flex flex-col">
+            <p class="w-full flex font-mono font-bold text-lg">
               {{ item.title }}
             </p>
-            <div class="flex justify-center">
-              <button class="hover:bg-yellow-300">
-                <svg
-                  @click.prevent="svgClicked()"
-                  class="w-5 h-5 fill-current text-blue"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="StarIcon"
-                >
-                  <path
-                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  ></path>
-                </svg>
-              </button>
-              <button class="hover:bg-yellow-300">
-                <svg
-                  @click.prevent="svgClicked()"
-                  class="w-5 h-5 fill-current text-blue"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="StarIcon"
-                >
-                  <path
-                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  ></path>
-                </svg>
-              </button>
-              <button class="hover:bg-yellow-300">
-                <svg
-                  @click.prevent="svgClicked()"
-                  class="w-5 h-5 fill-current text-blue"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="StarIcon"
-                >
-                  <path
-                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  ></path>
-                </svg>
-              </button>
-              <button class="hover:bg-yellow-300">
-                <svg
-                  @click.prevent="svgClicked()"
-                  class="w-5 h-5 fill-current text-blue"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="StarIcon"
-                >
-                  <path
-                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  ></path>
-                </svg>
-              </button>
-              <button class="hover:bg-yellow-300">
-                <svg
-                  @click.prevent="svgClicked()"
-                  class="w-5 h-5 fill-current text-blue"
-                  focusable="false"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  data-testid="StarIcon"
-                >
-                  <path
-                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  ></path>
-                </svg>
-              </button>
+            <div>
+              <star-rating
+                v-model:rating="rating[item.product_id]"
+                class="flex"
+                v-bind:increment="0.5"
+                v-bind:max-rating="5"
+                inactive-color="gray"
+                active-color="yellow"
+                v-bind:star-size="18"
+                @update:rating="setRating(item.product_id, rating[item.product_id])"
+              >
+              </star-rating>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <div class="flex">
                   <p>ችርቻሮ ዋጋ፡</p>
@@ -114,27 +53,27 @@
               </div>
               <div class="pl-1"></div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <p>ዋጋ፡ {{ item.price }} ብር</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <p>መደብ፡ {{ item.category }}</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div>
                 <p>ገለጻ፡ {{ item.description }}</p>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex">
               <div class="font-mono font-bold text-lg">
                 <p>ቀበሌ፡ {{ item.kebele }}</p>
               </div>
             </div>
-            <div class="flex justify-center py-3">
+            <div class="flex py-3">
               <div>
                 <input
                   class="py-2 border rounded-sm w-20 border-green-300 hover:shadow-md hover:shadow-green-300"
@@ -152,6 +91,37 @@
                 </button>
               </div>
             </div>
+            <div class="flex gap-2 items-center">
+              <p class="text-lg font-bold text-gray dark:text-white font-mono">Share:</p>
+              <span
+                ><img
+                  class="h-10 w-auto border border-green-300 hover:scale-110 hover:bg-blue-300 cursor-pointer p-2 rounded-full"
+                  src="../assets/facebook.png"
+                  alt="Facebook logo"
+                  title="share with Facebook"
+              /></span>
+              <span
+                ><img
+                  class="h-10 w-auto border border-green-300 hover:scale-110 hover:bg-green-300 cursor-pointer p-2 rounded-full"
+                  src="../assets/telegram.png"
+                  alt="Telegram logo"
+                  title="share with Telegram"
+              /></span>
+              <span
+                ><img
+                  class="h-10 w-auto border border-green-300 hover:scale-110 hover:bg-blue-300 cursor-pointer p-2 rounded-full"
+                  src="../assets/linkedin.png"
+                  alt="LinkedIn logo"
+                  title="share with LinkedIn"
+              /></span>
+              <span
+                ><img
+                  class="h-10 w-auto border border-green-300 hover:scale-110 hover:bg-red-300 cursor-pointer p-2 rounded-full"
+                  src="../assets/email.png"
+                  alt="Email logo"
+                  title="share with Email"
+              /></span>
+            </div>
           </div>
         </div>
       </div>
@@ -159,144 +129,83 @@
     <p class="font-mono font-bold text-lg text-gray-700 dark:text-white py-4 text-center">
       ተዛማጅ
     </p>
-    <div class="pb-6">
-      <!-- related related-->
-      <div class="justify-center flex">
-        <div v-for="item in datas" :key="item.product_id">
-          <div
-            v-if="
-              item.amount > 0 &&
-              item.kebele == kebele_address &&
-              item.marketState == 1 &&
-              item.postedForMarket != 0 &&
-              item.category == categoryDetail &&
-              item.marketState == 1 &&
-              item.postedForMarket != 0
-            "
-          >
-            <div class="flex flex-col text-gray-700 dark:text-white">
+    <!-- related related-->
+    <div class="justify-center gap-6 pb-11 flex w-full">
+      <div v-for="item in datas" :key="item.product_id">
+        <div
+          v-if="
+            item.amount > 0 &&
+            item.kebele == kebele_address &&
+            item.marketState == 1 &&
+            item.postedForMarket != 0 &&
+            item.category == categoryDetail &&
+            item.marketState == 1 &&
+            item.postedForMarket != 0
+          "
+        >
+          <div class="flex flex-col text-gray-700 dark:text-white">
+            <div
+              class="flex flex-col gap-2 hover:shadow-xl hover:cursor-pointer h-74 w-60 p-4 shadow-md"
+            >
               <div
-                class="flex flex-col gap-2 hover:shadow-xl hover:cursor-pointer h-74 w-60 p-4 shadow-md"
+                class="hover:bg-blue-300"
+                @click.prevent="getProductById(item.product_id)"
               >
-                <div
-                  class="hover:bg-blue-300"
-                  @click.prevent="getProductById(item.product_id)"
+                <div class="w-full h-32 hover:bg-blue-300">
+                  <div class="flex justify-end">
+                    <svg
+                      class="w-5 h-5 fill-current text-yellow-600"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="FavoriteBorderIcon"
+                    >
+                      <path
+                        d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <img
+                    class="h-28 w-full mt-2 border rounded-lg hover:scale-110"
+                    :src="item.image"
+                    alt="This was image"
+                  />
+                </div>
+              </div>
+              <p class="w-full flex justify-center">{{ item.title }}</p>
+              <div>
+                <star-rating
+                  v-model:rating="rating[item.product_id]"
+                  class="flex justify-center"
+                  v-bind:increment="0.5"
+                  v-bind:max-rating="5"
+                  inactive-color="gray"
+                  active-color="yellow"
+                  v-bind:star-size="18"
+                  @update:rating="setRating(item.product_id, rating[item.product_id])"
                 >
-                  <div class="w-full h-32 hover:bg-blue-300">
-                    <div class="flex justify-end">
-                      <svg
-                        class="w-5 h-5 fill-current text-yellow-600"
-                        focusable="false"
-                        aria-hidden="true"
-                        viewBox="0 0 24 24"
-                        data-testid="FavoriteBorderIcon"
-                      >
-                        <path
-                          d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <img
-                      class="h-28 w-full mt-2 border rounded-lg hover:scale-110"
-                      :src="item.image"
-                      alt="This was image"
-                    />
-                  </div>
+                </star-rating>
+              </div>
+              <div class="flex justify-center">
+                <div>{{ item.price }}</div>
+                <div class="pl-1">ብር</div>
+              </div>
+              <div class="flex flex-row">
+                <div>
+                  <input
+                    class="border rounded-sm w-20 border-green-300 hover:shadow-md hover:shadow-green-300"
+                    type="number"
+                    v-model="count2[item.product_id]"
+                    placeholder="መጠን"
+                  />
                 </div>
-                <p class="w-full flex justify-center">{{ item.title }}</p>
-                <div class="flex justify-center">
-                  <button class="hover:bg-yellow-300">
-                    <svg
-                      @click.prevent="svgClicked()"
-                      class="w-5 h-5 fill-current text-blue"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="StarIcon"
-                    >
-                      <path
-                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      ></path>
-                    </svg>
+                <div>
+                  <button
+                    @click.prevent="getProductByIdforVmodel(item.product_id)"
+                    class="bg-green-400 hover:bg-green-700 hover:text-white ml-1 border rounded-lg"
+                  >
+                    ወደ ካርት ጨምር
                   </button>
-                  <button class="hover:bg-yellow-300">
-                    <svg
-                      @click.prevent="svgClicked()"
-                      class="w-5 h-5 fill-current text-blue"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="StarIcon"
-                    >
-                      <path
-                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <button class="hover:bg-yellow-300">
-                    <svg
-                      @click.prevent="svgClicked()"
-                      class="w-5 h-5 fill-current text-blue"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="StarIcon"
-                    >
-                      <path
-                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <button class="hover:bg-yellow-300">
-                    <svg
-                      @click.prevent="svgClicked()"
-                      class="w-5 h-5 fill-current text-blue"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="StarIcon"
-                    >
-                      <path
-                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <button class="hover:bg-yellow-300">
-                    <svg
-                      @click.prevent="svgClicked()"
-                      class="w-5 h-5 fill-current text-blue"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="StarIcon"
-                    >
-                      <path
-                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-                <div class="flex justify-center">
-                  <div>{{ item.price }}</div>
-                  <div class="pl-1">ብር</div>
-                </div>
-                <div class="flex flex-row">
-                  <div>
-                    <input
-                      class="border rounded-sm w-20 border-green-300 hover:shadow-md hover:shadow-green-300"
-                      type="number"
-                      v-model="count2[item.product_id]"
-                      placeholder="መጠን"
-                    />
-                  </div>
-                  <div>
-                    <button
-                      @click.prevent="getProductByIdforVmodel(item.product_id)"
-                      class="bg-green-400 hover:bg-green-700 hover:text-white ml-1 border rounded-lg"
-                    >
-                      ወደ ካርት ጨምር
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -313,6 +222,11 @@ import { onMounted, ref } from "vue";
 import { useCounterStore } from "../state/store"; //counting sellected cart
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
+
+import StarRating from "vue-star-rating";
+const rating = ref([]);
+const productRateDatas = ref([]);
+const productRateData = ref("");
 
 const router = useRouter();
 
@@ -342,6 +256,7 @@ const categoryDetail = ref("");
 const updateOrderAmount = ref(0);
 const order_date = ref("");
 const patent_email = ref("");
+const user_email = localStorage.getItem("user_email");
 
 const checkInput = async (id, seller_email) => {
   patent_email.value = seller_email;
@@ -384,12 +299,6 @@ const getProductByIdforVmodel = async (id) => {
   checkAmount(idforVmodell.value);
 };
 
-const svgClicked = async () => {
-  // get product by id for product_id
-  try {
-  } catch (err) {}
-};
-
 const totalOrderedCart = () => {
   //total  ordered carts calculation
   useCounter.inputValue = count2.value[idforVmodell.value];
@@ -412,7 +321,7 @@ const getProductByIdForDetail = async (id) => {
   } catch (err) {}
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (
     localStorage.getItem("user_email") == undefined ||
     localStorage.getItem("user_email") == null ||
@@ -445,8 +354,9 @@ onMounted(() => {
     });
     router.replace("/login");
   }
-  getProducts();
-  getProductByIdForDetail(selected_product);
+  await getProducts();
+  await getProductByIdForDetail(selected_product);
+  await getProductRate();
 });
 
 const getProductById = async (id) => {
@@ -461,7 +371,30 @@ const checkAmount = async (id) => {
   ////CHECK USER IS LOG IN OR NOT
 
   if (!localStorage.getItem("user_email")) {
-    alert("login first to order product");
+    let timerInterval;
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      // title: "ስህተት",
+      html: "login first to order product!",
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: () => {
+        // Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft();
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // console.log("I was closed by the timer");
+      }
+    });
     router.replace("/login");
   } else {
     try {
@@ -501,9 +434,55 @@ const checkAmount = async (id) => {
                 totalOrderQuantity.value < orderRestrictAmount.value
               ) {
                 const remainOrder = orderRestrictAmount.value - totalOrderQuantity.value;
-                alert("You can order a maximum of " + remainOrder);
+                let timerInterval;
+                Swal.fire({
+                  position: "top-end",
+                  icon: "warning",
+                  // title: "ስህተት",
+                  html: "You can order a maximum of " + remainOrder,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    // Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector("b");
+                    timerInterval = setInterval(() => {
+                      b.textContent = Swal.getTimerLeft();
+                    }, 100);
+                  },
+                  willClose: () => {
+                    clearInterval(timerInterval);
+                  },
+                }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                    // console.log("I was closed by the timer");
+                  }
+                });
               } else {
-                alert("ለአንድ ሰው የተፈቀደዉን ያክል አዝዘሃል ወይም ወስደሃል ከተፈቀደው በላይ ማዘዝ አይቻልም");
+                let timerInterval;
+                Swal.fire({
+                  position: "top-end",
+                  icon: "warning",
+                  // title: "ስህተት",
+                  html: "ለአንድ ሰው የተፈቀደዉን ያክል አዝዘሃል ወይም ወስደሃል ከተፈቀደው በላይ ማዘዝ አይቻልም!",
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    // Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector("b");
+                    timerInterval = setInterval(() => {
+                      b.textContent = Swal.getTimerLeft();
+                    }, 100);
+                  },
+                  willClose: () => {
+                    clearInterval(timerInterval);
+                  },
+                }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                    // console.log("I was closed by the timer");
+                  }
+                });
               }
             }
           }
@@ -527,11 +506,16 @@ const checkAmount = async (id) => {
           }
         }
       } else {
-        alert(
-          "You can only order from 0 upto " +
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title:
+            "You can only order from 0 upto " +
             numberOfItems.value +
-            " items please re-order again"
-        );
+            " items please re-order again",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (err) {}
   }
@@ -655,6 +639,62 @@ const addToTransaction = async () => {
       product_id: pro_id.value,
       NoOrders: count2.value[idforVmodell.value],
       transaction_kebele: kebele_address,
+    });
+  } catch (err) {}
+};
+
+const setRating = async (id, star) => {
+  await getProductRateByEmailAndProuctId(user_email, id);
+  if (productRateData.value.star == undefined) {
+    await insertProductRate(id, star);
+  } else {
+    await updateProductRateById(productRateData.value.favorite_id, star);
+  }
+};
+const getProductRate = async () => {
+  try {
+    const responseRate = await axios.get(
+      "http://localhost:5000/products/ratingAndFavorite"
+    );
+    productRateDatas.value = responseRate.data;
+    for (let x in productRateDatas.value) {
+      if (productRateDatas.value[x].user_email == user_email) {
+        rating.value[productRateDatas.value[x].product_id] =
+          productRateDatas.value[x].star;
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getProductRateByEmailAndProuctId = async (email, id) => {
+  try {
+    const productRate = await axios.get(
+      `http://localhost:5000/products/ratingAndFavorite/${email}/${id}`
+    );
+    productRateData.value = productRate.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const insertProductRate = async (id, star) => {
+  try {
+    await axios.post("http://localhost:5000/products/ratingAndFavorite", {
+      user_email: user_email,
+      product_id: id,
+      star: star,
+      favorite: 0,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+const updateProductRateById = async (id, star) => {
+  try {
+    await axios.put(`http://localhost:5000/products/ratingAndFavorite/${id}`, {
+      star: star,
     });
   } catch (err) {}
 };

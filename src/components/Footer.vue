@@ -162,13 +162,13 @@
           v-if="languageStore.language == 'Am'"
           class="font-semibold dark:text-white text-blue-600"
           href=""
-          >ደብረ ኤልያስ ግብርና ቢሮ, በይልቃል ፤ በደሳለኝ እና በዉድነህ ተበለጸገ</a
+          >ደብረ ኤልያስ ግብርና ቢሮ, በይልቃል ተበለጸገ</a
         >
         <a
           v-if="languageStore.language == 'En'"
           class="font-semibold dark:text-white text-blue-600"
           href=""
-          >Debre Elias Agricultural Office, Developed by Yilkal, Wudneh and Desalegn.</a
+          >Debre Elias Agricultural Office, Developed by Yilkal.</a
         >
       </div>
     </footer>
